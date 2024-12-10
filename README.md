@@ -1,6 +1,6 @@
 ![logo-iut](https://github.com/user-attachments/assets/4d58de7d-bc25-4461-95ec-3f92ba0ba1eb)
 
-## Gestion des réservations d’une entreprise : Application de statistiques
+## Gestion des réservations d’une entreprise : Site Web
 
 Ce projet consiste à développer un site Web pour gérer les salles partagées d'une entreprise. La nouvelle application permettra de gérer les comptes utilisateurs, les salles et les réservations, tout en facilitant l'exportation des données. Elle devra garantir une sécurité optimale des échanges de données grâce à des sauvegardes quotidiennes et une architecture moderne.
 
@@ -9,7 +9,7 @@ Ce projet consiste à développer un site Web pour gérer les salles partagées 
 - **HUGO ROBLES** : hugo.robles@iut-rodez.fr
 - **TOM GUTIERREZ** : tom.gutierrez@iut-rodez.fr
 - **DORIAN ADAMS** : dorian.adams@iut-rodez.fr
-- **JULES VIALAS** : jules.vialas@iut-rodez.frx
+- **JULES VIALAS** : jules.vialas@iut-rodez.fr
 - **NEO BECOGNE** : neo.becogne@iut-rodez.fr
 
 ### Lien vers le board Github Project
