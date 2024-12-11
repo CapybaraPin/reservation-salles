@@ -1,37 +1,82 @@
+/* Déclaration de la police */
 @font-face {
     font-family: "Inter";
     src: url("../fonts/Inter.ttf") format("woff2")
 }
 
+/* Variables globales : nommage basé sur les rôles */
 :root {
-    --color-primary: #3574F0;
-    --color-grey-light: #FAFAFA;
+    --color-primary: #3574F0; /* Couleur principale */
+    --color-primary-hover: #0b5ed7; /* Couleur du bouton au survol */
+    --color-background-light: #FAFAFA; /* Couleur de fond claire */
+    --color-text-dark: #535862; /* Texte principal */
+    --color-input-placeholder: #717680; /* Texte des placeholders */
+    --color-label-text: #414651; /* Texte des labels */
+    --color-heading: #181D27; /* Couleur pour les titres */
+    --color-border-light: #E9EAEB; /* Couleur pour les bordures légères */
 }
 
+/* Paragraphe standard */
 p {
-    font-family: "Inter";
-    color: var(--color-primary);
+    color: var(--color-text-dark);
+    font-size: 16px;
+    font-weight: 300;
 }
 
+/* Style des titres */
+.titre {
+    color: var(--color-heading);
+    font-size: 30px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Navigation */
 .nav {
     display: inline-block;
-    border-bottom: #E9EAEB 1px solid;
+    border-bottom: var(--color-border-light) 1px solid;
 }
 
-.btn-nav{
+/* Boutons de navigation */
+.btn-nav {
     padding: 8px 12px;
     border-radius: 6px;
     text-decoration: none;
 }
 
-.btn-nav a{
+.btn-nav a {
     font-family: Inter;
     font-weight: 500;
     font-size: 16px;
     text-decoration: none;
-    color: #414651;
+    color: var(--color-label-text);
 }
 
-.btn-nav-active{
-    background-color: var(--color-grey-light);
+/* État actif et survol des boutons de navigation */
+.btn-nav-active {
+    background-color: var(--color-background-light);
+}
+
+/* Boutons principaux */
+.btn-primary {
+    background-color: var(--color-primary) !important;
+    margin: 0 !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-hover) !important;
+}
+
+/* Champs de formulaire */
+.form-control {
+    color: var(--color-input-placeholder) !important;
+    font-size: 16px !important;
+    font-weight: 300 !important;
+}
+
+/* Labels des formulaires */
+label {
+    font-size: 14px !important;
+    color: var(--color-label-text) !important;
+    font-weight: 400 !important;
 }
