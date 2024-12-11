@@ -1,0 +1,37 @@
+@font-face {
+    font-family: "Inter";
+    src: url("../fonts/Inter.ttf") format("woff2")
+}
+
+:root {
+    --color-primary: #3574F0;
+    --color-grey-light: #FAFAFA;
+}
+
+p {
+    font-family: "Inter";
+    color: var(--color-primary);
+}
+
+.nav {
+    display: inline-block;
+    border-bottom: #E9EAEB 1px solid;
+}
+
+.btn-nav{
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.btn-nav a{
+    font-family: Inter;
+    font-weight: 500;
+    font-size: 16px;
+    text-decoration: none;
+    color: #414651;
+}
+
+.btn-nav-active{
+    background-color: var(--color-grey-light);
+}
