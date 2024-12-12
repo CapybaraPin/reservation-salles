@@ -1,18 +1,24 @@
+<?php
+
+use services\Config;
+
+?>
+
 <!doctype html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Connexion - Reservit</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/vendor/bootstrap-5.3.3/css/bootstrap.css">
+    <link rel="stylesheet" href="<?= Config::get('APP_NAME'); ?>/assets/css/styles.css">
+    <link rel="stylesheet" href="<?= Config::get('APP_NAME'); ?>/assets/vendor/bootstrap-5.3.3/css/bootstrap.css">
 </head>
 <body>
 <div class="container">
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-12 col-md-4 col-sm-4">
             <!-- Formulaire POST sans URL spécifiée -->
-            <form action="#" method="post">
+            <form action="" method="post">
                 <p class="titre text-center">Connectez-vous</p>
                 <p class="text-center">Bienvenue ! Entrez vos informations de connexion</p>
                 <!-- Groupe pour le champ "Identifiant" -->

@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mes réservations</title>
 
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/vendor/bootstrap-5.3.3/css/bootstrap.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap-5.3.3/css/bootstrap.css">
 </head>
 <body>
     <div class="container mx-0">
