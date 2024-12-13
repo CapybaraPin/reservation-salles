@@ -75,7 +75,7 @@ p {
 }
 
 /* Labels des formulaires */
-label {
+.label-form {
     font-size: 14px !important;
     color: var(--color-label-text) !important;
     font-weight: 400 !important;
