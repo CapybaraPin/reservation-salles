@@ -11,19 +11,16 @@ use services\Config;
  *
  * @package controllers
  */
-class AccueilController
+class AccueilController extends Controller
 {
     public function get()
     {
-        if (!isset($_SESSION['user'])) {
-            header("Location: " . Config::get('APP_URL') . "/auth");
-        }
-
         require __DIR__ . '/../views/accueil.php';
     }
 
     public function post()
     {
+        $this->deconnexion();
         require __DIR__ . '/../views/accueil.php';
     }
 }

@@ -35,4 +35,39 @@ class Utilisateur
         $this->roleId = $roleId;
     }
 
+    /**
+     * Récupère le nom de l'utilisateur
+     * @return mixed nom de l'utilisateur
+     */
+    public function getNom()
+    {
+        global $pdo;
+        $req = $pdo->prepare("SELECT nom 
+                FROM individu i
+                JOIN utilisateur u
+                ON i.identifiant = u.individu
+                WHERE u.identifiant = ?");
+
+        $req->execute([$this->identifiant]);
+
+        return $req->fetchAll();
+    }
+
+    /**
+     * Récupère le prénom de l'utilisateur
+     * @return mixed prenom de l'utilisateur
+     */
+    public function getPrenom()
+    {
+        global $pdo;
+        $req = $pdo->prepare("SELECT prenom 
+                FROM individu i
+                JOIN utilisateur u
+                ON i.identifiant = u.individu
+                WHERE u.identifiant = ?");
+
+        $req->execute([$this->identifiant]);
+
+        return $req->fetchAll();
+    }
 }

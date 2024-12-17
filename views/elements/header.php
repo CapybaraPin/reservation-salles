@@ -19,7 +19,7 @@ $page_actuelle = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <!-- Contenu du menu pour les grands écrans -->
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-lg-0">
-                    <li class="btn-nav me-1 button-nav mb-1 mb-lg-0 <?= ($page_actuelle == '/') ? 'btn-nav-active' : ''; ?>">
+                    <li class="btn-nav me-1 button-nav mb-1 ms-lg-3 mb-lg-0 <?= ($page_actuelle == '/') ? 'btn-nav-active' : ''; ?>">
                         <a href="/">Tableau de bord</a>
                     </li>
                     <li class="btn-nav me-1 button-nav mb-1 mb-lg-0 <?= ($page_actuelle == '/reservations') ? 'btn-nav-active' : ''; ?>">
