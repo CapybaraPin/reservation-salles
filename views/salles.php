@@ -71,36 +71,54 @@
                                             <th>Capacité</th>
                                             <th>Vidéo Projecteur</th>
                                             <th>Ecran XXL</th>
-                                            <th>Imprimante</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <!-- Première ligne de données (exemple) -->
+                                        <?php foreach ($salles as $salle) { ?>
                                         <tr>
                                             <td><input type="checkbox" name="" id="" class="ms-2 form-check-input"></td>
-                                            <td>1</td>
-                                            <td>Salle bleu</td>
-                                            <td>56</td>
-                                            <td>Oui</td>
-                                            <td>Oui</td>
-                                            <td>Oui</td>
+                                            <td><?= $salle['identifiant'] ?></td>
+                                            <td><?= $salle['nom']?></td>
+                                            <td><?= $salle['capacite'] ?></td>
+                                            <td><?php if($salle['videoProjecteur'] == "1") { echo "Oui"; } else { echo "Non"; } ?></td>
+                                            <td><?php if ($salle['ecranXXL'] == "1") { echo "Oui"; } else { echo"Non"; }?></td>
                                             <!-- Boutons d'action -->
+
                                             <td>
-                                                <button class="btn btn-nav" title="Plus d'informations">
-                                                    <i class="fa-solid fa-circle-info"></i>
-                                                </button>
-                                                <button class="btn" title="Modifier">
-                                                    <i class="fa-solid fa-pen"></i>
-                                                </button>
-                                                <button class="btn btn-nav" title="Supprimer">
-                                                    <i class="fa-solid fa-trash-can"></i>
-                                                </button>
+                                                <div class="container">
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <?php
+                                                        if($salle['idOrdinateur'] != 0 ){
+                                                            ?>
+                                                            <button class="btn btn-nav" title="Plus d'informations">
+                                                                <i class="fa-solid fa-circle-info"></i>
+                                                            </button>
+                                                            <?php
+                                                        }
+                                                        ?>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <button class="btn" title="Modifier">
+                                                            <i class="fa-solid fa-pen"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <button class="btn btn-nav" title="Supprimer">
+                                                            <i class="fa-solid fa-trash-can"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             </td>
                                         </tr>
+                                        <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>
+
 
                                 <!-- Pagination -->
                                 <div class="container-fluid">
