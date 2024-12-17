@@ -22,15 +22,14 @@ class Auth
      */
     public function connexion($identifiant, $motDePasse)
     {
-        global $db;
-        $pdo = $db->getPDO();
+        global $pdo;
 
-        $req = $pdo->prepare("SELECT identifiant, motdepasse FROM utilisateurs WHERE identifiant = :identifiant");
+        $req = $pdo->prepare("SELECT identifiant, motDePasse FROM utilisateur WHERE identifiant = :identifiant");
         $req->execute(['identifiant' => $identifiant]);
         $user = $req->fetch();
 
         // Si l'utilisateur existe et que le mot de passe est correct
-        if ($user && password_verify($motDePasse, $user['motdepasse'])) {
+        if ($user && password_verify($motDePasse, $user['motDePasse'])) {
 
             $_SESSION['user'] = $user;
 
@@ -38,6 +37,17 @@ class Auth
 
         } else {
             return $this->MESSAGE_AUTH_ERROR;
+        }
+    }
+
+    /**
+     * Déconnexion de l'utilisateur
+     */
+    public function deconnexion()
+    {
+        if (isset($_SESSION['user'])) {
+            session_destroy();
+            header("Location: ".Config::get('APP_URL')."/auth");
         }
     }
 }
