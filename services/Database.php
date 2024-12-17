@@ -73,10 +73,6 @@ class Database
         return $req->fetchAll();
     }
 
-    /**
-     * Récupère la liste des activités.
-     * @return mixed Retourne la liste des activités
-     */
     public function getActivites()
     {
         $req = $this->pdo->prepare("SELECT 
@@ -88,28 +84,38 @@ class Database
     }
 
     /**
-     * Récupère la liste des réservations.
-     * @return mixed Retourne la liste des réservations
+     * Permet de récuperer la listes des salles dans la base de données.
+     *
+     * @return PDOStatement, Retourne la liste des salles obtenue
      */
-    public function getReservations()
-    {
-        $req = $this->pdo->prepare("SELECT
-                                            reservation.identifiant AS 'IDENTIFIANT_RESERVATION',
-                                            reservation.dateDebut AS 'DATE_DEBUT',
-                                            reservation.dateFin AS 'DATE_FIN',
-                                            reservation.description AS 'DESCRIPTION',
-                                            salle.nom AS 'NOM_SALLE',
-                                            activite.type AS 'TYPE_ACTIVITE',
-                                            individu.prenom AS 'PRENOM_EMPLOYE',
-                                            individu.nom AS 'NOM_EMPLOYE'
-                                            FROM reservation
-                                            JOIN salle 
-                                            ON salle.identifiant = reservation.idSalle
-                                            JOIN activite
-                                            ON activite.identifiant = reservation.idActivite
-                                            JOIN individu
-                                            ON individu.identifiant = reservation.idEmploye");
-        $req->execute();
+    public function getSalles() {
+
+        $req = $this->pdo->query("SELECT identifiant, nom, capacite, videoProjecteur, ecranXXL, idOrdinateur FROM salle");
         return $req->fetchAll();
     }
+
+    /**
+     * Permet de récupérer la liste des oridnateur pour une salle dans la base de donnée
+     * @param $idOrdinateur
+     * @return PDOStatement, Retourne la liste des ordinateur pour une salle
+     */
+    public function getOrdinateur($idOrdinateur) {
+
+        $req = $this->pdo->prepare("SELECT groupeOrdinateur.identifiant, nbOrdinateur, imprimante, idType, type AS DesignationType FROM groupeOrdinateur JOIN typeOrdinateur ON idType = typeOrdinateur.identifiant WHERE groupeOrdinateur.identifiant = ?");
+        $req->execute(array($idOrdinateur));
+        return $req->fetchAll();;
+    }
+
+    /**
+     * Permet de récupérer la liste des logiciel pour les ordinateur d'une salle dans la base de donnée
+     * @param $idOrdinateur
+     * @return PDOStatement, Retourne la liste des logiciels associés a un groupe d'ordinateur.
+     */
+    public function getLogiciel($idOrdinateur) {
+
+        $req = $this->pdo->prepare("SELECT logiciel.identifiant, nom FROM ordinateurLogiciel JOIN logiciel ON ordinateurLogiciel.idLogiciel = logiciel.identifiant WHERE ordinateurLogiciel.idOrdinateur = ?");
+        $req->execute(array($idOrdinateur));
+        return $req->fetchAll();;
+    }
+
 }

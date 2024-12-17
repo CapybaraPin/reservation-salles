@@ -15,6 +15,10 @@ class SallesController extends Controller
      */
     public function get()
     {
+
+        global $db;
+        $salles = $db->getSalles();
+
         require __DIR__ . '/../views/salles.php';
     }
 
