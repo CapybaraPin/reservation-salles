@@ -40,6 +40,26 @@ p {
     text-align: center;
 }
 
+/* Logo */
+.logo {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient( var(--color-primary) 0%, #B05ADB 100%);
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.logo-text {
+    text-decoration: none;
+    color: white;
+    font-family: monospace;
+}
+
+
 /* Navigation */
 .nav {
     display: inline-block;
