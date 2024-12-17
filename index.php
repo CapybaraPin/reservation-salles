@@ -69,6 +69,11 @@ $router->post('/reservations', [new ReservationsController(), 'post']);
 $router->get('/employes', [new EmployesController(), 'get']);
 $router->post('/employes', [new EmployesController(), 'post']);
 
+// Défintion de la routeur pour l'erreur 404
+$router->set404(function() {
+    header('HTTP/1.1 404 Not Found');
+    require __DIR__ . '/views/errors/404.php';
+});
 
 // Démarrage du routeur
 $router->run();
