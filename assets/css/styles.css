@@ -7,7 +7,8 @@
 /* Variables globales : nommage basé sur les rôles */
 :root {
     --color-primary: #3574F0; /* Couleur principale */
-    --color-primary-hover: #0b5ed7; /* Couleur du bouton au survol */
+    --color-primary-hover: #0b5ed7;
+    --color-primary-light: #EFF8FF;/* Couleur du bouton au survol */
     --color-background-light: #FAFAFA; /* Couleur de fond claire */
     --color-text-dark: #535862; /* Texte principal */
     --color-input-placeholder: #717680; /* Texte des placeholders */
@@ -54,7 +55,7 @@ p {
 
 /* État actif et survol des boutons de navigation */
 .btn-nav-active {
-    background-color: var(--color-background-light);
+    background-color: var(--color-border-light);
 }
 
 /* Boutons principaux */
@@ -124,4 +125,50 @@ p {
 }
 .navbar-burger.open span:nth-child(3) {
     transform: translate(0) rotate(-135deg);
+}
+
+/* Button de la barre de navigation */
+.button-nav:hover {
+    background-color: var(--color-border-light);
+}
+
+.pagination-page {
+    display: flex;
+}
+
+/* Bouton de pagination */
+.pagination-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none !important;
+    list-style: none;
+    height: 40px;
+    width: 40px;
+    text-align: center !important;
+    border-radius: 5px;
+    margin: 0px 2px;
+}
+
+.pagination-item.active {
+    background-color: var(--color-primary-light);
+}
+
+.pagination-item:hover {
+    background-color: var(--color-primary-light);
+}
+
+/* Badge */
+.badge {
+    background-color: var(--color-primary-light) !important;
+    border: none !important;
+    border-radius: 50px !important;
+}
+
+th{
+    font-weight: normal;
+}
+
+thead{
+    background-color: var(--color-border-light);
 }
