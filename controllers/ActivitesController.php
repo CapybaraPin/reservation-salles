@@ -12,6 +12,8 @@ class ActivitesController extends Controller
      */
     public function get()
     {
+        global $db;
+        $activites = $db->getActivites();
         require __DIR__ . '/../views/activites.php';
     }
 

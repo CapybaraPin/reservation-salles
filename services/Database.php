@@ -75,6 +75,11 @@ class Database
 
     public function getActivites()
     {
-        //TODO
+        $req = $this->pdo->prepare("SELECT 
+                                            identifiant AS 'IDENTIFIANT_ACTIVITE',
+                                            type AS TYPE_ACTIVITE
+                                            FROM activite");
+        $req->execute();
+        return $req->fetchAll();
     }
 }
