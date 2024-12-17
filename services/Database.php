@@ -53,4 +53,23 @@ class Database
             throw new PDOException($e->getMessage());
         }
     }
+
+    /**
+     * Récupère la liste des employés.
+     * @return mixed Retourne la liste des employés
+     */
+    public function getEmployes()
+    {
+        $req = $this->pdo->prepare("SELECT 
+                                           DISTINCT(i.identifiant) AS 'IDENTIFIANT_EMPLOYE', 
+                                           i.nom AS 'NOM_EMPLOYE', 
+                                           i.prenom AS 'PRENOM_EMPLOYE', 
+                                           i.telephone AS 'TELEPHONE_EMPLOYE' 
+                                    FROM individu i
+                                    JOIN utilisateur u
+                                    ON u.role = 0;");
+
+        $req->execute();
+        return $req->fetchAll();
+    }
 }
