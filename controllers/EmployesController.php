@@ -8,7 +8,7 @@ use services\Config;
 /**
  * Contrôleur pour la page des employés
  */
-class EmployesController
+class EmployesController extends Controller
 {
     /**
      * Fonction pour gérer les requêtes GET
@@ -27,6 +27,7 @@ class EmployesController
      */
     public function post()
     {
+        $this->deconnexion();
         require __DIR__ . '/../views/employes.php';
     }
 }

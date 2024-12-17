@@ -8,7 +8,7 @@ use services\Config;
 /**
  * Contrôleur pour la page des salles
  */
-class SallesController
+class SallesController extends Controller
 {
     /**
      * Fonction pour gérer les requêtes GET
@@ -23,6 +23,7 @@ class SallesController
      */
     public function post()
     {
-       require __DIR__ . '/../views/salles.php';
+        $this->deconnexion();
+        require __DIR__ . '/../views/salles.php';
     }
 }

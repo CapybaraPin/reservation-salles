@@ -30,9 +30,11 @@
                     </li>
                 </ul>
                 <!-- Bouton de déconnexion -->
-                <button class="btn btn-outline-dark me-1 me-4 ms-1 mb-1 mb-lg-0">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Deconnexion
-                </button>
+                <form method="post" action="">
+                    <button name="deconnexion" class="btn btn-outline-dark me-1 me-4 ms-1 mb-1 mb-lg-0">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Deconnexion
+                    </button>
+                </form>
             </div>
         </nav>
     </div>

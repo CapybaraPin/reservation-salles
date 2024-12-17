@@ -8,7 +8,7 @@ use services\Config;
 /**
  * Contrôleur pour la page des réservations
  */
-class ReservationsController
+class ReservationsController extends Controller
 {
     /**
      * Fonction pour gérer les requêtes GET
@@ -23,6 +23,7 @@ class ReservationsController
      */
     public function post()
     {
+        $this->deconnexion();
         require __DIR__ . '/../views/reservations.php';
     }
 }
