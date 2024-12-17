@@ -21,7 +21,7 @@
                     <div class="row mt-5 mb-5">
                         <!-- Message de bienvenue -->
                         <div class="col-12 col-lg-8">
-                            <h2>Bienvenue à vous, Hugo !</h2>
+                            <h2>Gestion des réservations</h2>
                             <p>Track, manage and forecast your customers and orders.</p>
                         </div>
                         <!-- Bouton pour ajouter une réservation -->

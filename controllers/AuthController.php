@@ -34,11 +34,7 @@ class AuthController
      */
     public function get()
     {
-        if (isset($_SESSION['user'])) {
-            header("Location: ".Config::get('APP_URL')."/");
-        } else {
-            require __DIR__ . '/../views/auth.php';
-        }
+        require __DIR__ . '/../views/auth.php';
     }
 
     /**

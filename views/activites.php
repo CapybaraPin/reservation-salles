@@ -21,7 +21,7 @@
                     <div class="row mt-5 mb-5">
                         <!-- Message de bienvenue -->
                         <div class="col-12 col-lg-10">
-                            <h2>Bienvenue à vous, Hugo !</h2>
+                            <h2>Gestion des activités</h2>
                             <p>Track, manage and forecast your customers and orders.</p>
                         </div>
                         <!-- Bouton pour ajouter une Activité -->
@@ -72,11 +72,13 @@
                                         </thead>
                                         <tbody>
                                         <!-- Première ligne de données (exemple) -->
-                                        <tr>
-                                            <td><input type="checkbox" name="" id="" class="ms-2 form-check-input"></td>
-                                            <td>1</td>
-                                            <td>Yoga</td>
-                                        </tr>
+                                        <?php foreach ($activites as $activite) { ?>
+                                            <tr>
+                                                <td><input type="checkbox" name="" id="" class="ms-2 form-check-input"></td>
+                                                <td><?= $activite["IDENTIFIANT_ACTIVITE"] ?></td>
+                                                <td><?= $activite["TYPE_ACTIVITE"] ?></td>
+                                            </tr>
+                                        <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>

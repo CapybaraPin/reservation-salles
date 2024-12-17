@@ -20,6 +20,7 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/services/Database.php';
 require __DIR__ . '/services/Config.php';
 require __DIR__ . '/services/Auth.php';
+require __DIR__ . '/services/Utilisateur.php';
 
 // Récupération des classes des contrôleurs
 require __DIR__ . '/controllers/Controller.php';
@@ -32,14 +33,13 @@ require __DIR__ . '/controllers/ActivitesController.php';
 
 
 // Import des classes
-
+use services\Database;
 use controllers\AuthController;
 use controllers\AccueilController;
 use controllers\SallesController;
 use controllers\ReservationsController;
 use controllers\EmployesController;
 use controllers\ActivitesController;
-use services\Database;
 
 // Création d'une instance de Router
 $router = new \Bramus\Router\Router();
@@ -54,7 +54,9 @@ try {
 
 session_start();
 
-// Définition des routes
+// TODO : Mettre en place la sécurisation des pages
+
+// Définition des routes pour la connexion
 $router->get('/auth', [new AuthController(), 'get']);
 $router->post('/auth', [new AuthController(), 'post']);
 
@@ -83,6 +85,7 @@ $router->set404(function() {
     header('HTTP/1.1 404 Not Found');
     require __DIR__ . '/views/errors/404.php';
 });
+
 
 // Démarrage du routeur
 $router->run();
