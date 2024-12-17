@@ -3,34 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mes réservations</title>
+    <title>Accueil</title>
 
-    <link rel="stylesheet" href="../assets/css/styles.css">
-    <link rel="stylesheet" href="../assets/vendor/bootstrap-5.3.3/css/bootstrap.css">
+    <?php include 'elements/styles.php'; ?>
 </head>
 <body>
-    <div class="container mx-0">
-        <div class="header">
-            <div class="row">
-                <div class="nav col-12">
-                    <li class="btn-nav btn-nav-active">
-                        <a href="">Tableau de bord</a>
-                    </li>
-                    <li class="btn-nav">
-                        <a href="">Réservations</a>
-                    </li>
-                    <li class="btn-nav">
-                        <a href="">Salles</a>
-                    </li>
-                    <li class="btn-nav">
-                        <a href="">Employés</a>
-                    </li>
-                    <li class="btn-nav">
-                        <a href="">Activités</a>
-                    </li>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="container-fluid">
+    <?php include 'elements/header.php'; ?>
+</div>
 </body>
+<?php include 'elements/scripts.php'; ?>
 </html>
