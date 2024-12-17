@@ -72,11 +72,13 @@
                                         </thead>
                                         <tbody>
                                         <!-- Première ligne de données (exemple) -->
-                                        <tr>
-                                            <td><input type="checkbox" name="" id="" class="ms-2 form-check-input"></td>
-                                            <td>1</td>
-                                            <td>Yoga</td>
-                                        </tr>
+                                        <?php foreach ($activites as $activite) { ?>
+                                            <tr>
+                                                <td><input type="checkbox" name="" id="" class="ms-2 form-check-input"></td>
+                                                <td><?= $activite["IDENTIFIANT_ACTIVITE"] ?></td>
+                                                <td><?= $activite["TYPE_ACTIVITE"] ?></td>
+                                            </tr>
+                                        <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>
