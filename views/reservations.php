@@ -78,25 +78,31 @@
                                         </thead>
                                         <tbody>
                                         <!-- Première ligne de données (exemple) -->
-                                        <tr>
-                                            <td><input type="checkbox" name="" id="" class="ms-2 form-check-input"></td>
-                                            <td>R000001</td>
-                                            <td>2024-10-07 17h00</td>
-                                            <td>2024-10-08 15h30</td>
-                                            <td>Réunion client</td>
-                                            <td>Salle picasso</td>
-                                            <td>Réunion</td>
-                                            <td>Pierre Dupont</td>
-                                            <!-- Boutons d'action -->
-                                            <td>
-                                                <button class="btn" title="Modifier">
-                                                    <i class="fa-solid fa-pen"></i>
-                                                </button>
-                                                <button class="btn btn-nav" title="Supprimer">
-                                                    <i class="fa-solid fa-trash-can"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($reservations as $reservation) { ?>
+                                            <tr>
+                                                <td><input type="checkbox" name="" id="" class="ms-2 form-check-input">
+                                                </td>
+                                                <td><?= $reservation["IDENTIFIANT_RESERVATION"] ?></td>
+                                                <td><?= $reservation["DATE_DEBUT"] ?></td>
+                                                <td><?= $reservation["DATE_FIN"] ?></td>
+                                                <td><?= $reservation["DESCRIPTION"] ?></td>
+                                                <td><?= $reservation["NOM_SALLE"] ?></td>
+                                                <td><?= $reservation["TYPE_ACTIVITE"] ?></td>
+                                                <td><?= $reservation["PRENOM_EMPLOYE"] . " " . $reservation["NOM_EMPLOYE"] ?></td>
+                                                <!-- Boutons d'action -->
+                                                <td>
+                                                    <button class="btn btn-nav" title="Plus d'informations">
+                                                        <i class="fa-solid fa-circle-info"></i>
+                                                    </button>
+                                                    <button class="btn" title="Modifier">
+                                                        <i class="fa-solid fa-pen"></i>
+                                                    </button>
+                                                    <button class="btn btn-nav" title="Supprimer">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -119,13 +125,16 @@
                                             <nav class="text-center">
                                                 <ul class="pagination-page">
                                                     <!-- Liens de pagination -->
-                                                    <li class="pagination-item active"><a class="page-link" href="#">1</a></li>
+                                                    <li class="pagination-item active"><a class="page-link"
+                                                                                          href="#">1</a></li>
                                                     <li class="pagination-item"><a class="page-link" href="#">2</a></li>
                                                     <li class="pagination-item"><a class="page-link" href="#">3</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">...</a></li>
+                                                    <li class="pagination-item"><a class="page-link" href="#">...</a>
+                                                    </li>
                                                     <li class="pagination-item"><a class="page-link" href="#">8</a></li>
                                                     <li class="pagination-item"><a class="page-link" href="#">9</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">10</a></li>
+                                                    <li class="pagination-item"><a class="page-link" href="#">10</a>
+                                                    </li>
                                                 </ul>
                                             </nav>
                                         </div>

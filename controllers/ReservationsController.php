@@ -15,6 +15,9 @@ class ReservationsController extends Controller
      */
     public function get()
     {
+        // Récupération de la liste des réservations
+        global $db;
+        $reservations = $db->getReservations();
         require __DIR__ . '/../views/reservations.php';
     }
 

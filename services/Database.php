@@ -73,12 +73,42 @@ class Database
         return $req->fetchAll();
     }
 
+    /**
+     * Récupère la liste des activités.
+     * @return mixed Retourne la liste des activités
+     */
     public function getActivites()
     {
         $req = $this->pdo->prepare("SELECT 
                                             identifiant AS 'IDENTIFIANT_ACTIVITE',
                                             type AS TYPE_ACTIVITE
                                             FROM activite");
+        $req->execute();
+        return $req->fetchAll();
+    }
+
+    /**
+     * Récupère la liste des réservations.
+     * @return mixed Retourne la liste des réservations
+     */
+    public function getReservations()
+    {
+        $req = $this->pdo->prepare("SELECT
+                                            reservation.identifiant AS 'IDENTIFIANT_RESERVATION',
+                                            reservation.dateDebut AS 'DATE_DEBUT',
+                                            reservation.dateFin AS 'DATE_FIN',
+                                            reservation.description AS 'DESCRIPTION',
+                                            salle.nom AS 'NOM_SALLE',
+                                            activite.type AS 'TYPE_ACTIVITE',
+                                            individu.prenom AS 'PRENOM_EMPLOYE',
+                                            individu.nom AS 'NOM_EMPLOYE'
+                                            FROM reservation
+                                            JOIN salle 
+                                            ON salle.identifiant = reservation.idSalle
+                                            JOIN activite
+                                            ON activite.identifiant = reservation.idActivite
+                                            JOIN individu
+                                            ON individu.identifiant = reservation.idEmploye");
         $req->execute();
         return $req->fetchAll();
     }
