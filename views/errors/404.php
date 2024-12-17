@@ -33,11 +33,8 @@ use services\Config;
             <p class="text-center">
                 La page que vous tentez d'afficher n'existe pas ou une autre erreur s'est produite.
                 Vous pouvez revenir à
-                <!-- Lien pour revenir à la page précédente -->
-                <a class="text-primary" href="">la page précédente</a>
-                ou aller à
                 <!-- Lien pour rediriger vers la page d'accueil -->
-                <a class="text-primary" href="">la page d'accueil</a>
+                <a class="text-primary" href="/">la page d'accueil</a>
                 .
             </p>
         </div>
