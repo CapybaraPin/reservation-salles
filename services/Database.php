@@ -72,4 +72,9 @@ class Database
         $req->execute();
         return $req->fetchAll();
     }
+
+    public function getActivites()
+    {
+        //TODO
+    }
 }

@@ -22,18 +22,23 @@ require __DIR__ . '/services/Config.php';
 require __DIR__ . '/services/Auth.php';
 
 // Récupération des classes des contrôleurs
+require __DIR__ . '/controllers/Controller.php';
 require __DIR__ . '/controllers/AuthController.php';
 require __DIR__ . '/controllers/AccueilController.php';
 require __DIR__ . '/controllers/SallesController.php';
 require __DIR__ . '/controllers/ReservationsController.php';
 require __DIR__ . '/controllers/EmployesController.php';
+require __DIR__ . '/controllers/ActivitesController.php';
+
 
 // Import des classes
+
 use controllers\AuthController;
 use controllers\AccueilController;
 use controllers\SallesController;
 use controllers\ReservationsController;
 use controllers\EmployesController;
+use controllers\ActivitesController;
 use services\Database;
 
 // Création d'une instance de Router
@@ -68,6 +73,10 @@ $router->post('/reservations', [new ReservationsController(), 'post']);
 // Définition des routes pour les employés
 $router->get('/employes', [new EmployesController(), 'get']);
 $router->post('/employes', [new EmployesController(), 'post']);
+
+// Définition des routes pour les activités
+$router->get('/activites', [new ActivitesController(), 'get']);
+$router->post('/activites', [new ActivitesController(), 'post']);
 
 // Défintion de la routeur pour l'erreur 404
 $router->set404(function() {
