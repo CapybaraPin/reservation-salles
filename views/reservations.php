@@ -83,7 +83,7 @@
                                         <?php foreach ($reservations as $reservation) {
                                             $dateDebut = date_create($reservation["DATE_DEBUT"]);
                                             $dateDebutFormatted = date_format($dateDebut, "d/m/Y H\hi");
-
+                                            // todo for jules vialas : normaliser l'identificateur en français
                                             $dateFin = date_create($reservation["DATE_FIN"]);
                                             $dateFinFormatted = date_format($dateFin, "d/m/Y H\hi");
                                             ?>
@@ -119,41 +119,40 @@
                                     <div class="row">
                                         <!-- Boutons de navigation -->
                                         <div class="col-3 d-lg-none d-block">
-                                            <button class="btn btn-outline-dark d-lg-none">
+                                            <a href="?page=<?= $page - 1 ?>" class="btn btn-outline-dark d-lg-none">
                                                 <i class="fa-solid fa-arrow-left"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                         <div class="col-3 d-lg-block d-none">
-                                            <button class="btn btn-outline-dark">
+                                            <a href="?page=<?= $page - 1 ?>" class="btn btn-outline-dark">
                                                 <i class="fa-solid fa-arrow-left"></i> Précédent
-                                            </button>
+                                            </a>
                                         </div>
                                         <div class="col-6 d-flex justify-content-center">
                                             <nav class="text-center">
                                                 <ul class="pagination-page">
                                                     <!-- Liens de pagination -->
-                                                    <li class="pagination-item active"><a class="page-link"
-                                                                                          href="#">1</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">2</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">3</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">...</a>
-                                                    </li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">8</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">9</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">10</a>
+                                                    <?php
+                                                    // TODO : gerer le cas ou le nombre de pages est superieur a 5 par exemple
+                                                    // TODO : fix l'alignement de la pagination format mobile
+                                                    for ($i = 1; $i <= $pageMax; $i++) {
+                                                        $active = $i == $page ? "active d-md-flex" : "d-none d-md-flex";
+                                                        echo "<li class='pagination-item  $active'><a class='page-link' href='?page=$i'>$i</a></li>";
+                                                    }
+                                                    ?>
                                                     </li>
                                                 </ul>
                                             </nav>
                                         </div>
                                         <div class="col-3 text-end d-lg-block d-none">
-                                            <button class="btn btn-outline-dark">Suivant
+                                            <a href="?page=<?= $page + 1 ?>" class="btn btn-outline-dark">Suivant
                                                 <i class="fa-solid fa-arrow-right"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                         <div class="col-3 text-end d-lg-none d-block">
-                                            <button class="btn btn-outline-dark d-lg-none">
+                                            <a href="?page=<?= $page + 1 ?>" class="btn btn-outline-dark d-lg-none">
                                                 <i class="fa-solid fa-arrow-right"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
