@@ -54,7 +54,14 @@ try {
 
 session_start();
 
-// TODO : Mettre en place la sécurisation des pages
+// Middleware pour vérifier la connexion de l'utilisateur
+$router->before('GET|POST', '/(?!auth).*', function() {
+    if (!isset($_SESSION['userIdentifiant'])) {
+        // Redirection vers la page de connexion si l'utilisateur n'est pas connecté
+        header('Location: /auth');
+        exit();
+    }
+});
 
 // Définition des routes pour la connexion
 $router->get('/auth', [new AuthController(), 'get']);
