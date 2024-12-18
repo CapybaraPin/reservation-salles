@@ -199,13 +199,13 @@
                             <!-- Champ Identifiant -->
                             <div class="form-group mt-1 mb-1">
                                 <label class="label-form" for="identifiant">Identifiant</label>
-                                <input class="form-control" id="identifiant" name="identifiant" type="text" placeholder="Entrez l'identifiant"
+                                <input class="form-control" id="identifiant" name="identifiant" type="text" placeholder="Entrez l'identifiant" required
                                        value="<?= isset($_POST['identifiant']) ? htmlspecialchars($_POST['identifiant']) : '' ?>">
                             </div>
                             <!-- Champ Mot de Passe -->
                             <div class="form-group mt-1 mb-3">
                                 <label class="label-form" for="motdepasse">Mot de passe</label>
-                                <input class="form-control" id="motdepasse" name="motdepasse" type="password" placeholder="Entrez le mot de passe" >
+                                <input class="form-control" id="motdepasse" name="motdepasse" type="password" placeholder="Entrez le mot de passe" required>
                             </div>
                         </div>
                         <div class="row mt-3 mb-2">

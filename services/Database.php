@@ -144,6 +144,14 @@ class Database
         return [$req->fetchAll(), $req->rowCount()];
     }
 
+    /**
+     * Permet d'ajouter un employé dans la base de données
+     * @param $nomEmploye string le nom de l'employé
+     * @param $prenomEmploye string le prénom de l'employé
+     * @param $telephoneEmploye string le numéro de téléphone de l'employé
+     * @param $identifiantEmploye string l'identifiant de l'employé
+     * @param $motDePasseEmploye string le mot de passe de l'employé
+     */
     public function ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye)
     {
         $req_individu = $this->pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
