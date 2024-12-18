@@ -22,7 +22,7 @@
                         <!-- Message de bienvenue -->
                         <div class="col-12 col-lg-10">
                             <h2>Gestion des employés</h2>
-                            <p>Track, manage and forecast your customers and orders.</p>
+                            <p>Créer et gérer vos employés depuis le tableau ci-dessous.</p>
                         </div>
                         <!-- Bouton pour ajouter une salle -->
                         <div class="col-12 col-lg-2 text-lg-end">

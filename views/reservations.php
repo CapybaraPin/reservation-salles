@@ -22,7 +22,7 @@
                         <!-- Message de bienvenue -->
                         <div class="col-12 col-lg-8">
                             <h2>Gestion des réservations</h2>
-                            <p>Track, manage and forecast your customers and orders.</p>
+                            <p>Créer et gérer vos réservations depuis le tableau ci-dessous.</p>
                         </div>
                         <!-- Bouton pour ajouter une réservation -->
                         <div class="col-12 col-lg-4 text-lg-end">
