@@ -26,7 +26,7 @@
                         </div>
                         <!-- Bouton pour ajouter une salle -->
                         <div class="col-12 col-lg-2 text-lg-end">
-                            <button class="btn btn-primary">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajouterEmployee">
                                 <i class="fa-solid fa-plus"></i> Ajouter un employé
                             </button>
                         </div>
@@ -148,6 +148,57 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="ajouterEmployee" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <h1 class="modal-title fs-5 mt-2 titre text-start" id="exampleModalLabel">Ajout d'un employé</h1>
+                    </div>
+                    <div class="row">
+                        <p class="mt-3">Pour ajouter un employé, merci de remplir les champs ci-dessous.</p>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mb-1">
+                            <label class="label-form" for="nom">Nom</label>
+                            <input class="form-control" id="nom" name="nom" type="text" placeholder="Entrez le nom" required>
+                        </div>
+                        <div class="form-group mt-1 mb-1">
+                            <label class="label-form" for="prenom">Prenom</label>
+                            <input class="form-control" id="prenom" name="prenom" type="text" placeholder="Entrez le prenom" required>
+                        </div>
+                        <div class="form-group mt-1 mb-1">
+                            <label class="label-form" for="telephone">Telephone</label>
+                            <input class="form-control" id="telephone" name="telephone" type="text"
+                                   placeholder="Entrez le telephone" required>
+                        </div>
+                        <div class="form-group mt-1 mb-1">
+                            <label class="label-form" for="identifiant">Identifiant</label>
+                            <input class="form-control" id="identifiant" name="identifiant" type="text"
+                                   placeholder="Entrez l'identifiant" required>
+                        </div>
+                        <div class="form-group mt-1 mb-3">
+                            <label class="label-form" for="motdepasse">Mot de passe</label>
+                            <input class="form-control" id="mot-de-passe" name="motdepasse" type="password"
+                                   placeholder="Entrez le mot de passe" required>
+                        </div>
+                    </div>
+                    <div class="row mt-3 mb-2">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-dark w-100" data-bs-dismiss="modal">Annuler</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary w-100">Ajouter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 <?php include 'elements/scripts.php'; ?>
 </html>
