@@ -78,13 +78,18 @@
                                         </thead>
                                         <tbody>
                                         <!-- Première ligne de données (exemple) -->
-                                        <?php foreach ($reservations as $reservation) { ?>
+                                        <?php foreach ($reservations as $reservation) {
+                                            $dateDebut = date_create($reservation["DATE_DEBUT"]);
+                                            $dateDebutFormatted = date_format($dateDebut, "d/m/Y H\hi");
+
+                                            $dateFin = date_create($reservation["DATE_FIN"]);
+                                            $dateFinFormatted = date_format($dateFin, "d/m/Y H\hi");
+                                            ?>
                                             <tr>
-                                                <td><input type="checkbox" name="" id="" class="ms-2 form-check-input">
-                                                </td>
+                                                <td><input type="checkbox" name="" id="" class="ms-2 form-check-input"></td>
                                                 <td><?= $reservation["IDENTIFIANT_RESERVATION"] ?></td>
-                                                <td><?= $reservation["DATE_DEBUT"] ?></td>
-                                                <td><?= $reservation["DATE_FIN"] ?></td>
+                                                <td><?= $dateDebutFormatted ?></td>
+                                                <td><?= $dateFinFormatted ?></td>
                                                 <td><?= $reservation["DESCRIPTION"] ?></td>
                                                 <td><?= $reservation["NOM_SALLE"] ?></td>
                                                 <td><?= $reservation["TYPE_ACTIVITE"] ?></td>
