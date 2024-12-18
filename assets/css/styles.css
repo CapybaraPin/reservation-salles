@@ -46,7 +46,6 @@ p {
     height: 30px;
     background: linear-gradient( var(--color-primary) 0%, #B05ADB 100%);
     border-radius: 8px;
-    color: white;
     display: flex;
     justify-content: center;
     align-items: center;

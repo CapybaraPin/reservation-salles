@@ -17,7 +17,9 @@ class ReservationsController extends Controller
     {
         // Récupération de la liste des réservations
         global $db;
-        $reservations = $db->getReservations();
+        $tabReservations = $db->getReservations();
+        $reservations = $tabReservations[0];
+        $nbReservations = $tabReservations[1];
         require __DIR__ . '/../views/reservations.php';
     }
 
