@@ -119,8 +119,8 @@ class Database
     }
 
     /**
-     * Récupère la liste des réservations.
-     * @return mixed Retourne la liste des réservations
+     * Récupère la liste des réservations
+     * @return mixed Retourne la liste des réservations et le nombre de réservations
      */
     public function getReservations()
     {
@@ -139,9 +139,9 @@ class Database
                                             JOIN activite
                                             ON activite.identifiant = reservation.idActivite
                                             JOIN individu
-                                            ON individu.identifiant = reservation.idEmploye");
+                                            ON individu.identifiant = reservation.idEmploye;");
         $req->execute();
-        return $req->fetchAll();
+        return [$req->fetchAll(), $req->rowCount()];
     }
 
 }
