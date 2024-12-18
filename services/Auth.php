@@ -13,8 +13,8 @@ use services\Utilisateur;
  */
 class Auth
 {
-    private $MESSAGE_AUTH_SUCCESS = true;
-    private $MESSAGE_AUTH_ERROR = false;
+    private $MESSAGE_AUTH_SUCCESS = "Vous êtes bien connectés.";
+    private $MESSAGE_AUTH_ERROR = "L'identifiant ou le mot de passe est incorrect.";
 
     /**
      * Connexion de l'utilisateur
