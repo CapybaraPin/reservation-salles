@@ -15,6 +15,10 @@ use PDOException;
  */
 class Database
 {
+    /**
+     * Nombre de lignes par page pour la pagination
+     */
+    const NB_LIGNES = 10;
     private $pdo;
 
     /**
@@ -103,7 +107,7 @@ class Database
 
         $req = $this->pdo->prepare("SELECT groupeOrdinateur.identifiant, nbOrdinateur, imprimante, idType, type AS DesignationType FROM groupeOrdinateur JOIN typeOrdinateur ON idType = typeOrdinateur.identifiant WHERE groupeOrdinateur.identifiant = ?");
         $req->execute(array($idOrdinateur));
-        return $req->fetchAll();;
+        return $req->fetchAll();
     }
 
     /**
@@ -115,14 +119,14 @@ class Database
 
         $req = $this->pdo->prepare("SELECT logiciel.identifiant, nom FROM ordinateurLogiciel JOIN logiciel ON ordinateurLogiciel.idLogiciel = logiciel.identifiant WHERE ordinateurLogiciel.idOrdinateur = ?");
         $req->execute(array($idOrdinateur));
-        return $req->fetchAll();;
+        return $req->fetchAll();
     }
 
     /**
      * Récupère la liste des réservations
-     * @return mixed Retourne la liste des réservations et le nombre de réservations
+     * @return mixed Retourne la liste des réservations
      */
-    public function getReservations()
+    public function getReservations($offset = 0, $limit = self::NB_LIGNES)
     {
         $req = $this->pdo->prepare("SELECT
                                             reservation.identifiant AS 'IDENTIFIANT_RESERVATION',
@@ -139,9 +143,22 @@ class Database
                                             JOIN activite
                                             ON activite.identifiant = reservation.idActivite
                                             JOIN individu
-                                            ON individu.identifiant = reservation.idEmploye;");
+                                            ON individu.identifiant = reservation.idEmploye
+                                            LIMIT :limit OFFSET :offset;");
+        $req->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $req->bindParam(':offset', $offset, PDO::PARAM_INT);
         $req->execute();
-        return [$req->fetchAll(), $req->rowCount()];
+        return $req->fetchAll();
+    }
+
+    /**
+     * Récupère le nombre total de réservations
+     * @return mixed Retourne le nombre total de réservations
+     */
+    public function getNbReservations()
+    {
+        $req = $this->pdo->query("SELECT COUNT(*) FROM reservation");
+        return $req->fetchColumn();
     }
 
     /**
