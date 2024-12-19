@@ -21,7 +21,7 @@ class EmployesController extends Controller
 
         $reservations = [];
         foreach ($employes as $employe) {
-            $hasReservation = $db->verfiUserReservation($employe['IDENTIFIANT_EMPLOYE']);
+            $hasReservation = $db->verifReservationEmploye($employe['IDENTIFIANT_EMPLOYE']);
             $reservations[$employe['IDENTIFIANT_EMPLOYE']] = $hasReservation;
         }
 
@@ -42,7 +42,7 @@ class EmployesController extends Controller
         }
 
         // Vérifier si une demande de suppression est effectuée
-        if (isset($_POST['deleteEmploye']) && isset($_POST['employeId'])) {
+        if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId'])) {
             try {
                 $suppression = $this->supprimerEmploye();
             } catch (\Exception $e) {
@@ -54,7 +54,7 @@ class EmployesController extends Controller
         $employes = $db->getEmployes();
         $reservations = [];
         foreach ($employes as $employe) {
-            $hasReservation = $db->verfiUserReservation($employe['IDENTIFIANT_EMPLOYE']);
+            $hasReservation = $db->verifReservationEmploye($employe['IDENTIFIANT_EMPLOYE']);
             $reservations[$employe['IDENTIFIANT_EMPLOYE']] = $hasReservation;
         }
         require __DIR__ . '/../views/employes.php';
@@ -101,12 +101,12 @@ class EmployesController extends Controller
     {
         global $db;
 
-        if (isset($_POST['deleteEmploye']) && isset($_POST['employeId']) && is_numeric($_POST['employeId'])) {
+        if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId']) && is_numeric($_POST['employeId'])) {
             $idEmploye = intval($_POST['employeId']); // Conversion sécurisée en entier
 
             try {
                 // Appelle la méthode pour supprimer l'employé
-                $result = $db->deleteEmploye($idEmploye);
+                $result = $db->suppressionEmploye($idEmploye);
 
                 if ($result) {
                     return "L'employé avec l'ID $idEmploye a été supprimé avec succès.";
@@ -115,7 +115,6 @@ class EmployesController extends Controller
                 }
             } catch (\Exception $e) {
                 // En cas d'exception, enregistrer l'erreur et retourner un message
-                error_log($e->getMessage());
                 throw new \Exception("Une erreur s'est produite lors de la suppression de l'employé.");
             }
         } else {

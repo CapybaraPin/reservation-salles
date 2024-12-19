@@ -96,30 +96,6 @@ class Database
     }
 
     /**
-     * Permet de récupérer la liste des oridnateur pour une salle dans la base de donnée
-     * @param $idOrdinateur
-     * @return PDOStatement, Retourne la liste des ordinateur pour une salle
-     */
-    public function getOrdinateur($idOrdinateur) {
-
-        $req = $this->pdo->prepare("SELECT groupeOrdinateur.identifiant, nbOrdinateur, imprimante, idType, type AS DesignationType FROM groupeOrdinateur JOIN typeOrdinateur ON idType = typeOrdinateur.identifiant WHERE groupeOrdinateur.identifiant = ?");
-        $req->execute(array($idOrdinateur));
-        return $req->fetchAll();
-    }
-
-    /**
-     * Permet de récupérer la liste des logiciel pour les ordinateur d'une salle dans la base de donnée
-     * @param $idOrdinateur
-     * @return PDOStatement, Retourne la liste des logiciels associés a un groupe d'ordinateur.
-     */
-    public function getLogiciel($idOrdinateur) {
-
-        $req = $this->pdo->prepare("SELECT logiciel.identifiant, nom FROM ordinateurLogiciel JOIN logiciel ON ordinateurLogiciel.idLogiciel = logiciel.identifiant WHERE ordinateurLogiciel.idOrdinateur = ?");
-        $req->execute(array($idOrdinateur));
-        return $req->fetchAll();
-    }
-
-    /**
      * Récupère la liste des réservations
      * @return mixed Retourne la liste des réservations
      */
@@ -173,24 +149,24 @@ class Database
     public function ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye)
     {
         // Insérer dans la table individu
-        $req_individu = $this->pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
-        $req_individu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
+        $reqIndividu = $this->pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
+        $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
 
         // Récupérer l'identifiant de l'individu récemment inséré
         $idIndividu = $this->pdo->lastInsertId();
 
         // Insérer dans la table utilisateur
-        $req_utilisateur = $this->pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
-        $req_utilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu]);
+        $reqUtilisateur = $this->pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
+        $reqUtilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu]);
     }
 
 
     /**
-     * Permet de récupérer un identifiant de réservation pour un utilisateur si il y en a un
-     * @param $idEmploye
+     * Permet de récupérer un identifiant de réservation pour un employé si il y en a un
+     * @param $idEmploye int l'identifiant de l'employé
      * @return bool renvoie true si il y a un resultat sinon ne renvoie rien
      */
-    public function verfiUserReservation($idEmploye)
+    public function verifReservationEmploye($idEmploye)
     {
         $req = $this->pdo->prepare("SELECT identifiant FROM reservation WHERE idEmploye = ?");
         $req->execute(array($idEmploye));
@@ -199,21 +175,22 @@ class Database
     }
 
     /**
-     * @param $idEmploye
+     * Permet de supprimer un employé de la base de données
+     * @param $idEmploye int l'identifiant de l'employé
      * @return bool true si les suppression son bien effectuer
      */
-    public function deleteEmploye($idEmploye){
+    public function suppressionEmploye($idEmploye){
         try {
 
             // Suppression de l'utilisateur`
-            $req2 = $this->pdo->prepare("DELETE FROM utilisateur WHERE individu = ?");
-            $result2 = $req2->execute([$idEmploye]);
+            $req = $this->pdo->prepare("DELETE FROM utilisateur WHERE individu = ?");
+            $utilisateurs = $req->execute([$idEmploye]);
 
             // Suppression de l'individu
-            $req = $this->pdo->prepare("DELETE FROM individu WHERE identifiant = ?");
-            $result1 = $req->execute([$idEmploye]);
+            $req1 = $this->pdo->prepare("DELETE FROM individu WHERE identifiant = ?");
+            $individus = $req1->execute([$idEmploye]);
 
-            return $result1 && $result2;
+            return $individus && $utilisateurs;
         } catch (\PDOException $e) {
             error_log($e->getMessage());
             return false;
