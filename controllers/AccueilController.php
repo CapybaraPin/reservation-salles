@@ -19,16 +19,17 @@ class AccueilController extends Controller
 
         // Récupération du nombre total de réservations
         $nbReservations = $db->getNbReservations();
+        $NB_LIGNES = Config::get('NB_LIGNES');
 
         // Récupération de la page courante
         $page = isset($_GET['page']) ? htmlspecialchars($_GET['page']) : 1;
         $page = max(intval($page), 1);
-        $pageMax = ceil($nbReservations / $db::NB_LIGNES);
+        $pageMax = ceil($nbReservations / $NB_LIGNES);
         $page = min($page, $pageMax);
 
         // Récupération des réservations
-        $reservations = $db->getReservations(($page - 1) * $db::NB_LIGNES);
-        $nbLignesPage = $db::NB_LIGNES;
+        $reservations = $db->getReservations(($page - 1) * $NB_LIGNES);
+        $nbLignesPage = $NB_LIGNES;
         require __DIR__ . '/../views/accueil.php';
     }
 
