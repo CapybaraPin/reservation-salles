@@ -41,12 +41,14 @@ class EmployesController extends Controller
             $erreur = "Erreur lors de l'ajout de l'employé : " . $e->getMessage();
         }
 
-        try {
-            $message = $this->supprimerEmploye(); // Appel de la fonction qui gère la suppression
-        } catch (\Exception $e) {
-            $erreur = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
+        // Vérifier si une demande de suppression est effectuée
+        if (isset($_POST['deleteEmploye']) && isset($_POST['employeId'])) {
+            try {
+                $suppression = $this->supprimerEmploye();
+            } catch (\Exception $e) {
+                $erreurSuppression = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
+            }
         }
-        $employes = $db->getEmployes();
 
         $this->deconnexion();
         $employes = $db->getEmployes();
