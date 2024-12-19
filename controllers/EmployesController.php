@@ -52,6 +52,11 @@ class EmployesController extends Controller
 
         $this->deconnexion();
         $employes = $db->getEmployes();
+        $reservations = [];
+        foreach ($employes as $employe) {
+            $hasReservation = $db->verfiUserReservation($employe['IDENTIFIANT_EMPLOYE']);
+            $reservations[$employe['IDENTIFIANT_EMPLOYE']] = $hasReservation;
+        }
         require __DIR__ . '/../views/employes.php';
     }
 
