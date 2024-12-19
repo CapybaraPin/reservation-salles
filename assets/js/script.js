@@ -1,60 +1,82 @@
-const navbarToggler = document.querySelector(".navbar-burger")
-const contentNavBar = document.querySelector(".collapse")
+const navbarToggler = document.querySelector(".navbar-burger");
+const contentNavBar = document.querySelector(".collapse");
 
 const toggleNav = e => {
-    navbarToggler.classList.toggle("open")
+    navbarToggler.classList.toggle("open");
     const ariaToggle = navbarToggler.getAttribute("aria-expanded") === "true" ? "false" : "true";
-    navbarToggler.setAttribute("aria-expanded", ariaToggle)
-    contentNavBar.classList.toggle("collapse")
-}
+    navbarToggler.setAttribute("aria-expanded", ariaToggle);
+    contentNavBar.classList.toggle("collapse");
+};
 
 navbarToggler.addEventListener("click", toggleNav);
-
-const myModal = document.getElementById('myModal')
-const myInput = document.getElementById('myInput')
 
 const togglePasswordButton = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("motdepasse");
 const passwordIcon = document.getElementById("passwordIcon");
 
 togglePasswordButton.addEventListener("click", () => {
-    // Vérifier le type actuel de l'input
     if (passwordInput.type === "password") {
-        passwordInput.type = "text"; // Changer le type en 'text'
-        passwordIcon.classList.remove("fa-eye"); // Icône oeil classique
-        passwordIcon.classList.add("fa-eye-slash"); // Icône oeil barré
+        passwordInput.type = "text";
+        passwordIcon.classList.remove("fa-eye");
+        passwordIcon.classList.add("fa-eye-slash");
     } else {
-        passwordInput.type = "password"; // Revenir à 'password'
-        passwordIcon.classList.remove("fa-eye-slash"); // Retirer oeil barré
-        passwordIcon.classList.add("fa-eye"); // Ajouter oeil classique
+        passwordInput.type = "password";
+        passwordIcon.classList.remove("fa-eye-slash");
+        passwordIcon.classList.add("fa-eye");
     }
 });
 
-// Lorsque le modal est ouvert
-document.addEventListener('shown.bs.modal', function (event) {
-    // Récupère le bouton qui a ouvert le modal
-    const button = event.relatedTarget;
+/*
+ * Gestion de la suppression d'un employé
+ */
+function creerModalSuppressionEmploye(){
+    const button = event.target.closest('.btn-nav[title="Supprimer"]');
 
-    // Récupère l'ID du modal à partir de l'attribut data-bs-target
-    const modalId = button.getAttribute('data-bs-target');
+    // Met à jour le hash dans l'URL
+    const employeeId = button.getAttribute('href').split('#')[1];
+    window.location.hash = `#${employeeId}`;
 
-    // Vérifie que l'ID est valide et correspond au modal ciblé
-    if (modalId && modalId.startsWith('#modal_')) {
-        // Récupère la valeur de data-reservation
-        const reservationStatus = button.getAttribute('data-reservation');
+    const reservationStatus = button.getAttribute('data-reservation'); // Vérifie la réservation
 
-        // Récupère les éléments spécifiques au modal ciblé
-        const modal = document.querySelector(modalId);
-        const modalBody = modal.querySelector('.modal-body');
-        const confirmButton = modal.querySelector('.btn-primary');
+    // Récupère le modal et ses éléments
+    const modal = document.getElementById('modal_supprimer_employe');
+    const modalBody = modal.querySelector('.modal-body');
+    const confirmButton = modal.querySelector('.btn-primary');
 
-        // Modifie le contenu et le bouton en fonction de la réservation
-        if (reservationStatus === 'true') {
-            modalBody.innerHTML = "Cet employé a des réservations. Vous ne pouvez donc pas le supprimer.";
-            confirmButton.style.display = 'none'; // Masquer le bouton "Supprimer"
-        } else {
-            modalBody.innerHTML = "Êtes-vous sûr de vouloir supprimer cet employé ?";
-            confirmButton.style.display = 'inline-block'; // Afficher le bouton "Supprimer" si nécessaire
-        }
+    // Modifie le contenu et le bouton du modal selon la réservation
+    if (reservationStatus === 'true') {
+        modalBody.innerHTML = "Cet employé ne peut pas être supprimé car il a des réservations actives.";
+        confirmButton.style.display = 'none'; // Masquer le bouton "Supprimer"
+    } else {
+        modalBody.innerHTML = "Cet employé peut être supprimé.";
+        confirmButton.style.display = 'inline-block'; // Afficher le bouton "Supprimer"
+    }
+
+    // Injecte l'ID dans le champ hidden du formulaire
+    const hiddenInput = modal.querySelector('input[name="employeId"]');
+    hiddenInput.value = employeeId;
+
+    // Ouvre le modal
+    const bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+}
+
+document.addEventListener('click', function (event) {
+    if (event.target.closest('.btn-nav[title="Supprimer"]')) {
+        event.preventDefault(); // Empêche le comportement par défaut
+
+        creerModalSuppressionEmploye();
     }
 });
+
+// Gestion du hash au chargement de la page pour ouvrir le modal correspondant
+document.addEventListener('DOMContentLoaded', () => {
+    const currentHash = window.location.hash;
+    if (currentHash) {
+        const employeeId = currentHash.substring(1); // Retire le # pour obtenir l'ID
+
+        creerModalSuppressionEmploye();
+    }
+});
+
+

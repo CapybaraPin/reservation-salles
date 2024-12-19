@@ -175,7 +175,7 @@ class Database
         $req_individu = $this->pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
         $req_individu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
 
-        $req_individu_id = $this->pdo->prepare("SELECT identifiant FROM individu ORDER BY identifiant LIMIT 1");
+        $req_individu_id = $this->pdo->prepare("SELECT identifiant FROM individu ORDER BY identifiant DESC LIMIT 1");
         $req_individu_id->execute();
 
         $idIndividu = $req_individu_id->fetch();
