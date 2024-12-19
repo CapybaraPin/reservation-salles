@@ -2,6 +2,7 @@
 
 namespace services;
 
+use services\Config;
 use PDO;
 use PDOException;
 
@@ -15,10 +16,6 @@ use PDOException;
  */
 class Database
 {
-    /**
-     * Nombre de lignes par page pour la pagination
-     */
-    const NB_LIGNES = 10;
     private $pdo;
 
     /**
@@ -126,8 +123,11 @@ class Database
      * Récupère la liste des réservations
      * @return mixed Retourne la liste des réservations
      */
-    public function getReservations($offset = 0, $limit = self::NB_LIGNES)
+    public function getReservations($offset = 0, $limit = null)
     {
+        if (is_null($limit)) {
+            $limit = Config::get('NB_LIGNES');
+        }
         $req = $this->pdo->prepare("SELECT
                                             reservation.identifiant AS 'IDENTIFIANT_RESERVATION',
                                             reservation.dateDebut AS 'DATE_DEBUT',
