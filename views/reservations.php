@@ -57,7 +57,7 @@
                         <div class="col-12">
                             <div class="border border-1 rounded rounded-4 shadow-sm">
                                 <!-- Titre du tableau -->
-                                <p class="p-3 pb-0 fw-bold">Mes réservations
+                                <p class="p-3 pb-0 fw-bold">Les réservations
                                     <button class="btn disabled badge text-primary text-wrap">
                                         <?= $nbReservations === 0 ? "Aucune réservation" : $nbReservations . " réservations"?>
                                     </button>
