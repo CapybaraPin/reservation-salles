@@ -120,59 +120,34 @@ class Database
     }
 
     /**
-     * Récupère la liste des réservations en fonction des filtres
-     * passés en paramètre exemple du contenu de $filtre :
-     * ['reservation.dateDebut' => ['2021-10-01', PDO::PARAM_STR], ETC...]
-     *
-     * @param array $filtre Filtres de recherche
+     * Récupère la liste des réservations
      * @return mixed Retourne la liste des réservations
      */
-    public function getReservations($offset = 0, $filtre = [], $limit = null)
+    public function getReservations($offset = 0, $limit = null)
     {
         if (is_null($limit)) {
             $limit = Config::get('NB_LIGNES');
         }
-
-        $sql = "SELECT
-                    reservation.identifiant AS 'IDENTIFIANT_RESERVATION',
-                    reservation.dateDebut AS 'DATE_DEBUT',
-                    reservation.dateFin AS 'DATE_FIN',
-                    reservation.description AS 'DESCRIPTION',
-                    salle.nom AS 'NOM_SALLE',
-                    activite.type AS 'TYPE_ACTIVITE',
-                    individu.prenom AS 'PRENOM_EMPLOYE',
-                    individu.nom AS 'NOM_EMPLOYE'
-                FROM reservation
-                JOIN salle 
-                ON salle.identifiant = reservation.idSalle
-                JOIN activite
-                ON activite.identifiant = reservation.idActivite
-                JOIN individu
-                ON individu.identifiant = reservation.idEmploye";
-
-        // Ajout des conditions de filtre
-        if (!empty($filtre)) {
-            $sql .= " WHERE ";
-            $conditions = [];
-            foreach ($filtre as $key => $value) {
-                if (!empty($value)) {
-                    $conditions[] = "$key = :" . str_replace('.', '_', $key);
-                }
-            }
-            $sql .= implode(' AND ', $conditions);
-        }
-
-        $sql .= " ORDER BY reservation.identifiant ASC LIMIT :limit OFFSET :offset";
-
-        $req = $this->pdo->prepare($sql);
+        $req = $this->pdo->prepare("SELECT
+                                            reservation.identifiant AS 'IDENTIFIANT_RESERVATION',
+                                            reservation.dateDebut AS 'DATE_DEBUT',
+                                            reservation.dateFin AS 'DATE_FIN',
+                                            reservation.description AS 'DESCRIPTION',
+                                            salle.nom AS 'NOM_SALLE',
+                                            activite.type AS 'TYPE_ACTIVITE',
+                                            individu.prenom AS 'PRENOM_EMPLOYE',
+                                            individu.nom AS 'NOM_EMPLOYE'
+                                            FROM reservation
+                                            JOIN salle 
+                                            ON salle.identifiant = reservation.idSalle
+                                            JOIN activite
+                                            ON activite.identifiant = reservation.idActivite
+                                            JOIN individu
+                                            ON individu.identifiant = reservation.idEmploye
+                                            ORDER BY reservation.identifiant ASC
+                                            LIMIT :limit OFFSET :offset;");
         $req->bindParam(':limit', $limit, PDO::PARAM_INT);
         $req->bindParam(':offset', $offset, PDO::PARAM_INT);
-        foreach ($filtre as $key => $value) {
-            if (!empty($value)) {
-                $req->bindParam(":" . str_replace('.', '_', $key), $value[0], $value[1]);
-            }
-        }
-
         $req->execute();
         return $req->fetchAll();
     }
@@ -197,25 +172,24 @@ class Database
      */
     public function ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye)
     {
-        $req_individu = $this->pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
-        $req_individu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
+        // Insérer dans la table individu
+        $reqIndividu = $this->pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
+        $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
 
-        $req_individu_id = $this->pdo->prepare("SELECT identifiant FROM individu ORDER BY identifiant DESC LIMIT 1");
-        $req_individu_id->execute();
+        // Récupérer l'identifiant de l'individu récemment inséré
+        $idIndividu = $this->pdo->lastInsertId();
 
-        $idIndividu = $req_individu_id->fetch();
-
-        $req_utilisateur = $this->pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
-        $req_utilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu['identifiant']]);
-
+        // Insérer dans la table utilisateur
+        $reqUtilisateur = $this->pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
+        $reqUtilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu]);
     }
 
     /**
-     * Permet de récupérer un identifiant de réservation pour un utilisateur si il y en a un
-     * @param $idEmploye
+     * Permet de récupérer un identifiant de réservation pour un employé si il y en a un
+     * @param $idEmploye int l'identifiant de l'employé
      * @return bool renvoie true si il y a un resultat sinon ne renvoie rien
      */
-    public function verfiUserReservation($idEmploye)
+    public function verifReservationEmploye($idEmploye)
     {
         $req = $this->pdo->prepare("SELECT identifiant FROM reservation WHERE idEmploye = ?");
         $req->execute(array($idEmploye));
@@ -224,21 +198,22 @@ class Database
     }
 
     /**
-     * @param $idEmploye
+     * Permet de supprimer un employé de la base de données
+     * @param $idEmploye int l'identifiant de l'employé
      * @return bool true si les suppression son bien effectuer
      */
-    public function deleteEmploye($idEmploye){
+    public function suppressionEmploye($idEmploye){
         try {
 
             // Suppression de l'utilisateur`
-            $req2 = $this->pdo->prepare("DELETE FROM utilisateur WHERE individu = ?");
-            $result2 = $req2->execute([$idEmploye]);
+            $req = $this->pdo->prepare("DELETE FROM utilisateur WHERE individu = ?");
+            $utilisateurs = $req->execute([$idEmploye]);
 
             // Suppression de l'individu
-            $req = $this->pdo->prepare("DELETE FROM individu WHERE identifiant = ?");
-            $result1 = $req->execute([$idEmploye]);
+            $req1 = $this->pdo->prepare("DELETE FROM individu WHERE identifiant = ?");
+            $individus = $req1->execute([$idEmploye]);
 
-            return $result1 && $result2;
+            return $individus && $utilisateurs;
         } catch (\PDOException $e) {
             error_log($e->getMessage());
             return false;

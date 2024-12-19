@@ -269,7 +269,7 @@
                     <input type="hidden" name="employeId" value=""> <!-- Ce que va récupérer PHP pour la suppression -->
                     <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Annuler</button>
                     <!-- Ajout de l'attribut data-reservation pour chaque employé -->
-                    <button type="submit" class="btn btn-primary" name="deleteEmploye"
+                    <button type="submit" class="btn btn-primary" name="supprimerEmploye"
                             data-reservation="<?= isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]]) && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false' ?>">
                         Supprimer
                     </button>
