@@ -19,6 +19,12 @@ class EmployesController extends Controller
         global $db;
         $employes = $db->getEmployes();
 
+        $reservations = [];
+        foreach ($employes as $employe) {
+            $hasReservation = $db->verfiUserReservation($employe['IDENTIFIANT_EMPLOYE']);
+            $reservations[$employe['IDENTIFIANT_EMPLOYE']] = $hasReservation;
+        }
+
         require __DIR__ . '/../views/employes.php';
     }
 
@@ -34,6 +40,16 @@ class EmployesController extends Controller
         } catch (\Exception $e) {
             $erreur = "Erreur lors de l'ajout de l'employé : " . $e->getMessage();
         }
+
+        // Vérifie si une demande de suppression est envoyée
+        if (isset($_POST['deleteEmploye']) && isset($_POST['employeId']) && is_numeric($_POST['employeId'])) {
+            $idEmploye = intval($_POST['employeId']);
+
+            // Appelle la méthode pour supprimer l'employé
+            $result = $db->deleteEmploye($idEmploye);
+
+        }
+        $employes = $db->getEmployes();
 
         $this->deconnexion();
         $employes = $db->getEmployes();

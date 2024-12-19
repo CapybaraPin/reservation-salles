@@ -105,11 +105,37 @@
                                                     <button class="btn" title="Modifier">
                                                         <i class="fa-solid fa-pen"></i>
                                                     </button>
-                                                    <button class="btn btn-nav" title="Supprimer">
+                                                    <button class="btn btn-nav" title="Supprimer" data-bs-toggle="modal" data-bs-target="#modal_<?= $employe["IDENTIFIANT_EMPLOYE"] ?>" data-reservation="<?= isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]]) && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false' ?>">
                                                         <i class="fa-solid fa-trash-can"></i>
                                                     </button>
                                                 </td>
                                             </tr>
+
+
+                                            <form method="POST" id="form_<?= $employe['IDENTIFIANT_EMPLOYE'] ?>">
+                                                <div class="modal fade" id="modal_<?= $employe["IDENTIFIANT_EMPLOYE"] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Suppression employé : <?= $employe["NOM_EMPLOYE"] ?></h1>
+                                                            </div>
+                                                            <div class="modal-body" id="modal-body-<?= $employe["IDENTIFIANT_EMPLOYE"] ?>">
+                                                                <!-- Le message sera injecté ici par JS -->
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <input type="hidden" name="employeId" value="<?= $employe["IDENTIFIANT_EMPLOYE"] ?>">
+                                                                <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Annuler</button>
+                                                                <!-- Ajout de l'attribut data-reservation pour chaque employé -->
+                                                                <button type="submit" class="btn btn-primary" name="deleteEmploye"
+                                                                        data-reservation="<?= $reservations[$employe['IDENTIFIANT_EMPLOYE']] ? 'true' : 'false' ?>"
+                                                                        data-employe-id="<?= $employe['IDENTIFIANT_EMPLOYE'] ?>">
+                                                                    Supprimer
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
                                         <?php } ?>
                                         </tbody>
                                     </table>

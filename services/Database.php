@@ -184,4 +184,39 @@ class Database
 
     }
 
+    /**
+     * Permet de récupérer un identifiant de réservation pour un utilisateur si il y en a un
+     * @param $idEmploye
+     * @return bool renvoie true si il y a un resultat sinon ne renvoie rien
+     */
+    public function verfiUserReservation($idEmploye)
+    {
+        $req = $this->pdo->prepare("SELECT identifiant FROM reservation WHERE idEmploye = ?");
+        $req->execute(array($idEmploye));
+
+        return $req->rowCount() > 0;
+    }
+
+    /**
+     * @param $idEmploye
+     * @return bool true si les suppression son bien effectuer
+     */
+    public function deleteEmploye($idEmploye){
+        try {
+
+            // Suppression de l'utilisateur`
+            $req2 = $this->pdo->prepare("DELETE FROM utilisateur WHERE individu = ?");
+            $result2 = $req2->execute([$idEmploye]);
+
+            // Suppression de l'individu
+            $req = $this->pdo->prepare("DELETE FROM individu WHERE identifiant = ?");
+            $result1 = $req->execute([$idEmploye]);
+
+            return $result1 && $result2;
+        } catch (\PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
 }
