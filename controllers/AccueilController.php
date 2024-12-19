@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use PDO;
 use services\Config;
 
 /**
@@ -28,7 +29,8 @@ class AccueilController extends Controller
         $page = min($page, $pageMax);
 
         // Récupération des réservations
-        $reservations = $db->getReservations(($page - 1) * $NB_LIGNES);
+        $filre = ["reservation.idEmploye" => [$_SESSION['userIndividuId'], PDO::PARAM_INT]];
+        $reservations = $db->getReservations(($page - 1) * $NB_LIGNES, $filre);
         $nbLignesPage = $NB_LIGNES;
         require __DIR__ . '/../views/accueil.php';
     }
