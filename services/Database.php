@@ -144,6 +144,7 @@ class Database
                                             ON activite.identifiant = reservation.idActivite
                                             JOIN individu
                                             ON individu.identifiant = reservation.idEmploye
+                                            ORDER BY reservation.identifiant ASC
                                             LIMIT :limit OFFSET :offset;");
         $req->bindParam(':limit', $limit, PDO::PARAM_INT);
         $req->bindParam(':offset', $offset, PDO::PARAM_INT);
