@@ -41,13 +41,10 @@ class EmployesController extends Controller
             $erreur = "Erreur lors de l'ajout de l'employé : " . $e->getMessage();
         }
 
-        // Vérifie si une demande de suppression est envoyée
-        if (isset($_POST['deleteEmploye']) && isset($_POST['employeId']) && is_numeric($_POST['employeId'])) {
-            $idEmploye = intval($_POST['employeId']);
-
-            // Appelle la méthode pour supprimer l'employé
-            $result = $db->deleteEmploye($idEmploye);
-
+        try {
+            $message = $this->supprimerEmploye(); // Appel de la fonction qui gère la suppression
+        } catch (\Exception $e) {
+            $erreur = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
         }
         $employes = $db->getEmployes();
 
@@ -90,6 +87,32 @@ class EmployesController extends Controller
             }
 
             return "Vous avez bien ajouté un employé! (" . $nomEmploye . " " . $prenomEmploye . ")";
+        }
+    }
+
+    public function supprimerEmploye()
+    {
+        global $db;
+
+        if (isset($_POST['deleteEmploye']) && isset($_POST['employeId']) && is_numeric($_POST['employeId'])) {
+            $idEmploye = intval($_POST['employeId']); // Conversion sécurisée en entier
+
+            try {
+                // Appelle la méthode pour supprimer l'employé
+                $result = $db->deleteEmploye($idEmploye);
+
+                if ($result) {
+                    return "L'employé avec l'ID $idEmploye a été supprimé avec succès.";
+                } else {
+                    throw new \Exception("La suppression de l'employé a échoué. Veuillez réessayer.");
+                }
+            } catch (\Exception $e) {
+                // En cas d'exception, enregistrer l'erreur et retourner un message
+                error_log($e->getMessage());
+                throw new \Exception("Une erreur s'est produite lors de la suppression de l'employé.");
+            }
+        } else {
+            throw new \Exception("Données invalides. Veuillez vérifier les informations soumises.");
         }
     }
 }

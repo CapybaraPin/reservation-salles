@@ -35,19 +35,26 @@ document.addEventListener('shown.bs.modal', function (event) {
     // Récupère le bouton qui a ouvert le modal
     const button = event.relatedTarget;
 
-    // Récupère la valeur de data-reservation
-    const reservationStatus = button.getAttribute('data-reservation');
+    // Récupère l'ID du modal à partir de l'attribut data-bs-target
     const modalId = button.getAttribute('data-bs-target');
-    const confirmButton = document.querySelector(modalId + ' .btn-primary'); // Sélecteur pour le bouton de confirmation
 
-    // Sélectionne le corps du modal
-    const modalBody = document.querySelector(modalId + ' .modal-body');
+    // Vérifie que l'ID est valide et correspond au modal ciblé
+    if (modalId && modalId.startsWith('#modal_')) {
+        // Récupère la valeur de data-reservation
+        const reservationStatus = button.getAttribute('data-reservation');
 
-    // Modifie le contenu du modal en fonction de la valeur de reservationStatus
-    if (reservationStatus === 'true') {
-        modalBody.innerHTML = "Cet employé a des réservations. Voulez-vous vraiment le supprimer ?";
-        confirmButton.style.display = 'none';
-    } else {
-        modalBody.innerHTML = "Êtes-vous sûr de vouloir supprimer cet employé ?";
+        // Récupère les éléments spécifiques au modal ciblé
+        const modal = document.querySelector(modalId);
+        const modalBody = modal.querySelector('.modal-body');
+        const confirmButton = modal.querySelector('.btn-primary');
+
+        // Modifie le contenu et le bouton en fonction de la réservation
+        if (reservationStatus === 'true') {
+            modalBody.innerHTML = "Cet employé a des réservations. Vous ne pouvez donc pas le supprimer.";
+            confirmButton.style.display = 'none'; // Masquer le bouton "Supprimer"
+        } else {
+            modalBody.innerHTML = "Êtes-vous sûr de vouloir supprimer cet employé ?";
+            confirmButton.style.display = 'inline-block'; // Afficher le bouton "Supprimer" si nécessaire
+        }
     }
 });
