@@ -172,18 +172,18 @@ class Database
      */
     public function ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye)
     {
+        // Insérer dans la table individu
         $req_individu = $this->pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
         $req_individu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
 
-        $req_individu_id = $this->pdo->prepare("SELECT identifiant FROM individu ORDER BY identifiant DESC LIMIT 1");
-        $req_individu_id->execute();
+        // Récupérer l'identifiant de l'individu récemment inséré
+        $idIndividu = $this->pdo->lastInsertId();
 
-        $idIndividu = $req_individu_id->fetch();
-
+        // Insérer dans la table utilisateur
         $req_utilisateur = $this->pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
-        $req_utilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu['identifiant']]);
-
+        $req_utilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu]);
     }
+
 
     /**
      * Permet de récupérer un identifiant de réservation pour un utilisateur si il y en a un
