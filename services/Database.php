@@ -180,9 +180,19 @@ class Database
      * Récupère le nombre total de réservations
      * @return mixed Retourne le nombre total de réservations
      */
-    public function getNbReservations()
+    public function getNbReservations($idEmploye = null)
     {
-        $req = $this->pdo->query("SELECT COUNT(*) FROM reservation");
+        $sql = "SELECT COUNT(*) FROM reservation";
+        if (!is_null($idEmploye)) {
+            $sql .= " WHERE idEmploye = :idEmploye";
+        }
+
+        $req = $this->pdo->prepare($sql);
+        if (!is_null($idEmploye)) {
+            $req->bindParam(':idEmploye', $idEmploye, PDO::PARAM_INT);
+        }
+
+        $req->execute();
         return $req->fetchColumn();
     }
 

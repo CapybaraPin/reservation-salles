@@ -19,7 +19,7 @@ class AccueilController extends Controller
         global $db;
 
         // Récupération du nombre total de réservations
-        $nbReservations = $db->getNbReservations();
+        $nbReservations = $db->getNbReservations($_SESSION['userIndividuId']);
         $NB_LIGNES = Config::get('NB_LIGNES');
 
         // Récupération de la page courante
