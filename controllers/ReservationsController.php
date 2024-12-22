@@ -17,19 +17,43 @@ class ReservationsController extends Controller
     {
         global $db;
 
-        // Récupération du nombre total de réservations
+        $titre = 'Réservations';
+        $colonnes = [
+            "IDENTIFIANT_RESERVATION" => 'Identifiant',
+            "DATE_DEBUT" => 'Date de début',
+            "DATE_FIN" => 'Date de fin',
+            "DESCRIPTION" => 'Description',
+            "NOM_SALLE" => 'Salle',
+            "TYPE_ACTIVITE" => 'Activité',
+            "EMPLOYE" => 'Employé',
+        ];
+
+        list($page, $pageMax) = $this->getPagination();
+        $nbLignesPage = Config::get('NB_LIGNES');
+        $reservations = $db->getReservations(($page - 1) * $nbLignesPage);
         $nbReservations = $db->getNbReservations();
-        $NB_LIGNES = Config::get('NB_LIGNES');
 
-        // Récupération de la page courante
-        $page = isset($_GET['page']) ? htmlspecialchars($_GET['page']) : 1;
-        $page = max(intval($page), 1);
-        $pageMax = ceil($nbReservations / $NB_LIGNES);
-        $page = min($page, $pageMax);
+        // Création des actions pour chaque réservation
+        // et ajout des informations demandées par les colonnes
+        $actions = [];
+        foreach ($reservations as &$reservation) {
+            $reservation['ID'] = $reservation['IDENTIFIANT_RESERVATION'];
+            $reservation['EMPLOYE'] = $reservation['PRENOM_EMPLOYE'] . ' ' . $reservation['NOM_EMPLOYE'];
+            $dateDebut = date_create($reservation["DATE_DEBUT"]);
+            $dateFin = date_create($reservation["DATE_FIN"]);
+            $reservation["DATE_FIN"] = date_format($dateFin, "d/m/Y H\hi");
+            $reservation["DATE_DEBUT"] = date_format($dateDebut, "d/m/Y H\hi");
+            $actions[$reservation['IDENTIFIANT_RESERVATION']] = [
+                'info' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'], 'icone' => 'fa-solid fa-circle-info'],
+            ];
 
-        // Récupération des réservations
-        $reservations = $db->getReservations(($page - 1) * $NB_LIGNES);
-        $nbLignesPage = $NB_LIGNES;
+            if ($_SESSION['userIndividuId'] == $reservation['ID_EMPLOYE']) {
+                $actions[$reservation['IDENTIFIANT_RESERVATION']] += [
+                    'modifier' => ['attributs' => ['class' => 'btn', 'title' => 'Modifier'], 'icone' => 'fa-solid fa-pen'],
+                    'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer'], 'icone' => 'fa-solid fa-trash-can'],
+                ];
+            }
+        }
 
         require __DIR__ . '/../views/reservations.php';
     }

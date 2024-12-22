@@ -140,7 +140,8 @@ class Database
                     salle.nom AS 'NOM_SALLE',
                     activite.type AS 'TYPE_ACTIVITE',
                     individu.prenom AS 'PRENOM_EMPLOYE',
-                    individu.nom AS 'NOM_EMPLOYE'
+                    individu.nom AS 'NOM_EMPLOYE',
+                    individu.identifiant AS 'ID_EMPLOYE'
                 FROM reservation
                 JOIN salle 
                 ON salle.identifiant = reservation.idSalle
