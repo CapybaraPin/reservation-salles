@@ -1,3 +1,6 @@
+<?php
+require_once 'utils/tableau.php';
+?>
 <!doctype html>
 <html lang="fr">
 <head>
@@ -24,12 +27,6 @@
                             <h2>Gestion des activités</h2>
                             <p>Créer et gérer vos activités depuis le tableau ci-dessous.</p>
                         </div>
-                        <!-- Bouton pour ajouter une Activité -->
-                        <div class="col-12 col-lg-2 text-lg-end">
-                            <button class="btn btn-primary">
-                                <i class="fa-solid fa-plus"></i> Ajouter une Activité
-                            </button>
-                        </div>
                     </div>
 
                     <!-- Section filtres et recherche -->
@@ -53,82 +50,9 @@
                     </div>
 
                     <!-- Tableau des Activités -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="border border-1 rounded rounded-4 shadow-sm">
-                                <!-- Titre du tableau -->
-                                <p class="p-3 pb-0 fw-bold">Les Activités
-                                    <button class="btn disabled badge text-primary text-wrap">70 Activités</button>
-                                </p>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead class="table-light">
-                                        <!-- En-tête du tableau -->
-                                        <tr>
-                                            <th><input type="checkbox" name="" id="" class="ms-2 form-check-input"></th>
-                                            <th>Identifiant</th>
-                                            <th>Type</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <!-- Première ligne de données (exemple) -->
-                                        <?php foreach ($activites as $activite) { ?>
-                                            <tr>
-                                                <td><input type="checkbox" name="" id="" class="ms-2 form-check-input"></td>
-                                                <td><?= $activite["IDENTIFIANT_ACTIVITE"] ?></td>
-                                                <td><?= $activite["TYPE_ACTIVITE"] ?></td>
-                                            </tr>
-                                        <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <!-- Pagination -->
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <!-- Boutons de navigation -->
-                                        <div class="col-3 d-lg-none d-block">
-                                            <button class="btn btn-outline-dark d-lg-none">
-                                                <i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                        </div>
-                                        <div class="col-3 d-lg-block d-none">
-                                            <button class="btn btn-outline-dark">
-                                                <i class="fa-solid fa-arrow-left"></i> Précédent
-                                            </button>
-                                        </div>
-                                        <div class="col-6 d-flex justify-content-center">
-                                            <nav class="text-center">
-                                                <ul class="pagination-page">
-                                                    <!-- Liens de pagination -->
-                                                    <li class="pagination-item active"><a class="page-link"
-                                                                                          href="#">1</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">2</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">3</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">...</a>
-                                                    </li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">8</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">9</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">10</a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>
-                                        <div class="col-3 text-end d-lg-block d-none">
-                                            <button class="btn btn-outline-dark">Suivant
-                                                <i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                        <div class="col-3 text-end d-lg-none d-block">
-                                            <button class="btn btn-outline-dark d-lg-none">
-                                                <i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- Fin du tableau -->
-                    </div> <!-- Fin de la ligne principale -->
+                    <?php
+                        echo genererTableau($activites, $colonnes, $titre, $nbActivites);
+                    ?>
                 </div>
             </div>
         </div>

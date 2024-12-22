@@ -58,21 +58,47 @@ class Database
      * Récupère la liste des employés.
      * @return mixed Retourne la liste des employés
      */
-    public function getEmployes()
+    public function getEmployes($offset = 0, $filtre = [], $limit = null)
     {
-        $req = $this->pdo->prepare("SELECT 
-                                           DISTINCT(i.identifiant) AS 'IDENTIFIANT_EMPLOYE', 
-                                           i.nom AS 'NOM_EMPLOYE', 
-                                           i.prenom AS 'PRENOM_EMPLOYE', 
-                                           i.telephone AS 'TELEPHONE_EMPLOYE' 
-                                    FROM individu i
-                                    JOIN utilisateur u
-                                    ON u.role = 0;");
+        if (is_null($limit)) {
+            $limit = Config::get('NB_LIGNES');
+        }
+
+        $sql = "SELECT 
+                    i.identifiant AS 'IDENTIFIANT_EMPLOYE', 
+                    i.nom AS 'NOM_EMPLOYE', 
+                    i.prenom AS 'PRENOM_EMPLOYE', 
+                    i.telephone AS 'TELEPHONE_EMPLOYE' 
+                FROM individu i";
+
+        // Ajout des conditions de filtre
+        // TODO : function filtre à écrire
+
+        $sql .= " ORDER BY i.identifiant ASC LIMIT :limit OFFSET :offset";
+
+        $req = $this->pdo->prepare($sql);
+
+        $req->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $req->bindParam(':offset', $offset, PDO::PARAM_INT);
 
         $req->execute();
         return $req->fetchAll();
     }
 
+    /**
+     * @return mixed Retourne le nombre total d'employés
+     */
+    public function getNbEmployes() {
+        $req = $this->pdo->prepare("SELECT COUNT(*) FROM individu");
+        $req->execute();
+        return $req->fetchColumn();
+    }
+
+    /**
+     * Permet de récupérer la liste des activités dans la base de données.
+     *
+     * @return PDOStatement, Retourne la liste des activités obtenue
+     */
     public function getActivites()
     {
         $req = $this->pdo->prepare("SELECT 
@@ -84,20 +110,56 @@ class Database
     }
 
     /**
-     * Permet de récuperer la listes des salles dans la base de données.
-     *
-     * @return PDOStatement, Retourne la liste des salles obtenue
+     * Permet de récupérer le nombre total d'activités
+     * @return mixed Retourne le nombre total d'activités
      */
-    public function getSalles() {
+    public function getNbActivites()
+    {
+        $req = $this->pdo->prepare("SELECT COUNT(*) FROM activite");
+        $req->execute();
+        return $req->fetchColumn();
+    }
 
-        $req = $this->pdo->query("SELECT identifiant, nom, capacite, videoProjecteur, ecranXXL, idOrdinateur FROM salle");
+    /**
+     * Permet de récuperer la liste des salles dans la base de données.
+     *
+     * @return mixed, Retourne la liste des salles obtenue
+     */
+    public function getSalles($offset = 0, $filtre = [], $limit = null) {
+        if (is_null($limit)) {
+            $limit = Config::get('NB_LIGNES');
+        }
+
+        $sql = "SELECT identifiant AS 'ID_SALLE', nom AS 'NOM_SALLE', capacite AS 'CAPACITE' , videoProjecteur AS 'VIDEO_PROJECTEUR', ecranXXL AS 'ECRAN_XXL', idOrdinateur AS 'ID_ORDINATEUR' FROM salle";
+
+        // Ajout des conditions de filtre
+        // TODO : function filtre à écrire
+
+        $sql .= " ORDER BY identifiant ASC LIMIT :limit OFFSET :offset";
+
+        $req = $this->pdo->prepare($sql);
+        $req->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $req->bindParam(':offset', $offset, PDO::PARAM_INT);
+
+        $req->execute();
+
         return $req->fetchAll();
+    }
+
+    /**
+     * Permet de récupérer le nombre total de salles
+     * @return mixed Retourne le nombre total de salles
+     */
+    public function getNbSalles() {
+        $req = $this->pdo->prepare("SELECT COUNT(*) FROM salle");
+        $req->execute();
+        return $req->fetchColumn();
     }
 
     /**
      * Permet de récupérer la liste des oridnateur pour une salle dans la base de donnée
      * @param $idOrdinateur
-     * @return PDOStatement, Retourne la liste des ordinateur pour une salle
+     * @return PDOStatement, Retourne la liste des ordinateurs pour une salle
      */
     public function getOrdinateur($idOrdinateur) {
 
@@ -107,9 +169,9 @@ class Database
     }
 
     /**
-     * Permet de récupérer la liste des logiciel pour les ordinateur d'une salle dans la base de donnée
+     * Permet de récupérer la liste des logiciels pour les ordinateurs d'une salle dans la base de donnée
      * @param $idOrdinateur
-     * @return PDOStatement, Retourne la liste des logiciels associés a un groupe d'ordinateur.
+     * @return PDOStatement, Retourne la liste des logiciels associés à un groupe d'ordinateur.
      */
     public function getLogiciel($idOrdinateur) {
 

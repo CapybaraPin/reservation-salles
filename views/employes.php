@@ -1,3 +1,6 @@
+<?php
+require_once 'utils/tableau.php';
+?>
 <!doctype html>
 <html lang="fr">
 <head>
@@ -32,7 +35,6 @@
                             </button>
                         </div>
                     </div>
-
                     <div class="row">
                         <?php if (isset($erreur)) { ?>
                             <div class="alert alert-danger mt-3" role="alert">
@@ -79,101 +81,9 @@
                     </div>
 
                     <!-- Tableau des employés -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="border border-1 rounded rounded-4 shadow-sm">
-                                <!-- Titre du tableau -->
-                                <p class="p-3 pb-0 fw-bold">Les employés
-                                    <button class="btn disabled badge text-primary text-wrap">20 employés</button>
-                                </p>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead class="table-light">
-                                        <!-- En-tête du tableau -->
-                                        <tr>
-                                            <th><input type="checkbox" name="" id="" class="ms-2 form-check-input"></th>
-                                            <th>Identifiant</th>
-                                            <th>Nom</th>
-                                            <th>Prénom</th>
-                                            <th>Numéro de téléphone</th>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <!-- Première ligne de données (exemple) -->
-                                        <?php foreach ($employes as $employe) { ?>
-                                            <tr>
-                                                <td><input type="checkbox" name="" id="" class="ms-2 form-check-input">
-                                                </td>
-                                                <td><?= $employe["IDENTIFIANT_EMPLOYE"] ?></td>
-                                                <td><?= $employe["NOM_EMPLOYE"] ?></td>
-                                                <td><?= $employe["PRENOM_EMPLOYE"] ?></td>
-                                                <td><?= $employe["TELEPHONE_EMPLOYE"] ?></td>
-                                                <!-- Boutons d'action -->
-                                                <td>
-                                                    <button class="btn btn-nav" title="Plus d'informations">
-                                                        <i class="fa-solid fa-circle-info"></i>
-                                                    </button>
-                                                    <button class="btn" title="Modifier">
-                                                        <i class="fa-solid fa-pen"></i>
-                                                    </button>
-                                                    <a href="#<?= $employe["IDENTIFIANT_EMPLOYE"] ?>" class="btn btn-nav" title="Supprimer"
-                                                       data-reservation="<?= isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]]) && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false' ?>">
-                                                        <i class="fa-solid fa-trash-can"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <!-- Pagination -->
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <!-- Boutons de navigation -->
-                                        <div class="col-3 d-lg-none d-block">
-                                            <button class="btn btn-outline-dark d-lg-none">
-                                                <i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                        </div>
-                                        <div class="col-3 d-lg-block d-none">
-                                            <button class="btn btn-outline-dark">
-                                                <i class="fa-solid fa-arrow-left"></i> Précédent
-                                            </button>
-                                        </div>
-                                        <div class="col-6 d-flex justify-content-center">
-                                            <nav class="text-center">
-                                                <ul class="pagination-page">
-                                                    <!-- Liens de pagination -->
-                                                    <li class="pagination-item active"><a class="page-link"
-                                                                                          href="#">1</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">2</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">3</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">...</a>
-                                                    </li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">8</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">9</a></li>
-                                                    <li class="pagination-item"><a class="page-link" href="#">10</a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>
-                                        <div class="col-3 text-end d-lg-block d-none">
-                                            <button class="btn btn-outline-dark">Suivant
-                                                <i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                        <div class="col-3 text-end d-lg-none d-block">
-                                            <button class="btn btn-outline-dark d-lg-none">
-                                                <i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- Fin du tableau -->
-                    </div> <!-- Fin de la ligne principale -->
+                    <?php
+                    echo genererTableau($employes, $colonnes, $titre, $nbEmployes, $actions, $page, $pageMax);
+                    ?>
                 </div>
             </div>
         </div>

@@ -15,9 +15,49 @@ class SallesController extends Controller
      */
     public function get()
     {
-
         global $db;
-        $salles = $db->getSalles();
+
+        $titre = 'Salles';
+        $colonnes = [
+            "ID_SALLE" => 'Identifiant',
+            "NOM_SALLE" => 'Nom',
+            "CAPACITE" => 'Capacité',
+            "VIDEO_PROJECTEUR" => 'Vidéo Projecteur',
+            "ECRAN_XXL" => 'Ecran XXL',
+        ];
+
+        list ($page, $pageMax) = $this->getPagination();
+        $nbLignesPage = Config::get('NB_LIGNES');
+        $salles = $db->getSalles(($page - 1) * $nbLignesPage);
+        $nbSalles = $db->getNbSalles();
+
+        // Création des actions pour chaque salle
+        // et ajout des informations demandées par les colonnes
+        $actions = [];
+        foreach ($salles as &$salle) {
+            $salle['ID'] = $salle['ID_SALLE'];
+
+            $salle['VIDEO_PROJECTEUR'] = $salle['VIDEO_PROJECTEUR'] == "1" ? 'Oui' : 'Non';
+            $salle['ECRAN_XXL'] = $salle['ECRAN_XXL'] == "1" ? 'Oui' : 'Non';
+
+            if ($salle['ID_ORDINATEUR'] != 0) {
+                $actions[$salle['ID_SALLE']]['info'] = [
+                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
+                    'icone' => 'fa-solid fa-circle-info'
+                ];
+            }
+
+            $actions[$salle['ID_SALLE']]['modifier'] = [
+                'attributs' => ['class' => 'btn', 'title' => 'Modifier'],
+                'icone' => 'fa-solid fa-pen'
+            ];
+
+            $actions[$salle['ID_SALLE']]['supprimer'] = [
+                'attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer'],
+                'icone' => 'fa-solid fa-trash-can'
+            ];
+
+        }
 
         require __DIR__ . '/../views/salles.php';
     }

@@ -11,19 +11,87 @@ use services\Config;
 class EmployesController extends Controller
 {
     /**
+     * Variables pour les messages d'erreur d'ajout
+     */
+    private $erreur;
+
+    /**
+     * Variables pour les messages d'erreur de suppression
+     */
+    private $erreurSuppression;
+
+    /**
+     * Variables pour les messages de succès d'ajout
+     */
+    private $success;
+
+    /**
+     * Variables pour les messages de succès de suppression
+     */
+    private $suppression;
+
+
+    /**
      * Fonction pour gérer les requêtes GET
      */
     public function get()
     {
         // Récupération de la liste des employés
         global $db;
-        $employes = $db->getEmployes();
 
+        $titre = 'Employés';
+        $colonnes = [
+            "IDENTIFIANT_EMPLOYE" => 'Identifiant',
+            "NOM_EMPLOYE" => 'Nom',
+            "PRENOM_EMPLOYE" => 'Prénom',
+            "TELEPHONE" => 'Téléphone',
+            "IDENTIFIANT" => 'Identifiant',
+        ];
+
+        list ($page, $pageMax) = $this->getPagination();
+        $nbLignesPage = Config::get('NB_LIGNES');
+        $employes = $db->getEmployes(($page - 1) * $nbLignesPage);
+        $nbEmployes = $db->getNbEmployes();
+
+        // ajout des employés ayant une réservation
         $reservations = [];
         foreach ($employes as $employe) {
             $hasReservation = $db->verifReservationEmploye($employe['IDENTIFIANT_EMPLOYE']);
             $reservations[$employe['IDENTIFIANT_EMPLOYE']] = $hasReservation;
         }
+
+        // Création des actions pour chaque employé
+        // et ajout des informations demandées par les colonnes
+        $actions = [];
+        foreach ($employes as &$employe) {
+            $employe['ID'] = $employe['IDENTIFIANT_EMPLOYE'];
+
+            $actions[$employe['IDENTIFIANT_EMPLOYE']]['info'] = [
+                'attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
+                'icone' => 'fa-solid fa-circle-info'
+            ];
+
+            if ($_SESSION['userRole'] == '1') {
+                $actions[$employe['IDENTIFIANT_EMPLOYE']]['modifier'] = [
+                    'attributs' => ['class' => 'btn', 'title' => 'Modifier'],
+                    'icone' => 'fa-solid fa-pen'
+                ];
+
+                $actions[$employe['IDENTIFIANT_EMPLOYE']]['supprimer'] = [
+                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer',
+                                    'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
+                                                          && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
+                                    'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']
+                                    ],
+                    'icone' => 'fa-solid fa-trash-can'
+                ];
+            }
+        }
+
+        $erreur = $this->erreur;
+        $erreurSuppression = $this->erreurSuppression;
+        $success = $this->success;
+        $suppression = $this->suppression;
 
         require __DIR__ . '/../views/employes.php';
     }
@@ -36,28 +104,23 @@ class EmployesController extends Controller
         global $db;
 
         try {
-            $success = $this->ajouterEmploye();
+            $this->success = $this->ajouterEmploye();
         } catch (\Exception $e) {
-            $erreur = "Erreur lors de l'ajout de l'employé : " . $e->getMessage();
+            $this->erreur = "Erreur lors de l'ajout de l'employé : " . $e->getMessage();
         }
 
         // Vérifier si une demande de suppression est effectuée
         if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId'])) {
             try {
-                $suppression = $this->supprimerEmploye();
+                $this->suppression = $this->supprimerEmploye();
             } catch (\Exception $e) {
-                $erreurSuppression = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
+                $this->erreurSuppression = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
             }
         }
 
         $this->deconnexion();
-        $employes = $db->getEmployes();
-        $reservations = [];
-        foreach ($employes as $employe) {
-            $hasReservation = $db->verifReservationEmploye($employe['IDENTIFIANT_EMPLOYE']);
-            $reservations[$employe['IDENTIFIANT_EMPLOYE']] = $hasReservation;
-        }
-        require __DIR__ . '/../views/employes.php';
+
+        $this->get();
     }
 
     /**
