@@ -44,9 +44,8 @@ class EmployesController extends Controller
             "IDENTIFIANT_EMPLOYE" => 'Identifiant',
             "NOM_EMPLOYE" => 'Nom',
             "PRENOM_EMPLOYE" => 'Prénom',
-            "TELEPHONE" => 'Téléphone',
-            "IDENTIFIANT" => 'Identifiant',
-        ];
+            "TELEPHONE_EMPLOYE" => 'Téléphone',
+            ];
 
         list ($page, $pageMax) = $this->getPagination();
         $nbLignesPage = Config::get('NB_LIGNES');
