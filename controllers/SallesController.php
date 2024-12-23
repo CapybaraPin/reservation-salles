@@ -26,10 +26,10 @@ class SallesController extends Controller
             "ECRAN_XXL" => 'Ecran XXL',
         ];
 
-        list ($page, $pageMax) = $this->getPagination();
+        $nbSalles = $db->getNbSalles();
+        list ($page, $pageMax) = $this->getPagination($nbSalles);
         $nbLignesPage = Config::get('NB_LIGNES');
         $salles = $db->getSalles(($page - 1) * $nbLignesPage);
-        $nbSalles = $db->getNbSalles();
 
         // Création des actions pour chaque salle
         // et ajout des informations demandées par les colonnes

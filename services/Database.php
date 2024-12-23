@@ -297,7 +297,7 @@ class Database
     /**
      * Permet de supprimer un employé de la base de données
      * @param $idEmploye int l'identifiant de l'employé
-     * @return bool true si les suppression son bien effectuer
+     * @return bool true si les suppressions sont bien effectuées
      */
     public function suppressionEmploye($idEmploye){
         try {

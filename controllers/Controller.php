@@ -27,14 +27,14 @@ class Controller
     /**
      * Gère la pagination en fonction des paramètres fournis.
      *
-     * @param int $nbReservations Le nombre total de réservations.
+     * @param int $nbElements Le nombre total d'éléments.
      * @return array int La page actuelle, limitée entre 1 et le nombre maximal de pages,
      *               int Le nombre maximal de pages.
      */
-    public function getPagination() {
+    public function getPagination(int $nbElements) {
         $page = isset($_GET['page']) ? htmlspecialchars($_GET['page']) : 1;
         $page = max(intval($page), 1);
-        $pageMax = ceil($page / Config::get('NB_LIGNES'));
+        $pageMax = ceil($nbElements / Config::get('NB_LIGNES'));
         return [min($page, $pageMax), $pageMax];
     }
 }
