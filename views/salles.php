@@ -29,7 +29,7 @@ require_once 'utils/tableau.php';
                         </div>
                         <!-- Bouton pour ajouter une salle -->
                         <div class="col-12 col-lg-2 text-lg-end">
-                            <button class="btn btn-primary">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajouterSalle">
                                 <i class="fa-solid fa-plus"></i> Ajouter une salle
                             </button>
                         </div>
@@ -64,6 +64,11 @@ require_once 'utils/tableau.php';
         </div>
     </div>
 </div>
+
+<?php include 'modals/ajouterSalle.php'; ?>
+
 </body>
-<?php include 'elements/scripts.php'; ?>
+
+<?php
+    include 'elements/scripts.php'; ?>
 </html>

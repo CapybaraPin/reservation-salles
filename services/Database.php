@@ -169,14 +169,29 @@ class Database
     }
 
     /**
+     * Permet de récupérer la liste des types d'ordinateur dans la base de donnée
+     * @return PDOStatement, Retourne la liste des types d'ordinateur
+     */
+    public function getTypesOrdinateur(){
+        $req = $this->pdo->prepare("SELECT identifiant, type FROM typeOrdinateur");
+        $req->execute();
+        return $req->fetchAll();
+    }
+
+    /**
      * Permet de récupérer la liste des logiciels pour les ordinateurs d'une salle dans la base de donnée
-     * @param $idOrdinateur
+     * @param $idOrdinateur int l'identifiant de l'ordinateur
      * @return PDOStatement, Retourne la liste des logiciels associés à un groupe d'ordinateur.
      */
-    public function getLogiciel($idOrdinateur) {
+    public function getLogiciels($idOrdinateur = null) {
 
-        $req = $this->pdo->prepare("SELECT logiciel.identifiant, nom FROM ordinateurLogiciel JOIN logiciel ON ordinateurLogiciel.idLogiciel = logiciel.identifiant WHERE ordinateurLogiciel.idOrdinateur = ?");
-        $req->execute(array($idOrdinateur));
+        if (is_null($idOrdinateur)) {
+            $req = $this->pdo->prepare("SELECT identifiant, nom FROM logiciel");
+        } else {
+            $req = $this->pdo->prepare("SELECT logiciel.identifiant, nom FROM ordinateurLogiciel JOIN logiciel ON ordinateurLogiciel.idLogiciel = logiciel.identifiant WHERE ordinateurLogiciel.idOrdinateur = ?");
+        }
+
+        $req->execute();
         return $req->fetchAll();
     }
 
@@ -315,6 +330,20 @@ class Database
             error_log($e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Permet de supprimer une salle de la base de données
+     * @param $nom string le nom de la salle
+     * @param $capacite int la capacité de la salle
+     * @param $videoProjecteur bool si la salle a un video projecteur
+     * @param $ecranXXL bool si la salle a un écran XXL
+     * @param $idOrdinateur int l'identifiant de l'ordinateur
+     */
+    public function ajouterSalle($nom, $capacite, $videoProjecteur, $ecranXXL, $idOrdinateur)
+    {
+        $req = $this->pdo->prepare("INSERT INTO salle (nom, capacite, videoProjecteur, ecranXXL, idOrdinateur) VALUES (?, ?, ?, ?, ?)");
+        $req->execute([$nom, $capacite, $videoProjecteur, $ecranXXL, $idOrdinateur]);
     }
 
 }

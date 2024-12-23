@@ -59,6 +59,9 @@ class SallesController extends Controller
 
         }
 
+        $typesOrdinateur = $db->getTypesOrdinateur();
+        $logiciels = $db->getLogiciels();
+
         require __DIR__ . '/../views/salles.php';
     }
 
@@ -69,5 +72,13 @@ class SallesController extends Controller
     {
         $this->deconnexion();
         require __DIR__ . '/../views/salles.php';
+    }
+
+    /**
+     * Fonction qui gère l'ajout d'une salle
+     */
+    public function ajouterSalle()
+    {
+
     }
 }
