@@ -9,7 +9,7 @@ use services\Config;
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
 
-    <title>Erreur 404</title>
+    <title>Erreur 500</title>
 
     <!-- Importation des fichiers CSS pour le style -->
     <link href="<?= Config::get("APP_URL") ?>/assets/css/styles.css" rel="stylesheet"> <!-- CSS principal -->
@@ -21,15 +21,19 @@ use services\Config;
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-6 col-md-6 col-sm-6 align-self-center">
 
-            <p class="titre-erreur text-center">404</p>
+            <p class="titre-erreur text-center">500</p>
 
-            <p class="titre text-center">Page non trouvée</p>
+            <p class="titre text-center">Erreur interne du serveur</p>
 
             <p class="text-center">
-                La page que vous tentez d'afficher n'existe pas ou une autre erreur s'est produite.
-                Vous pouvez revenir à
-                <a class="text-primary" href="/">la page d'accueil</a>
-                .
+                <?php
+
+                    if (isset($message)) {
+                        echo $message;
+                    }
+
+                ?>
+
             </p>
         </div>
     </div>

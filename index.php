@@ -49,7 +49,8 @@ try {
     $db = new Database();
     $pdo = $db->getPDO();
 } catch (PDOException $e) {
-    die("Erreur de connexion à la base de données : " . $e->getMessage());
+    $message = "<b>Erreur de connexion à la base de données</b><br>Détails : " . $e->getMessage();
+    require __DIR__ . '/views/errors/500.php';
 }
 
 session_start();
