@@ -17,17 +17,18 @@ use services\Config;
 <div class="container">
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-12 col-md-4 col-sm-4">
-            <!-- Formulaire POST sans URL spécifiée -->
-
-            <?php
-                if (isset($message)) {
-                    echo '<div class="alert alert-danger" role="alert">' . $message . '</div>';
-                }
-            ?>
 
             <form action="" method="post">
                 <p class="titre text-center">Connectez-vous</p>
                 <p class="text-center">Bienvenue ! Entrez vos informations de connexion</p>
+
+                <!-- Message d'erreur -->
+                <?php
+                    if (isset($message)) {
+                        echo '<div class="alert alert-danger" role="alert">' . $message . '</div>';
+                    }
+                ?>
+
                 <!-- Groupe pour le champ "Identifiant" -->
                 <div class="form-group">
                     <label class="label-form" for="identifiant">Identifiant</label>

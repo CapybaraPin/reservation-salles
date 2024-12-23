@@ -13,18 +13,19 @@ use services\Utilisateur;
  */
 class Auth
 {
-    private $MESSAGE_AUTH_SUCCESS = "Vous êtes bien connectés.";
-    private $MESSAGE_AUTH_ERROR = "L'identifiant ou le mot de passe est incorrect.";
-
     /**
      * Connexion de l'utilisateur
-     * @param string $identifiant
-     * @param string $motDePasse
+     * @param string $identifiant L'identifiant de l'utilisateur
+     * @param string $motDePasse Le mot de passe de l'utilisateur
      * @return string Retourne un message d'erreur ou de succès.
      */
     public function connexion($identifiant, $motDePasse)
     {
         global $pdo;
+
+        if (empty($identifiant) || empty($motDePasse)) {
+            throw new \Exception("Veuillez entrer un identifiant et un mot de passe valide.");
+        }
 
         $req = $pdo->prepare("SELECT identifiant, motDePasse, role, individu FROM utilisateur WHERE identifiant = :identifiant");
         $req->execute(['identifiant' => $identifiant]);
@@ -45,10 +46,8 @@ class Auth
             $userPrenom = $utilisateur->getPrenom();
             $_SESSION['userPrenom'] = $userPrenom[0]["prenom"];
 
-            return $this->MESSAGE_AUTH_SUCCESS;
-
         } else {
-            return $this->MESSAGE_AUTH_ERROR;
+            throw new \Exception("L'identifiant ou le mot de passe est incorrect.");
         }
     }
 

@@ -48,13 +48,6 @@ class AuthController
             $motDePasse = htmlspecialchars($_POST['motdepasse']);
 
             try {
-                // TODO : faire en sorte que je puisse afficher
-                    // Si l'utilisateur n'a pas entré les bons identifiants
-                    // Si l'utilisateur n'a pas entré tous les champs
-                    // Si une erreur c'est produite lors de la connexion
-                    // Si une erreur c'est produite lors de la connexion à la base de données
-                    // Si l'utilisateur n'est pas associé à un individu
-
                 $this->auth->connexion($identifiant, $motDePasse);
                 header("Location: ".Config::get('APP_URL')."/");
 
