@@ -29,11 +29,11 @@ class AccueilController extends Controller
             "EMPLOYE" => 'Employé',
         ];
 
-        list($page, $pageMax) = $this->getPagination();
+        $nbReservations = $db->getNbReservations($_SESSION['userIndividuId']);
+        list($page, $pageMax) = $this->getPagination($nbReservations);
         $nbLignesPage = Config::get('NB_LIGNES');
         $filre = ["reservation.idEmploye" => [$_SESSION['userIndividuId'], PDO::PARAM_INT]];
         $reservations = $db->getReservations(($page - 1) * $nbLignesPage, $filre);
-        $nbReservations = $db->getNbReservations($_SESSION['userIndividuId']);
 
         // Création des actions pour chaque réservation
         // et ajout des informations demandées par les colonnes

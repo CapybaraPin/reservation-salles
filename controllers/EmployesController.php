@@ -47,10 +47,11 @@ class EmployesController extends Controller
             "TELEPHONE_EMPLOYE" => 'Téléphone',
             ];
 
-        list ($page, $pageMax) = $this->getPagination();
+        $nbEmployes = $db->getNbEmployes();
+        list ($page, $pageMax) = $this->getPagination($nbEmployes);
         $nbLignesPage = Config::get('NB_LIGNES');
         $employes = $db->getEmployes(($page - 1) * $nbLignesPage);
-        $nbEmployes = $db->getNbEmployes();
+
 
         // ajout des employés ayant une réservation
         $reservations = [];

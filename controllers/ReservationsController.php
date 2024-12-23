@@ -28,10 +28,10 @@ class ReservationsController extends Controller
             "EMPLOYE" => 'Employé',
         ];
 
-        list($page, $pageMax) = $this->getPagination();
+        $nbReservations = $db->getNbReservations();
+        list($page, $pageMax) = $this->getPagination($nbReservations);
         $nbLignesPage = Config::get('NB_LIGNES');
         $reservations = $db->getReservations(($page - 1) * $nbLignesPage);
-        $nbReservations = $db->getNbReservations();
 
         // Création des actions pour chaque réservation
         // et ajout des informations demandées par les colonnes
