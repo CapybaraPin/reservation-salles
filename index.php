@@ -13,6 +13,11 @@
  * Documentation de Bramus Router : https://github.com/bramus/router
  */
 
+// Vérification de la version de PHP
+if (version_compare(PHP_VERSION, '5.3', '<')) {
+    die('Erreur : Ce script nécessite PHP 5.3 ou une version supérieure. Votre version actuelle est : ' . PHP_VERSION);
+}
+
 // Autoload de Composer
 require __DIR__ . '/vendor/autoload.php';
 
