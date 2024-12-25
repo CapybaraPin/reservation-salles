@@ -4,7 +4,7 @@ namespace services;
 
 use PDO;
 
-class Salle
+class Salle extends Database
 {
     /**
      * Permet de récuperer la liste des salles dans la base de données.

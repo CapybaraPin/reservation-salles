@@ -4,7 +4,7 @@ namespace services;
 
 use PDO;
 
-class Reservation
+class Reservation extends Database
 {
     /**
      * Récupère le nombre total de réservations

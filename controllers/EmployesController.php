@@ -36,9 +36,6 @@ class EmployesController extends Controller
      */
     public function get()
     {
-        // Récupération de la liste des employés
-        global $db;
-
         $titre = 'Employés';
         $colonnes = [
             "IDENTIFIANT_EMPLOYE" => 'Identifiant',
@@ -47,16 +44,16 @@ class EmployesController extends Controller
             "TELEPHONE_EMPLOYE" => 'Téléphone',
             ];
 
-        $nbEmployes = $db->getNbEmployes();
+        $nbEmployes = $this->employeModel->getNbEmployes();
         list ($page, $pageMax) = $this->getPagination($nbEmployes);
         $nbLignesPage = Config::get('NB_LIGNES');
-        $employes = $db->getEmployes(($page - 1) * $nbLignesPage);
+        $employes = $this->employeModel->getEmployes(($page - 1) * $nbLignesPage);
 
 
         // ajout des employés ayant une réservation
         $reservations = [];
         foreach ($employes as $employe) {
-            $hasReservation = $db->verifReservationEmploye($employe['IDENTIFIANT_EMPLOYE']);
+            $hasReservation = $this->employeModel->verifReservationEmploye($employe['IDENTIFIANT_EMPLOYE']);
             $reservations[$employe['IDENTIFIANT_EMPLOYE']] = $hasReservation;
         }
 

@@ -2,7 +2,7 @@
 
 namespace services;
 
-class Activite
+class Activite extends Database
 {
     /**
      * Permet de récupérer la liste des activités dans la base de données.

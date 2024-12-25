@@ -9,7 +9,7 @@ namespace services;
  *
  * @package services
  */
-class Utilisateur
+class Utilisateur extends Database
 {
 
     /** @var String Identifiant de l'utilisateur */

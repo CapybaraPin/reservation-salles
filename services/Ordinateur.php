@@ -2,7 +2,7 @@
 
 namespace services;
 
-class Ordinateur
+class Ordinateur extends Database
 {
     /**
      * Permet de récupérer la liste des logiciels pour les ordinateurs d'une salle dans la base de donnée

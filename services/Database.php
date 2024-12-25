@@ -30,6 +30,10 @@ class Database
      */
     public function getPDO()
     {
+        if (!is_null($this->pdo)) {
+            return $this->pdo;
+        }
+
         try {
             // Récupère les informations de configuration depuis le fichier .env
             $host = Config::get('DB_HOST');

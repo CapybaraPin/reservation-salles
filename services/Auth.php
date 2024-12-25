@@ -9,7 +9,7 @@ namespace services;
  *
  * @package services
  */
-class Auth
+class Auth extends Database
 {
     /**
      * Connexion de l'utilisateur

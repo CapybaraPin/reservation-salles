@@ -4,7 +4,7 @@ namespace services;
 
 use PDO;
 
-class Employe
+class Employe extends Database
 {
     /**
      * Permet d'ajouter un employé dans la base de données
