@@ -8,7 +8,7 @@ $page_actuelle = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 <div class="header">
     <div class="row">
         <!-- Navigation principale -->
-        <nav class="nav navbar navbar-expand-lg col-12 ms-1">
+        <nav class="nav navbar navbar-expand-lg col-12">
             <!-- Bouton de burger pour les écrans petits -->
             <button class="d-lg-none d-block navbar-burger m-0" type="button" aria-label="toggle navigation" aria-expanded="false">
                 <span></span>
@@ -22,7 +22,7 @@ $page_actuelle = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                     <li class="ms-2 me-2 logo d-none d-lg-flex">
                         <a class="logo-text">IT</a>
                     </li>
-                    <li class="btn-nav me-1 button-nav mb-1 ms-lg-0 mb-lg-0 <?= ($page_actuelle == '/') ? 'btn-nav-active' : ''; ?>">
+                    <li class="btn-nav me-1 button-nav mb-1 ms-lg-0 mb-lg-0 mt-lg-0 mt-2 <?= ($page_actuelle == '/') ? 'btn-nav-active' : ''; ?>">
                         <a href="/">Tableau de bord</a>
                     </li>
                     <li class="btn-nav me-1 button-nav mb-1 mb-lg-0 <?= ($page_actuelle == '/reservations') ? 'btn-nav-active' : ''; ?>">
