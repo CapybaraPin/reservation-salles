@@ -15,8 +15,6 @@ class ReservationsController extends Controller
      */
     public function get()
     {
-        global $db;
-
         $titre = 'Réservations';
         $colonnes = [
             "IDENTIFIANT_RESERVATION" => 'Identifiant',
@@ -28,10 +26,10 @@ class ReservationsController extends Controller
             "EMPLOYE" => 'Employé',
         ];
 
-        $nbReservations = $db->getNbReservations();
+        $nbReservations = $this->reservationModel->getNbReservations();
         list($page, $pageMax) = $this->getPagination($nbReservations);
         $nbLignesPage = Config::get('NB_LIGNES');
-        $reservations = $db->getReservations(($page - 1) * $nbLignesPage);
+        $reservations = $this->reservationModel->getReservations(($page - 1) * $nbLignesPage);
 
         // Création des actions pour chaque réservation
         // et ajout des informations demandées par les colonnes

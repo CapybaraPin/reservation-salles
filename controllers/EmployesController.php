@@ -101,8 +101,6 @@ class EmployesController extends Controller
      */
     public function post()
     {
-        global $db;
-
         try {
             $this->success = $this->ajouterEmploye();
         } catch (\Exception $e) {
@@ -128,8 +126,6 @@ class EmployesController extends Controller
      */
     public function ajouterEmploye()
     {
-        global $db;
-
         if (isset($_POST["nom"])
             && isset($_POST["prenom"])
             && isset($_POST["telephone"])
@@ -151,7 +147,7 @@ class EmployesController extends Controller
 
             // Vérification que les champs ne soient pas vides
             if (!empty($nomEmploye) && !empty($prenomEmploye) && !empty($telephoneEmploye) && !empty($identifiantEmploye) && !empty($motDePasseEmploye)) {
-                $db->ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye);
+                $this->employeModel->ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye);
             } else {
                 throw new \Exception("Veuillez remplir tous les champs");
             }
@@ -162,14 +158,12 @@ class EmployesController extends Controller
 
     public function supprimerEmploye()
     {
-        global $db;
-
         if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId']) && is_numeric($_POST['employeId'])) {
             $idEmploye = intval($_POST['employeId']); // Conversion sécurisée en entier
 
             try {
                 // Appelle la méthode pour supprimer l'employé
-                $result = $db->suppressionEmploye($idEmploye);
+                $result = $this->employeModel->suppressionEmploye($idEmploye);
 
                 if ($result) {
                     return "L'employé avec l'ID $idEmploye a été supprimé avec succès.";

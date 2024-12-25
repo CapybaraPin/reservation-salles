@@ -14,21 +14,8 @@ use services\Config;
  *
  * @package controllers
  */
-class AuthController
+class AuthController extends Controller
 {
-
-    protected $auth;
-
-    /**
-     * AuthController constructeur
-     *
-     * Créer une instance de la classe permettant la gestion de l'authentification.
-     */
-    public function __construct()
-    {
-        $this->auth = new Auth();
-    }
-
     /**
      * Fonction pour gérer les requêtes GET
      */
@@ -48,7 +35,7 @@ class AuthController
             $motDePasse = htmlspecialchars($_POST['motdepasse']);
 
             try {
-                $this->auth->connexion($identifiant, $motDePasse);
+                $this->authModel->connexion($identifiant, $motDePasse);
                 header("Location: ".Config::get('APP_URL')."/");
 
             } catch (\Exception $e) {

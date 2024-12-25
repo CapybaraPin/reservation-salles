@@ -2,8 +2,6 @@
 
 namespace services;
 
-use services\Utilisateur;
-
 /**
  * Class Auth
  *
@@ -21,13 +19,11 @@ class Auth
      */
     public function connexion($identifiant, $motDePasse)
     {
-        global $pdo;
-
         if (empty($identifiant) || empty($motDePasse)) {
             throw new \Exception("Veuillez entrer un identifiant et un mot de passe valide.");
         }
 
-        $req = $pdo->prepare("SELECT identifiant, motDePasse, role, individu FROM utilisateur WHERE identifiant = :identifiant");
+        $req = $this->getPDO()->prepare("SELECT identifiant, motDePasse, role, individu FROM utilisateur WHERE identifiant = :identifiant");
         $req->execute(['identifiant' => $identifiant]);
         $user = $req->fetch();
 

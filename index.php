@@ -26,6 +26,11 @@ require __DIR__ . '/services/Database.php';
 require __DIR__ . '/services/Config.php';
 require __DIR__ . '/services/Auth.php';
 require __DIR__ . '/services/Utilisateur.php';
+require __DIR__ . '/services/Employe.php';
+require __DIR__ . '/services/Reservation.php';
+require __DIR__ . '/services/Salle.php';
+require __DIR__ . '/services/Activite.php';
+require __DIR__ . '/services/Ordinateur.php';
 
 // Récupération des classes des contrôleurs
 require __DIR__ . '/controllers/Controller.php';
@@ -35,7 +40,6 @@ require __DIR__ . '/controllers/SallesController.php';
 require __DIR__ . '/controllers/ReservationsController.php';
 require __DIR__ . '/controllers/EmployesController.php';
 require __DIR__ . '/controllers/ActivitesController.php';
-
 
 // Import des classes
 use services\Database;
@@ -98,7 +102,6 @@ $router->set404(function() {
     header('HTTP/1.1 404 Not Found');
     require __DIR__ . '/views/errors/404.php';
 });
-
 
 // Démarrage du routeur
 $router->run();

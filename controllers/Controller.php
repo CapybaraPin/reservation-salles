@@ -2,8 +2,14 @@
 
 namespace controllers;
 
+use services\Activite;
 use services\Auth;
 use services\Config;
+use services\Database;
+use services\Employe;
+use services\Ordinateur;
+use services\Reservation;
+use services\Salle;
 
 /**
  * Contrôleur général de l'application. Permet de faire une passerelle
@@ -11,6 +17,37 @@ use services\Config;
  */
 class Controller
 {
+
+    protected Auth $authModel;
+    protected Config $configModel;
+    protected Database $databaseModel;
+    protected Employe $employeModel;
+    protected Ordinateur $ordinateurModel;
+    protected Salle $salleModel;
+    protected Activite $activiteModel;
+    protected Reservation $reservationModel;
+
+    protected $pdo;
+
+    /**
+     * Constructeur du contrôleur général.
+     */
+    public function __construct()
+    {
+        date_default_timezone_set('Europe/Paris');
+
+        $this->authModel = new Auth();
+        $this->configModel = new Config();
+        $this->databaseModel = new Database();
+        $this->employeModel = new Employe();
+        $this->ordinateurModel = new Ordinateur();
+        $this->salleModel = new Salle();
+        $this->activiteModel = new Activite();
+        $this->reservationModel = new Reservation();
+
+        $this->pdo = $this->databaseModel->getPDO();
+    }
+
     /**
      * Permet la deconnexion de l'utilisateur
      * @return void
@@ -19,8 +56,7 @@ class Controller
     {
         if (isset($_POST["deconnexion"]))
         {
-            $auth = new Auth();
-            $auth->deconnexion();
+            $this->authModel->deconnexion();
         }
     }
 

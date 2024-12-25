@@ -22,8 +22,8 @@ class ActivitesController extends Controller
             "TYPE_ACTIVITE" => "Type",
         ];
 
-        $activites = $db->getActivites();
-        $nbActivites = $db->getNbActivites();
+        $activites = $this->activiteModel->getActivites();
+        $nbActivites = $this->activiteModel->getNbActivites();
 
         foreach ($activites as &$activite) {
             $activite['ID'] = $activite['IDENTIFIANT_ACTIVITE'];

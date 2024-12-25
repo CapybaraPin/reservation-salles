@@ -16,7 +16,6 @@ class AccueilController extends Controller
 {
     public function get()
     {
-        global $db;
 
         $titre = 'Mes Réservations';
         $colonnes = [
@@ -29,11 +28,11 @@ class AccueilController extends Controller
             "EMPLOYE" => 'Employé',
         ];
 
-        $nbReservations = $db->getNbReservations($_SESSION['userIndividuId']);
+        $nbReservations = $this->reservationModel->getNbReservations($_SESSION['userIndividuId']);
         list($page, $pageMax) = $this->getPagination($nbReservations);
         $nbLignesPage = Config::get('NB_LIGNES');
         $filre = ["reservation.idEmploye" => [$_SESSION['userIndividuId'], PDO::PARAM_INT]];
-        $reservations = $db->getReservations(($page - 1) * $nbLignesPage, $filre);
+        $reservations = $this->reservationModel->getReservations(($page - 1) * $nbLignesPage, $filre);
 
         // Création des actions pour chaque réservation
         // et ajout des informations demandées par les colonnes

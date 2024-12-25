@@ -15,8 +15,6 @@ class SallesController extends Controller
      */
     public function get()
     {
-        global $db;
-
         $titre = 'Salles';
         $colonnes = [
             "ID_SALLE" => 'Identifiant',
@@ -26,10 +24,10 @@ class SallesController extends Controller
             "ECRAN_XXL" => 'Ecran XXL',
         ];
 
-        $nbSalles = $db->getNbSalles();
+        $nbSalles = $this->salleModel->getNbSalles();
         list ($page, $pageMax) = $this->getPagination($nbSalles);
         $nbLignesPage = Config::get('NB_LIGNES');
-        $salles = $db->getSalles(($page - 1) * $nbLignesPage);
+        $salles = $this->salleModel->getSalles(($page - 1) * $nbLignesPage);
 
         // Création des actions pour chaque salle
         // et ajout des informations demandées par les colonnes
@@ -59,8 +57,8 @@ class SallesController extends Controller
 
         }
 
-        $typesOrdinateur = $db->getTypesOrdinateur();
-        $logiciels = $db->getLogiciels();
+        $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
+        $logiciels = $this->ordinateurModel->getLogiciels();
 
         require __DIR__ . '/../views/salles.php';
     }
