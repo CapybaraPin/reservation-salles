@@ -13,7 +13,31 @@ class SallesController extends Controller
     /**
      * Fonction pour gérer les requêtes GET
      */
-    public function get()
+    public function get($salleId = null)
+    {
+        if ($salleId) {
+           // TODO Visualisation d'une salle précise
+           echo "Visualisation de la salle n°$salleId";
+        } else {
+            $this->listeSalles();
+        }
+    }
+
+    /**
+     * Fonction pour gérer les requêtes POST
+     */
+    public function post()
+    {
+        $this->deconnexion();
+        $this->ajouterSalle();
+        $this->listeSalles();
+    }
+
+    /**
+     * Fonction qui gère l'affichage de la liste des salles
+     * @return void
+     */
+    public function listeSalles()
     {
         $titre = 'Salles';
         $colonnes = [
@@ -64,19 +88,29 @@ class SallesController extends Controller
     }
 
     /**
-     * Fonction pour gérer les requêtes POST
-     */
-    public function post()
-    {
-        $this->deconnexion();
-        require __DIR__ . '/../views/salles.php';
-    }
-
-    /**
      * Fonction qui gère l'ajout d'une salle
      */
     public function ajouterSalle()
     {
+        $nom = htmlspecialchars($_POST['nom']);
+        $capacite = htmlspecialchars($_POST['capacite']);
+        $videoProjecteur = isset($_POST['videoProjecteur']) ? 1 : 0;
+        $nbOrdinateurs = htmlspecialchars($_POST['nbOrdinateurs']);
+        $logiciels = $_POST['logiciels'];
+        $imprimante = isset($_POST['imprimante']) ? 1 : 0;
+        $typeOrdinateur = htmlspecialchars($_POST['typeOrdinateur']);
+        $ecranXXL = isset($_POST['ecranXXL']) ? 1 : 0;
+
+        // Ajout du groupe d'ordinateur
+        $idGroupeOrdinateur = $this->ordinateurModel->ajouterGroupeOrdinateur($nbOrdinateurs, $imprimante, $typeOrdinateur);
+
+        // Ajout des logiciels à l'ordinateur
+        foreach ($logiciels as $logiciel) {
+            $this->ordinateurModel->ajouterLogiciel($idGroupeOrdinateur, $logiciel);
+        }
+
+        // Ajout de la salle
+        $this->salleModel->ajouterSalle($nom, $capacite, $videoProjecteur, $ecranXXL, $idGroupeOrdinateur);
 
     }
 }

@@ -40,14 +40,21 @@ class Salle
      * @param $capacite int la capacité de la salle
      * @param $videoProjecteur bool si la salle a un video projecteur
      * @param $ecranXXL bool si la salle a un écran XXL
-     * @param $idOrdinateur int l'identifiant de l'ordinateur
+     * @param $nbOrdinateurs int le nombre d'ordinateurs dans la salle
+     * @param $logiciels string les logiciels installés sur les ordinateurs
      */
     public function ajouterSalle($nom, $capacite, $videoProjecteur, $ecranXXL, $idOrdinateur)
     {
         global $pdo;
 
-        $req = $pdo->prepare("INSERT INTO salle (nom, capacite, videoProjecteur, ecranXXL, idOrdinateur) VALUES (?, ?, ?, ?, ?)");
-        $req->execute([$nom, $capacite, $videoProjecteur, $ecranXXL, $idOrdinateur]);
+        $req = $pdo->prepare("INSERT INTO salle (nom, capacite, videoProjecteur, ecranXXL, idOrdinateur) VALUES (:nom, :capacite, :videoProjecteur, :ecranXXL, :idOrdinateur)");
+        $req->execute([
+            'nom' => $nom,
+            'capacite' => $capacite,
+            'videoProjecteur' => $videoProjecteur,
+            'ecranXXL' => $ecranXXL,
+            'idOrdinateur' => $idOrdinateur
+        ]);
     }
 
     /**

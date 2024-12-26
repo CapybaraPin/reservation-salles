@@ -46,4 +46,40 @@ class Ordinateur
         $req->execute(array($idOrdinateur));
         return $req->fetchAll();
     }
+
+    /**
+     * Permet d'ajouter un groupe d'ordinateur dans la base de donnée
+     * @param $nbOrdinateurs int le nombre d'ordinateurs
+     * @param $imprimante bool si le groupe possède une imprimante
+     * @param $typeOrdinateur int le type d'ordinateur
+     * @return string, Retourne l'identifiant du groupe d'ordinateur ajouté
+     */
+    public function ajouterGroupeOrdinateur($nbOrdinateurs, $imprimante, $typeOrdinateur) {
+        global $pdo;
+
+        $req = $pdo->prepare("INSERT INTO groupeOrdinateur (nbOrdinateur, imprimante, idType) VALUES (:nbOrdinateurs, :imprimante, :typeOrdinateur)");
+        $req->execute([
+            'nbOrdinateurs' => $nbOrdinateurs,
+            'imprimante' => $imprimante,
+            'typeOrdinateur' => $typeOrdinateur
+        ]);
+
+        return $pdo->lastInsertId();
+    }
+
+    /**
+     * Permet d'ajouter un logiciel à un ordinateur
+     * @param $idOrdinateur int l'identifiant de l'ordinateur
+     * @param $idLogiciel int l'identifiant du logiciel
+     */
+    public function ajouterLogiciel($idOrdinateur, $idLogiciel)
+    {
+        global $pdo;
+
+        $req = $pdo->prepare("INSERT INTO ordinateurLogiciel (idOrdinateur, idLogiciel) VALUES (:idOrdinateur, :idLogiciel)");
+        $req->execute([
+            'idOrdinateur' => $idOrdinateur,
+            'idLogiciel' => $idLogiciel
+        ]);
+    }
 }

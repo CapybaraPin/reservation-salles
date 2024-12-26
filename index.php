@@ -85,6 +85,11 @@ $router->post('/', [new AccueilController(), 'post']);
 $router->get('/salles', [new SallesController(), 'get']);
 $router->post('/salles', [new SallesController(), 'post']);
 
+$router->get('/salle/{salleId}/view', function($salleId) {
+    $salleController = new SallesController();
+    $salleController->get($salleId);
+});
+
 // Définition des routes pour les réservations
 $router->get('/reservations', [new ReservationsController(), 'get']);
 $router->post('/reservations', [new ReservationsController(), 'post']);

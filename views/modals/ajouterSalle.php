@@ -31,9 +31,19 @@
                             <!-- Champ du vidéo Projecteur -->
                             <div class="form-group mt-2 mb-2">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="capacite">
-                                    <label class="form-check-label label-form" for="capacite">
+                                    <input name="videoProjecteur" class="form-check-input" type="checkbox" value="" id="videoProjecteur">
+                                    <label class="form-check-label label-form" for="videoProjecteur">
                                         Possède un vidéo projecteur ?
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Champ de l'écran XXL -->
+                            <div class="form-group mt-2 mb-2">
+                                <div class="form-check">
+                                    <input name="ecranXXL" class="form-check-input" type="checkbox" value="" id="ecranXXL">
+                                    <label class="form-check-label label-form" for="ecranXXL">
+                                        Possède un écran XXL ?
                                     </label>
                                 </div>
                             </div>
@@ -82,7 +92,7 @@
                             <!-- Champ Capacite -->
                             <div class="form-group mt-1 mb-1">
                                 <label class="label-form" for="logiciels">Logiciels présents sur les ordinateurs</label>
-                                <select class="form-select" id="logiciels" name="logiciels" multiple aria-label="multiple select example">
+                                <select class="form-select" id="logiciels" name="logiciels[]" multiple aria-label="multiple select example">
                                     <option selected>Sélectionnez le(s) logiciel(s)</option>
                                     <?php foreach ($logiciels as $logiciel) : ?>
                                         <option value="<?= $logiciel['identifiant'] ?>"><?= $logiciel['nom'] ?></option>
@@ -93,16 +103,16 @@
                             <!-- Champ du vidéo Projecteur -->
                             <div class="form-group mt-2 mb-2">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="capacite">
-                                    <label class="form-check-label label-form" for="capacite">
+                                    <input name="imprimante" class="form-check-input" type="checkbox" value="" id="imprimante">
+                                    <label class="form-check-label label-form" for="imprimante">
                                         Possède une imprimante ?
                                     </label>
                                 </div>
                             </div>
 
                             <div class="form-group mt-1 mb-1">
-                                <label class="label-form" for="logiciels">Type d'ordinateur</label>
-                                <select class="form-select" aria-label="Default select example">
+                                <label class="label-form" for="typeOrdinateur">Type d'ordinateur</label>
+                                <select class="form-select" id="typeOrdinateur" name="typeOrdinateur">
                                     <option selected>Sélectionnez un type d'ordinateur</option>
                                     <?php foreach ($typesOrdinateur as $type) : ?>
                                         <option value="<?= $type['identifiant'] ?>"><?= $type['type'] ?></option>
