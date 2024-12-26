@@ -44,8 +44,7 @@ class Controller
         $this->salleModel = new Salle();
         $this->activiteModel = new Activite();
         $this->reservationModel = new Reservation();
-
-        $this->pdo = $this->databaseModel->getPDO();
+        
     }
 
     /**
