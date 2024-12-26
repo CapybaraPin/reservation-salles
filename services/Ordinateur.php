@@ -2,7 +2,7 @@
 
 namespace services;
 
-class Ordinateur extends Database
+class Ordinateur
 {
     /**
      * Permet de récupérer la liste des logiciels pour les ordinateurs d'une salle dans la base de donnée
@@ -10,11 +10,12 @@ class Ordinateur extends Database
      * @return array, Retourne la liste des logiciels associés à un groupe d'ordinateur.
      */
     public function getLogiciels($idOrdinateur = null) {
+        global $pdo;
 
         if (is_null($idOrdinateur)) {
-            $req = $this->getPDO()->prepare("SELECT identifiant, nom FROM logiciel");
+            $req = $pdo->prepare("SELECT identifiant, nom FROM logiciel");
         } else {
-            $req = $this->getPDO()->prepare("SELECT logiciel.identifiant, nom FROM ordinateurLogiciel JOIN logiciel ON ordinateurLogiciel.idLogiciel = logiciel.identifiant WHERE ordinateurLogiciel.idOrdinateur = ?");
+            $req = $pdo->prepare("SELECT logiciel.identifiant, nom FROM ordinateurLogiciel JOIN logiciel ON ordinateurLogiciel.idLogiciel = logiciel.identifiant WHERE ordinateurLogiciel.idOrdinateur = ?");
         }
 
         $req->execute();
@@ -26,7 +27,9 @@ class Ordinateur extends Database
      * @return array, Retourne la liste des types d'ordinateur
      */
     public function getTypesOrdinateur(){
-        $req = $this->getPDO()->prepare("SELECT identifiant, type FROM typeOrdinateur");
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT identifiant, type FROM typeOrdinateur");
         $req->execute();
         return $req->fetchAll();
     }
@@ -37,8 +40,9 @@ class Ordinateur extends Database
      * @return array, Retourne la liste des ordinateurs pour une salle
      */
     public function getOrdinateur($idOrdinateur) {
+        global $pdo;
 
-        $req = $this->getPDO()->prepare("SELECT groupeOrdinateur.identifiant, nbOrdinateur, imprimante, idType, type AS DesignationType FROM groupeOrdinateur JOIN typeOrdinateur ON idType = typeOrdinateur.identifiant WHERE groupeOrdinateur.identifiant = ?");
+        $req = $pdo->prepare("SELECT groupeOrdinateur.identifiant, nbOrdinateur, imprimante, idType, type AS DesignationType FROM groupeOrdinateur JOIN typeOrdinateur ON idType = typeOrdinateur.identifiant WHERE groupeOrdinateur.identifiant = ?");
         $req->execute(array($idOrdinateur));
         return $req->fetchAll();
     }

@@ -4,7 +4,7 @@ namespace services;
 
 use PDO;
 
-class Salle extends Database
+class Salle
 {
     /**
      * Permet de récuperer la liste des salles dans la base de données.
@@ -12,6 +12,8 @@ class Salle extends Database
      * @return mixed, Retourne la liste des salles obtenue
      */
     public function getSalles($offset = 0, $filtre = [], $limit = null) {
+        global $pdo;
+
         if (is_null($limit)) {
             $limit = Config::get('NB_LIGNES');
         }
@@ -23,7 +25,7 @@ class Salle extends Database
 
         $sql .= " ORDER BY identifiant ASC LIMIT :limit OFFSET :offset";
 
-        $req = $this->getPDO()->prepare($sql);
+        $req = $pdo->prepare($sql);
         $req->bindParam(':limit', $limit, PDO::PARAM_INT);
         $req->bindParam(':offset', $offset, PDO::PARAM_INT);
 
@@ -42,7 +44,9 @@ class Salle extends Database
      */
     public function ajouterSalle($nom, $capacite, $videoProjecteur, $ecranXXL, $idOrdinateur)
     {
-        $req = $this->getPDO()->prepare("INSERT INTO salle (nom, capacite, videoProjecteur, ecranXXL, idOrdinateur) VALUES (?, ?, ?, ?, ?)");
+        global $pdo;
+
+        $req = $pdo->prepare("INSERT INTO salle (nom, capacite, videoProjecteur, ecranXXL, idOrdinateur) VALUES (?, ?, ?, ?, ?)");
         $req->execute([$nom, $capacite, $videoProjecteur, $ecranXXL, $idOrdinateur]);
     }
 
@@ -51,7 +55,9 @@ class Salle extends Database
      * @return mixed Retourne le nombre total de salles
      */
     public function getNbSalles() {
-        $req = $this->getPDO()->prepare("SELECT COUNT(*) FROM salle");
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT COUNT(*) FROM salle");
         $req->execute();
         return $req->fetchColumn();
     }

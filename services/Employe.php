@@ -4,7 +4,7 @@ namespace services;
 
 use PDO;
 
-class Employe extends Database
+class Employe
 {
     /**
      * Permet d'ajouter un employé dans la base de données
@@ -16,15 +16,17 @@ class Employe extends Database
      */
     public function ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye)
     {
+        global $pdo;
+
         // Insérer dans la table individu
-        $reqIndividu = $this->getPDO()->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
+        $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
         $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
 
         // Récupérer l'identifiant de l'individu récemment inséré
-        $idIndividu = $this->getPDO()->lastInsertId();
+        $idIndividu = $pdo->lastInsertId();
 
         // Insérer dans la table utilisateur
-        $reqUtilisateur = $this->getPDO()->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
+        $reqUtilisateur = $pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
         $reqUtilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu]);
     }
 
@@ -34,14 +36,16 @@ class Employe extends Database
      * @return bool true si les suppressions sont bien effectuées
      */
     public function suppressionEmploye($idEmploye){
+        global $pdo;
+
         try {
 
             // Suppression de l'utilisateur`
-            $req = $this->getPDO()->prepare("DELETE FROM utilisateur WHERE individu = ?");
+            $req = $pdo->prepare("DELETE FROM utilisateur WHERE individu = ?");
             $utilisateurs = $req->execute([$idEmploye]);
 
             // Suppression de l'individu
-            $req1 = $this->getPDO()->prepare("DELETE FROM individu WHERE identifiant = ?");
+            $req1 = $pdo->prepare("DELETE FROM individu WHERE identifiant = ?");
             $individus = $req1->execute([$idEmploye]);
 
             return $individus && $utilisateurs;
@@ -57,6 +61,8 @@ class Employe extends Database
      */
     public function getEmployes($offset = 0, $filtre = [], $limit = null)
     {
+        global $pdo;
+
         if (is_null($limit)) {
             $limit = Config::get('NB_LIGNES');
         }
@@ -73,7 +79,7 @@ class Employe extends Database
 
         $sql .= " ORDER BY i.identifiant ASC LIMIT :limit OFFSET :offset";
 
-        $req = $this->getPDO()->prepare($sql);
+        $req = $pdo->prepare($sql);
 
         $req->bindParam(':limit', $limit, PDO::PARAM_INT);
         $req->bindParam(':offset', $offset, PDO::PARAM_INT);
@@ -86,7 +92,9 @@ class Employe extends Database
      * @return mixed Retourne le nombre total d'employés
      */
     public function getNbEmployes() {
-        $req = $this->getPDO()->prepare("SELECT COUNT(*) FROM individu");
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT COUNT(*) FROM individu");
         $req->execute();
         return $req->fetchColumn();
     }
@@ -98,7 +106,9 @@ class Employe extends Database
      */
     public function verifReservationEmploye($idEmploye)
     {
-        $req = $this->getPDO()->prepare("SELECT identifiant FROM reservation WHERE idEmploye = ?");
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT identifiant FROM reservation WHERE idEmploye = ?");
         $req->execute(array($idEmploye));
 
         return $req->rowCount() > 0;

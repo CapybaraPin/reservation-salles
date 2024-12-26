@@ -9,7 +9,7 @@ namespace services;
  *
  * @package services
  */
-class Utilisateur extends Database
+class Utilisateur
 {
 
     /** @var String Identifiant de l'utilisateur */
@@ -41,7 +41,9 @@ class Utilisateur extends Database
      */
     public function getNom()
     {
-        $req = $this->getPDO()->prepare("SELECT nom 
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT nom 
                 FROM individu i
                 JOIN utilisateur u
                 ON i.identifiant = u.individu
@@ -58,7 +60,9 @@ class Utilisateur extends Database
      */
     public function getPrenom()
     {
-        $req = $this->getPDO()->prepare("SELECT prenom 
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT prenom 
                 FROM individu i
                 JOIN utilisateur u
                 ON i.identifiant = u.individu

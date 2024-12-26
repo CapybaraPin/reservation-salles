@@ -9,7 +9,7 @@ namespace services;
  *
  * @package services
  */
-class Auth extends Database
+class Auth
 {
     /**
      * Connexion de l'utilisateur
@@ -19,11 +19,13 @@ class Auth extends Database
      */
     public function connexion($identifiant, $motDePasse)
     {
+        global $pdo;
+
         if (empty($identifiant) || empty($motDePasse)) {
             throw new \Exception("Veuillez entrer un identifiant et un mot de passe valide.");
         }
 
-        $req = $this->getPDO()->prepare("SELECT identifiant, motDePasse, role, individu FROM utilisateur WHERE identifiant = :identifiant");
+        $req = $pdo->prepare("SELECT identifiant, motDePasse, role, individu FROM utilisateur WHERE identifiant = :identifiant");
         $req->execute(['identifiant' => $identifiant]);
         $user = $req->fetch();
 

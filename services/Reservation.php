@@ -4,7 +4,7 @@ namespace services;
 
 use PDO;
 
-class Reservation extends Database
+class Reservation
 {
     /**
      * Récupère le nombre total de réservations
@@ -12,12 +12,14 @@ class Reservation extends Database
      */
     public function getNbReservations($idEmploye = null)
     {
+        global $pdo;
+
         $sql = "SELECT COUNT(*) FROM reservation";
         if (!is_null($idEmploye)) {
             $sql .= " WHERE idEmploye = :idEmploye";
         }
 
-        $req = $this->getPDO()->prepare($sql);
+        $req = $pdo->prepare($sql);
         if (!is_null($idEmploye)) {
             $req->bindParam(':idEmploye', $idEmploye, PDO::PARAM_INT);
         }
@@ -36,6 +38,8 @@ class Reservation extends Database
      */
     public function getReservations($offset = 0, $filtre = [], $limit = null)
     {
+        global $pdo;
+
         if (is_null($limit)) {
             $limit = Config::get('NB_LIGNES');
         }
@@ -72,7 +76,7 @@ class Reservation extends Database
 
         $sql .= " ORDER BY reservation.identifiant ASC LIMIT :limit OFFSET :offset";
 
-        $req = $this->getPDO()->prepare($sql);
+        $req = $pdo->prepare($sql);
         $req->bindParam(':limit', $limit, PDO::PARAM_INT);
         $req->bindParam(':offset', $offset, PDO::PARAM_INT);
         foreach ($filtre as $key => $value) {

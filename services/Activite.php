@@ -2,7 +2,7 @@
 
 namespace services;
 
-class Activite extends Database
+class Activite
 {
     /**
      * Permet de récupérer la liste des activités dans la base de données.
@@ -11,7 +11,9 @@ class Activite extends Database
      */
     public function getActivites()
     {
-        $req = $this->getPDO()->prepare("SELECT 
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT 
                                             identifiant AS 'IDENTIFIANT_ACTIVITE',
                                             type AS TYPE_ACTIVITE
                                             FROM activite");
@@ -25,7 +27,9 @@ class Activite extends Database
      */
     public function getNbActivites()
     {
-        $req = $this->getPDO()->prepare("SELECT COUNT(*) FROM activite");
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT COUNT(*) FROM activite");
         $req->execute();
         return $req->fetchColumn();
     }
