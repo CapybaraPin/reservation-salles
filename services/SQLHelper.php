@@ -13,8 +13,13 @@ class SQLHelper
      * @return string Conditions de filtres pour une requête SQL
      */
     static function construireConditionsFiltres($filtre = []) {
-
         $sql = "";
+
+        // Ensure $filtre is an array
+        if (!is_array($filtre)) {
+            return $sql; // Return la requête de base si ce n'est pas un array
+        }
+
         // Vérifier si le filtre est vide
         if (empty($filtre)) {
             return $sql; // Retourne seulement la requête de base
@@ -23,6 +28,9 @@ class SQLHelper
         $conditions = [];
 
         foreach ($filtre as $champ => $valeurs) {
+            if (!is_array($valeurs)) {
+                continue; // saute si ce n'est pas un array
+            }
 
             $sousConditions = [];
 
@@ -56,8 +64,17 @@ class SQLHelper
      * @param array $filtre Filtres de recherche
      */
     static function bindValues($req, $filtre) {
+        // S'assure que $filtre est un array
+        if (!is_array($filtre)) {
+            return; // Ne fait rien si $filtre n'est pas un array
+        }
+
         // Liaison des paramètres avec leurs valeurs et types
         foreach ($filtre as $key => $values) {
+            if (!is_array($values)) {
+                continue;
+            }
+
             foreach ($values as $index => $filtreDetail) {
                 if (!empty($filtreDetail['valeur'])) { // Vérification de la valeur
                     if (is_null($filtreDetail['operateur'])) { // Si l'opérateur n'est pas défini, on ajoute des % pour la recherche LIKE
