@@ -11,25 +11,14 @@ use services\Config;
 class EmployesController extends Controller
 {
     /**
-     * Variables pour les messages d'erreur d'ajout
+     * Variables pour les messages d'erreur
      */
     private $erreur;
 
     /**
-     * Variables pour les messages d'erreur de suppression
-     */
-    private $erreurSuppression;
-
-    /**
-     * Variables pour les messages de succès d'ajout
+     * Variables pour les messages de succès
      */
     private $success;
-
-    /**
-     * Variables pour les messages de succès de suppression
-     */
-    private $suppression;
-
 
     /**
      * Fonction pour gérer les requêtes GET
@@ -86,9 +75,7 @@ class EmployesController extends Controller
         }
 
         $erreur = $this->erreur;
-        $erreurSuppression = $this->erreurSuppression;
         $success = $this->success;
-        $suppression = $this->suppression;
 
         require __DIR__ . '/../views/employes.php';
     }
@@ -107,9 +94,9 @@ class EmployesController extends Controller
         // Vérifier si une demande de suppression est effectuée
         if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId'])) {
             try {
-                $this->suppression = $this->supprimerEmploye();
+                $this->erreur = $this->supprimerEmploye();
             } catch (\Exception $e) {
-                $this->erreurSuppression = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
+                $this->success = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
             }
         }
 

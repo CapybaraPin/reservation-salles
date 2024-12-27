@@ -41,22 +41,11 @@ require_once 'utils/tableau.php';
                                 <?= $erreur ?>
                             </div>
                         <?php }
-                        if (isset($erreurSuppression)) { ?>
-                            <div class="alert alert-danger mt-3" role="alert">
-                                <?= $erreurSuppression ?>
-                            </div>
-                        <?php } ?>
 
-
-                        <?php if (isset($success)) { ?>
-                            <div class="alert alert-success mt-3" role="alert">
-                                <?= $success ?>
-                            </div>
-                        <?php }
-                        if (isset($suppression)) { ?>
-                            <div class="alert alert-success mt-3" role="alert">
-                                <?= $suppression ?>
-                            </div>
+                            if (isset($success)) { ?>
+                                <div class="alert alert-success mt-3" role="alert">
+                                    <?= $success ?>
+                                </div>
                         <?php } ?>
                     </div>
 
@@ -81,9 +70,7 @@ require_once 'utils/tableau.php';
                     </div>
 
                     <!-- Tableau des employés -->
-                    <?php
-                    echo genererTableau($employes, $colonnes, $titre, $nbEmployes, $actions, $page, $pageMax);
-                    ?>
+                    <?= genererTableau($employes, $colonnes, $titre, $nbEmployes, $actions, $page, $pageMax); ?>
                 </div>
             </div>
         </div>
