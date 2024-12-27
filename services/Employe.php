@@ -55,10 +55,20 @@ class Employe
         }
     }
 
-    /**
-     * Récupère la liste des employés.
-     * @return mixed Retourne la liste des employés
-     */
+    public function getNbEmployes($filtre = [])
+    {
+        global $pdo;
+
+        $sql = "SELECT COUNT(*) FROM individu";
+        $sql .= SQLHelper::construireConditionsFiltres($filtre);
+
+        $req = $pdo->prepare($sql);
+        SQLHelper::bindValues($req, $filtre);
+
+        $req->execute();
+        return $req->fetchColumn();
+    }
+
     public function getEmployes($offset = 0, $filtre = [], $limit = null)
     {
         global $pdo;
@@ -68,36 +78,24 @@ class Employe
         }
 
         $sql = "SELECT 
-                    i.identifiant AS 'IDENTIFIANT_EMPLOYE', 
-                    i.nom AS 'NOM_EMPLOYE', 
-                    i.prenom AS 'PRENOM_EMPLOYE', 
-                    i.telephone AS 'TELEPHONE_EMPLOYE' 
-                FROM individu i";
+                identifiant AS 'IDENTIFIANT_EMPLOYE', 
+                nom AS 'NOM_EMPLOYE', 
+                prenom AS 'PRENOM_EMPLOYE', 
+                telephone AS 'TELEPHONE_EMPLOYE' 
+            FROM individu ";
 
-        // Ajout des conditions de filtre
-        // TODO : function filtre à écrire
-
-        $sql .= " ORDER BY i.identifiant ASC LIMIT :limit OFFSET :offset";
+        $sql .= SQLHelper::construireConditionsFiltres($filtre);
+        $sql .= " ORDER BY identifiant ASC LIMIT :limit OFFSET :offset";
 
         $req = $pdo->prepare($sql);
-
         $req->bindParam(':limit', $limit, PDO::PARAM_INT);
         $req->bindParam(':offset', $offset, PDO::PARAM_INT);
+        SQLHelper::bindValues($req, $filtre);
 
         $req->execute();
         return $req->fetchAll();
     }
 
-    /**
-     * @return mixed Retourne le nombre total d'employés
-     */
-    public function getNbEmployes() {
-        global $pdo;
-
-        $req = $pdo->prepare("SELECT COUNT(*) FROM individu");
-        $req->execute();
-        return $req->fetchColumn();
-    }
 
     /**
      * Permet de récupérer un identifiant de réservation pour un employé si il y en a un

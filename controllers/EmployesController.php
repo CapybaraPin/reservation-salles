@@ -2,89 +2,73 @@
 
 namespace controllers;
 
+use PDO;
 use services\Auth;
 use services\Config;
 
 /**
  * Contrôleur pour la page des employés
  */
-class EmployesController extends Controller
+class EmployesController extends FiltresController
 {
-    /**
-     * Variables pour les messages d'erreur
-     */
-    private $erreur;
+    const FILTRES_DISPONIBLES = [
+        'nom' => ['label' => 'Nom', 'type' => PDO::PARAM_STR],
+        'prenom' => ['label' => 'Prénom', 'type' => PDO::PARAM_STR],
+        'telephone' => ['label' => 'Téléphone', 'type' => PDO::PARAM_STR],
+    ];
 
-    /**
-     * Variables pour les messages de succès
-     */
-    private $success;
 
-    /**
-     * Fonction pour gérer les requêtes GET
-     */
+    const TITRE = 'Employés';
+    const COLONNES = [
+        "IDENTIFIANT_EMPLOYE" => 'Identifiant',
+        "NOM_EMPLOYE" => 'Nom',
+        "PRENOM_EMPLOYE" => 'Prénom',
+        "TELEPHONE_EMPLOYE" => 'Téléphone',
+    ];
+
     public function get()
     {
-        $titre = 'Employés';
-        $colonnes = [
-            "IDENTIFIANT_EMPLOYE" => 'Identifiant',
-            "NOM_EMPLOYE" => 'Nom',
-            "PRENOM_EMPLOYE" => 'Prénom',
-            "TELEPHONE_EMPLOYE" => 'Téléphone',
-            ];
+        $filtresDisponibles = self::FILTRES_DISPONIBLES;
+        $this->setFiltresDisponibles($filtresDisponibles);
+        $filtres = $this->getFiltres();
 
-        $nbEmployes = $this->employeModel->getNbEmployes();
-        list ($page, $pageMax) = $this->getPagination($nbEmployes);
+        $titre = self::TITRE;
+        $colonnes = self::COLONNES;
+
+        $filtresRequete = $this->getFiltresRequete();
+        $nbEmployes = $this->employeModel->getNbEmployes($filtresRequete);
+        list($page, $pageMax) = $this->getPagination($nbEmployes);
+
         $nbLignesPage = Config::get('NB_LIGNES');
-        $employes = $this->employeModel->getEmployes(($page - 1) * $nbLignesPage);
+        $employes = $this->employeModel->getEmployes(($page - 1) * $nbLignesPage, $filtresRequete);
 
-
-        // ajout des employés ayant une réservation
-        $reservations = [];
-        foreach ($employes as $employe) {
-            $hasReservation = $this->employeModel->verifReservationEmploye($employe['IDENTIFIANT_EMPLOYE']);
-            $reservations[$employe['IDENTIFIANT_EMPLOYE']] = $hasReservation;
-        }
-
-        // Création des actions pour chaque employé
-        // et ajout des informations demandées par les colonnes
         $actions = [];
         foreach ($employes as &$employe) {
             $employe['ID'] = $employe['IDENTIFIANT_EMPLOYE'];
-
-            $actions[$employe['IDENTIFIANT_EMPLOYE']]['info'] = [
-                'attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
-                'icone' => 'fa-solid fa-circle-info'
+            $actions[$employe['IDENTIFIANT_EMPLOYE']] = [
+                'info' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'], 'icone' => 'fa-solid fa-circle-info'],
             ];
-
             if ($_SESSION['userRole'] == '1') {
-                $actions[$employe['IDENTIFIANT_EMPLOYE']]['modifier'] = [
-                    'attributs' => ['class' => 'btn', 'title' => 'Modifier'],
-                    'icone' => 'fa-solid fa-pen'
-                ];
-
-                $actions[$employe['IDENTIFIANT_EMPLOYE']]['supprimer'] = [
-                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer',
-                                    'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
-                                                          && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
-                                    'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']
-                                    ],
-                    'icone' => 'fa-solid fa-trash-can'
+                $actions[$employe['IDENTIFIANT_EMPLOYE']] += [
+                    'modifier' => ['attributs' => ['class' => 'btn', 'title' => 'Modifier'], 'icone' => 'fa-solid fa-pen'],
+                    'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer'], 'icone' => 'fa-solid fa-trash-can'],
                 ];
             }
         }
 
-        $erreur = $this->erreur;
-        $success = $this->success;
-
         require __DIR__ . '/../views/employes.php';
     }
 
-    /**
-     * Fonction pour gérer les requêtes POST
-     */
     public function post()
     {
+        $this->setFiltres($_POST['filtres'] ?? []);
+        $filtresDisponibles = self::FILTRES_DISPONIBLES;
+        $this->setFiltresDisponibles($filtresDisponibles);
+        if (isset($_POST['ajouter_filtre'])) {
+            $this->ajouterFiltre($_POST['nouveau_filtre']);
+        } elseif (isset($_POST['supprimer_filtre'])) {
+            $this->supprimerFiltre($_POST['supprimer_filtre']);
+        }
         try {
             $this->success = $this->ajouterEmploye();
         } catch (\Exception $e) {
@@ -104,6 +88,7 @@ class EmployesController extends Controller
 
         $this->get();
     }
+
 
     /**
      * Fonction qui gère l'ajout d'un employé
