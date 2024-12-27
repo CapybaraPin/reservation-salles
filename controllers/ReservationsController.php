@@ -2,34 +2,56 @@
 
 namespace controllers;
 
+use PDO;
 use services\Auth;
 use services\Config;
 
 /**
  * Contrôleur pour la page des réservations
  */
-class ReservationsController extends Controller
+class ReservationsController extends FiltresController
 {
+    const FILTRES_DISPONIBLES = [
+            'salle.nom' => ['label' => 'Salle', 'type' => PDO::PARAM_STR],
+            'activite.type' => ['label' => 'Activité', 'type' => PDO::PARAM_STR],
+            'reservation.dateDebut' => ['label' => 'Date de début', 'type' => PDO::PARAM_STR, 'operateur' => '>='],
+            'reservation.dateFin' => ['label' => 'Date de fin', 'type' => PDO::PARAM_STR, 'operateur' => '<='],
+            'individu.nom' => ['label' => 'Nom de l\'employé', 'type' => PDO::PARAM_STR],
+            'individu.prenom' => ['label' => 'Prénom de l\'employé', 'type' => PDO::PARAM_STR],
+        ];
+
+    const TITRE = 'Réservations';
+
+    const COLONNES = [
+        "IDENTIFIANT_RESERVATION" => 'Identifiant',
+        "DATE_DEBUT" => 'Date de début',
+        "DATE_FIN" => 'Date de fin',
+        "DESCRIPTION" => 'Description',
+        "NOM_SALLE" => 'Salle',
+        "TYPE_ACTIVITE" => 'Activité',
+        "EMPLOYE" => 'Employé',
+    ];
+
     /**
      * Fonction pour gérer les requêtes GET
      */
     public function get()
     {
-        $titre = 'Réservations';
-        $colonnes = [
-            "IDENTIFIANT_RESERVATION" => 'Identifiant',
-            "DATE_DEBUT" => 'Date de début',
-            "DATE_FIN" => 'Date de fin',
-            "DESCRIPTION" => 'Description',
-            "NOM_SALLE" => 'Salle',
-            "TYPE_ACTIVITE" => 'Activité',
-            "EMPLOYE" => 'Employé',
-        ];
+        $filtresDisponibles = self::FILTRES_DISPONIBLES;
+        $this->setFiltresDisponibles($filtresDisponibles);
+        $filtres = $this->getFiltres();
 
-        $nbReservations = $this->reservationModel->getNbReservations();
+
+        // génération tableau
+        $titre = self::TITRE;
+        $colonnes = self::COLONNES;
+
+        $filtresRequete = $this->getFiltresRequete();
+        $nbReservations = $this->reservationModel->getNbReservations($filtresRequete);
         list($page, $pageMax) = $this->getPagination($nbReservations);
+
         $nbLignesPage = Config::get('NB_LIGNES');
-        $reservations = $this->reservationModel->getReservations(($page - 1) * $nbLignesPage);
+        $reservations = $this->reservationModel->getReservations(($page - 1) * $nbLignesPage, $filtresRequete);
 
         // Création des actions pour chaque réservation
         // et ajout des informations demandées par les colonnes
@@ -61,7 +83,18 @@ class ReservationsController extends Controller
      */
     public function post()
     {
+        $this->setFiltres($_POST['filtres'] ?? []);
+
+        $filtresDisponibles = self::FILTRES_DISPONIBLES;
+        $this->setFiltresDisponibles($filtresDisponibles);
+        if (isset($_POST['ajouter_filtre'])) {
+            $this->ajouterFiltre($_POST['nouveau_filtre']);
+        } elseif (isset($_POST['supprimer_filtre'])) {
+            $this->supprimerFiltre($_POST['supprimer_filtre']);
+        }
+
         $this->deconnexion();
-        require __DIR__ . '/../views/reservations.php';
-    }
+
+        $this->get();
+        }
 }
