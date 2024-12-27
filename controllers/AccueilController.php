@@ -25,21 +25,19 @@ class AccueilController extends Controller
             "DESCRIPTION" => 'Description',
             "NOM_SALLE" => 'Salle',
             "TYPE_ACTIVITE" => 'Activité',
-            "EMPLOYE" => 'Employé',
         ];
 
         $nbReservations = $this->reservationModel->getNbReservations($_SESSION['userIndividuId']);
         list($page, $pageMax) = $this->getPagination($nbReservations);
         $nbLignesPage = Config::get('NB_LIGNES');
-        $filre = ["reservation.idEmploye" => [$_SESSION['userIndividuId'], PDO::PARAM_INT]];
-        $reservations = $this->reservationModel->getReservations(($page - 1) * $nbLignesPage, $filre);
+        $filtre["reservation.idEmploye"][] = ['valeur' => $_SESSION['userIndividuId'], "type" => PDO::PARAM_INT, 'operateur' => "="];
+        $reservations = $this->reservationModel->getReservations(($page - 1) * $nbLignesPage, $filtre);
 
         // Création des actions pour chaque réservation
         // et ajout des informations demandées par les colonnes
         $actions = [];
         foreach ($reservations as &$reservation) {
             $reservation['ID'] = $reservation['IDENTIFIANT_RESERVATION'];
-            $reservation['EMPLOYE'] = $reservation['PRENOM_EMPLOYE'] . ' ' . $reservation['NOM_EMPLOYE'];
             $dateDebut = date_create($reservation["DATE_DEBUT"]);
             $dateFin = date_create($reservation["DATE_FIN"]);
             $reservation["DATE_FIN"] = date_format($dateFin, "d/m/Y H\hi");
