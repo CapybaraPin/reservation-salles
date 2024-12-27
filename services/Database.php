@@ -156,29 +156,9 @@ class Database
         return $req->fetchColumn();
     }
 
-    /**
-     * Permet de récupérer la liste des oridnateur pour une salle dans la base de donnée
-     * @param $idOrdinateur
-     * @return PDOStatement, Retourne la liste des ordinateurs pour une salle
-     */
-    public function getOrdinateur($idOrdinateur) {
 
-        $req = $this->pdo->prepare("SELECT groupeOrdinateur.identifiant, nbOrdinateur, imprimante, idType, type AS DesignationType FROM groupeOrdinateur JOIN typeOrdinateur ON idType = typeOrdinateur.identifiant WHERE groupeOrdinateur.identifiant = ?");
-        $req->execute(array($idOrdinateur));
-        return $req->fetchAll();
-    }
 
-    /**
-     * Permet de récupérer la liste des logiciels pour les ordinateurs d'une salle dans la base de donnée
-     * @param $idOrdinateur
-     * @return PDOStatement, Retourne la liste des logiciels associés à un groupe d'ordinateur.
-     */
-    public function getLogiciel($idOrdinateur) {
 
-        $req = $this->pdo->prepare("SELECT logiciel.identifiant, nom FROM ordinateurLogiciel JOIN logiciel ON ordinateurLogiciel.idLogiciel = logiciel.identifiant WHERE ordinateurLogiciel.idOrdinateur = ?");
-        $req->execute(array($idOrdinateur));
-        return $req->fetchAll();
-    }
 
     /**
      * Récupère la liste des réservations en fonction des filtres
@@ -315,6 +295,30 @@ class Database
             error_log($e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Permet de récupérer la liste des oridnateur pour une salle dans la base de donnée
+     * @param $idOrdinateur
+     * @return PDOStatement, Retourne la liste des ordinateurs pour une salle
+     */
+    public function getOrdinateur($idOrdinateur) {
+
+        $req = $this->pdo->prepare("SELECT  nbOrdinateur, imprimante, type AS DesignationType FROM groupeOrdinateur JOIN typeOrdinateur ON idType = typeOrdinateur.identifiant WHERE groupeOrdinateur.identifiant = ?");
+        $req->execute(array($idOrdinateur));
+        return $req->fetchAll();
+    }
+
+    /**
+     * Permet de récupérer la liste des logiciels pour les ordinateurs d'une salle dans la base de donnée
+     * @param $idOrdinateur
+     * @return PDOStatement, Retourne la liste des logiciels associés à un groupe d'ordinateur.
+     */
+    public function getLogiciel($idOrdinateur) {
+
+        $req = $this->pdo->prepare("SELECT nom FROM ordinateurLogiciel JOIN logiciel ON ordinateurLogiciel.idLogiciel = logiciel.identifiant WHERE ordinateurLogiciel.idOrdinateur = ?");
+        $req->execute(array($idOrdinateur));
+        return $req->fetchAll();
     }
 
 }

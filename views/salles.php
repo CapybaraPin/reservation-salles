@@ -64,6 +64,8 @@ require_once 'utils/tableau.php';
         </div>
     </div>
 </div>
+
+
 </body>
 <?php include 'elements/scripts.php'; ?>
 </html>

@@ -88,6 +88,8 @@ $router->post('/employes', [new EmployesController(), 'post']);
 $router->get('/activites', [new ActivitesController(), 'get']);
 $router->post('/activites', [new ActivitesController(), 'post']);
 
+$router->get('/salles/consultation', [new SallesController(), 'consultation']);
+
 // Défintion de la routeur pour l'erreur 404
 $router->set404(function() {
     header('HTTP/1.1 404 Not Found');

@@ -42,7 +42,11 @@ class SallesController extends Controller
 
             if ($salle['ID_ORDINATEUR'] != 0) {
                 $actions[$salle['ID_SALLE']]['info'] = [
-                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
+                    'attributs' => [
+                        'class' => 'btn btn-nav',
+                        'title' => 'Plus d\'informations',
+                        'href' => '/salles/consultation'
+                    ],
                     'icone' => 'fa-solid fa-circle-info'
                 ];
             }
@@ -59,7 +63,9 @@ class SallesController extends Controller
 
         }
 
+
         require __DIR__ . '/../views/salles.php';
+        require __DIR__ . '/../views/consultationSalle.php';
     }
 
     /**
@@ -70,4 +76,14 @@ class SallesController extends Controller
         $this->deconnexion();
         require __DIR__ . '/../views/salles.php';
     }
+
+    public function consultation()
+    {
+        // Titre de la page
+        $titre = 'Consultation de la salle';
+
+        // Inclusion de la vue statique
+        require __DIR__ . '/../views/consultationSalle.php';
+    }
+
 }

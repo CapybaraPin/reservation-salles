@@ -1,6 +1,20 @@
 const navbarToggler = document.querySelector(".navbar-burger");
 const contentNavBar = document.querySelector(".collapse");
 
+// Optionnel : Gérer l'ouverture automatique du modal si un fragment est présent dans l'URL
+window.addEventListener('load', function () {
+    const hash = window.location.hash.substring(1); // Supprime le `#`
+    if (hash) {
+        const button = document.querySelector(`.btn.btn-nav[href="#${hash}"]`);
+        if (button) {
+            ouvrirModalInformationSalle(button);
+        }
+    }
+});
+
+
+
+
 const toggleNav = e => {
     navbarToggler.classList.toggle("open");
     const ariaToggle = navbarToggler.getAttribute("aria-expanded") === "true" ? "false" : "true";
@@ -78,5 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         creerModalSuppressionEmploye();
     }
 });
+
+
 
 
