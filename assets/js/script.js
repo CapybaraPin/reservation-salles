@@ -14,17 +14,17 @@ const togglePasswordButton = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("motdepasse");
 const passwordIcon = document.getElementById("passwordIcon");
 
-togglePasswordButton.addEventListener("click", () => {
-    if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-        passwordIcon.classList.remove("fa-eye");
-        passwordIcon.classList.add("fa-eye-slash");
-    } else {
-        passwordInput.type = "password";
-        passwordIcon.classList.remove("fa-eye-slash");
-        passwordIcon.classList.add("fa-eye");
-    }
-});
+// togglePasswordButton.addEventListener("click", () => {
+//     if (passwordInput.type === "password") {
+//         passwordInput.type = "text";
+//         passwordIcon.classList.remove("fa-eye");
+//         passwordIcon.classList.add("fa-eye-slash");
+//     } else {
+//         passwordInput.type = "password";
+//         passwordIcon.classList.remove("fa-eye-slash");
+//         passwordIcon.classList.add("fa-eye");
+//     }
+// });
 
 /*
  * Gestion de la suppression d'un employé
@@ -78,5 +78,44 @@ document.addEventListener('DOMContentLoaded', () => {
         creerModalSuppressionEmploye();
     }
 });
+
+
+// # Début Gestion des filtres
+
+const boutonFiltrer = document.getElementById('btn-filtrer');
+const menuDeroulant = document.getElementById('menu-deroulant');
+
+// Fonction pour ouvrir/fermer le menu
+boutonFiltrer.addEventListener('click', () => {
+    const rect = boutonFiltrer.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    // Calcul de la position (en dessous par défaut, au-dessus si pas assez de place)
+    menuDeroulant.style.top = rect.bottom + window.scrollY + 'px'; // Par défaut, sous le bouton
+    menuDeroulant.style.left = rect.left + window.scrollX + 'px';
+    menuDeroulant.style.display = 'block'; // Afficher le menu
+
+    const menuHeight = menuDeroulant.offsetHeight;
+
+    // Vérifier si le menu dépasse la hauteur de la fenêtre
+    if (rect.bottom + menuHeight > windowHeight) {
+        menuDeroulant.style.top = rect.top + window.scrollY - menuHeight + 'px'; // Afficher au-dessus
+    }
+});
+
+// Fermer le menu quand on clique ailleurs
+document.addEventListener('click', (e) => {
+    if (!menuDeroulant.contains(e.target) && e.target !== boutonFiltrer) {
+        menuDeroulant.style.display = 'none';
+    }
+});
+
+// Fermer le menu quand on clique sur le bouton "Annuler"
+const boutonAnnuler = document.getElementById('btn-annuler');
+boutonAnnuler.addEventListener('click', () => {
+    menuDeroulant.style.display = 'none';
+});
+
+// # Fin Gestion des filtres
 
 

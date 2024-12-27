@@ -199,3 +199,11 @@ th{
 thead{
     background-color: var(--color-border-light);
 }
+
+/* Menu fixe */
+.menu-deroulant {
+    position: absolute;
+    display: none; /* Caché par défaut */
+    z-index: 10;
+    background-color: white;
+}
