@@ -24,7 +24,7 @@
                             <div class="form-group mt-1 mb-1">
                                 <label class="label-form" for="capacite">Capacité de la salle</label>
                                 <input class="form-control" id="capacite" name="capacite" type="number"
-                                       placeholder="Entrez la capicité de la salle" required
+                                       placeholder="Entrez la capacité de la salle" required
                                        value="<?= isset($_POST['capacite']) ? htmlspecialchars($_POST['capacite']) : '' ?>">
                             </div>
 
