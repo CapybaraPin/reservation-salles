@@ -9,9 +9,10 @@
  * @param array $actions Actions à afficher
  * @param int $page Page courante
  * @param int $pageMax Nombre de pages
+ * @param array $filtres Filtres de recherche à passer dans les formulaires de pagination
  * @return string HTML du tableau
  */
-function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [], $page = null, $pageMax = null)
+function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [], $page = null, $pageMax = null, $filtres = [])
 {
     // Début du tableau HTML
     $html = '<div class="row">
@@ -41,7 +42,7 @@ function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [],
 
     // Ajout de la pagination si applicable
     if ($page !== null && $pageMax !== null) {
-        $html .= genererPagination($page, $pageMax);
+        $html .= genererPagination($page, $pageMax, $filtres);
     }
 
     $html .= '</div>
@@ -108,65 +109,91 @@ function genererLigne($ligne, $colonnes, $actions)
 
 /**
  * Génère la pagination avec les boutons "Précédent" et "Suivant"
- * et les numéros de page
+ * et les numéros de page et permet la transmition des filtres de recherche
+ * de manière POST page par page
  * @param int $page actuelle
  * @param int $pageMax nombre de pages
+ * @param array $filtre Filtres de recherche
  * @return string HTML de la pagination
  */
-function genererPagination(int $page, int $pageMax)
+function genererPagination(int $page, int $pageMax, $filtres = []): string
 {
-// Précédent mobile et desktop
+    // Précédent mobile et desktop
     $html = '
 <div class="container-fluid">
     <div class="row">
-        <!-- Bouton "Précédent" pour mobile -->
-        <div class="col-3 d-lg-none d-block">
-            <a href="?page=' . ($page - 1) . '" class="btn btn-outline-dark d-lg-none">
+        <!-- Formulaire pour "Précédent" -->
+        <form method="POST" action="?page=' . ($page - 1) . '" class="col-3">';
+
+    // Ajout des filtres sous forme d'inputs cachés
+    foreach ($filtres as $champ => $filtresParChamp) {
+        foreach ($filtresParChamp as $indice => $filtre) {
+            $html .= '<input type="hidden" name="filtres[' . htmlspecialchars($champ) . '][' . htmlspecialchars($indice) . ']" value="' . htmlspecialchars($filtre) . '">';
+        }
+    }
+
+    $html .= '
+            <button type="submit" class="btn btn-outline-dark d-lg-none">
                 <i class="fa-solid fa-arrow-left"></i>
-            </a>
-        </div>
-        <!-- Bouton "Précédent" pour desktop -->
-        <div class="col-3 d-lg-block d-none">
-            <a href="?page=' . ($page - 1) . '" class="btn btn-outline-dark">
+            </button>
+            <button type="submit" class="btn btn-outline-dark d-lg-block d-none">
                 <i class="fa-solid fa-arrow-left"></i> Précédent
-            </a>
-        </div>
+            </button>
+        </form>
+        
         <!-- Pages centrales -->
         <div class="col-6 d-flex justify-content-center">
             <nav class="text-center">
                 <ul class="pagination-page">
 ';
 
-// Génération des numéros de page
+    // Génération des numéros de page
     for ($i = 1; $i <= $pageMax; $i++) {
         $active = $i == $page ? 'active' : '';
         $html .= '
                     <li class="pagination-item ' . $active . '">
-                        <a class="page-link" href="?page=' . $i . '">' . $i . '</a>
+                        <form method="POST" action="?page=' . $i . '">';
+
+        // Ajout des filtres pour chaque formulaire de numéro de page
+        foreach ($filtres as $champ => $filtresParChamp) {
+            foreach ($filtresParChamp as $indice => $filtre) {
+                $html .= '<input type="hidden" name="filtres[' . htmlspecialchars($champ) . '][' . htmlspecialchars($indice) . ']" value="' . htmlspecialchars($filtre) . '">';
+            }
+        }
+
+        $html .= '
+                            <button type="submit" class="page-link">' . $i . '</button>
+                        </form>
                     </li>
-    ';
+        ';
     }
 
-// Suivant mobile et desktop
+    // Formulaire pour "Suivant"
     $html .= '
                 </ul>
             </nav>
         </div>
-        <!-- Bouton "Suivant" pour desktop -->
-        <div class="col-3 text-end d-lg-block d-none">
-            <a href="?page=' . $page + 1 . '" class="btn btn-outline-dark">Suivant
+        <div class="col-3 text-end">
+        <form class="d-inline-block" method="POST" action="?page=' . ($page + 1) . '" >';
+
+    // Ajout des filtres dans le formulaire "Suivant"
+    foreach ($filtres as $champ => $filtresParChamp) {
+        foreach ($filtresParChamp as $indice => $filtre) {
+            $html .= '<input type="hidden" name="filtres[' . htmlspecialchars($champ) . '][' . htmlspecialchars($indice) . ']" value="' . htmlspecialchars($filtre) . '">';
+        }
+    }
+
+    $html .= '
+            <button type="submit" class="btn btn-outline-dark d-lg-none">
                 <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
-        <!-- Bouton "Suivant" pour mobile -->
-        <div class="col-3 text-end d-lg-none d-block">
-            <a href="?page=' . $page + 1 . '" class="btn btn-outline-dark d-lg-none">
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
+            </button>
+            <button type="submit" class="btn btn-outline-dark d-lg-block d-none">
+                Suivant <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
         </div>
     </div>
-</div>
-';
+</div>';
 
     return $html;
 }
