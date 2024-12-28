@@ -69,6 +69,7 @@ class Controller
         $page = isset($_GET['page']) ? htmlspecialchars($_GET['page']) : 1;
         $page = max(intval($page), 1);
         $pageMax = ceil($nbElements / Config::get('NB_LIGNES'));
+        $pageMax = max($pageMax, 1);
         return [min($page, $pageMax), $pageMax];
     }
 }

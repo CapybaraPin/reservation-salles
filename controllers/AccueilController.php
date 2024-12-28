@@ -27,10 +27,11 @@ class AccueilController extends Controller
             "TYPE_ACTIVITE" => 'Activité',
         ];
 
-        $nbReservations = $this->reservationModel->getNbReservations($_SESSION['userIndividuId']);
+        $filtre["reservation.idEmploye"][] = ['valeur' => $_SESSION['userIndividuId'], "type" => PDO::PARAM_INT, 'operateur' => "="];
+        $nbReservations = $this->reservationModel->getNbReservations($filtre);
         list($page, $pageMax) = $this->getPagination($nbReservations);
         $nbLignesPage = Config::get('NB_LIGNES');
-        $filtre["reservation.idEmploye"][] = ['valeur' => $_SESSION['userIndividuId'], "type" => PDO::PARAM_INT, 'operateur' => "="];
+
         $reservations = $this->reservationModel->getReservations(($page - 1) * $nbLignesPage, $filtre);
 
         // Création des actions pour chaque réservation
