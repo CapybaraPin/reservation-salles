@@ -92,7 +92,7 @@ class Reservation
      */
     public function getNbReservationsSalle($idSalle)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare("SELECT COUNT(*) 
                                 FROM reservation 

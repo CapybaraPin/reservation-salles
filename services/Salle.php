@@ -114,7 +114,7 @@ class Salle
      */
     public function supprimerSalle($idSalle, $nbReservations)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         if ($nbReservations > 0) {
             throw new \Exception("Impossible de supprimer une salle avec des réservations.");

@@ -93,7 +93,7 @@ class Ordinateur
      * @return mixed, Retourne les informations du groupe d'ordinateur associé à une salle
      */
     public function getOrdinateursSalle($idSalle) {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare("SELECT groupeOrdinateur.identifiant AS 'ID_GROUPE_ORDINATEUR', 
                                             nbOrdinateur AS 'NB_ORDINATEUR', 
@@ -115,7 +115,7 @@ class Ordinateur
      */
     public function getLogicielsOrdinateur($idOrdinateur)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare("SELECT logiciel.identifiant AS 'ID_LOGICIEL', 
                                             nom AS 'NOM_LOGICIEL' 
