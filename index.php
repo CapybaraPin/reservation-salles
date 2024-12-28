@@ -88,12 +88,17 @@ $router->post('/salles', [new SallesController(), 'post']);
 
 $router->get('/salle/{salleId}/view', function($salleId) {
     $salleController = new SallesController();
-    $salleController->get($salleId);
+    $salleController->get($salleId, "view");
 });
 
 $router->post('/salle/{salleId}/view', function($salleId) {
     $salleController = new SallesController();
     $salleController->post($salleId);
+});
+
+$router->get('/salle/{salleId}/edit', function($salleId) {
+    $salleController = new SallesController();
+    $salleController->get($salleId, "edit");
 });
 
 // Définition des routes pour les réservations

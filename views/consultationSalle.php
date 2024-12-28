@@ -23,9 +23,9 @@
 
                         <!-- Boutons pour supprimer et modifier -->
                         <div class="col-12 col-lg-4 text-lg-end">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sauvegarderSalle">
+                            <a href="/salle/<?= $salle["ID_SALLE"] ?>/edit" class="btn btn-primary">
                                 <i class="fa-solid fa-pencil"></i> Modifier
-                            </button>
+                            </a>
                             <button class="btn btn-danger" <?php if ($nbReservations > 0){ echo 'disabled' ; } ?> data-bs-toggle="modal" data-bs-target="#supprimerSalle">
                                 <i class="fa-solid fa-trash"></i> Supprimer
                             </button>
@@ -70,7 +70,7 @@
                     </div>
 
                     <!-- Informations sur les ordinateurs -->
-                    <?php if (!is_null($ordinateurs)) : ?>
+                    <?php if ($salle["ID_ORDINATEUR"] != 0) : ?>
                         <div class="row mt-4">
                             <div class="col-12">
                                 <div class="card">

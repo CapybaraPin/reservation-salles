@@ -23,10 +23,19 @@ class SallesController extends Controller
     /**
      * Fonction pour gérer les requêtes GET
      */
-    public function get($salleId = null)
+    public function get($salleId = null, $action = null)
     {
         if ($salleId) {
-            $this->consultationSalle($salleId);
+            switch ($action) {
+                case 'view':
+                    $this->consultationSalle($salleId);
+                    break;
+                case 'edit':
+                    $this->modifierSalle($salleId);
+                    break;
+                default:
+                    $this->listeSalles();
+            }
         } else {
             $this->listeSalles();
         }
@@ -108,7 +117,7 @@ class SallesController extends Controller
             }
 
             $actions[$salle['ID_SALLE']]['modifier'] = [
-                'attributs' => ['class' => 'btn', 'title' => 'Modifier'],
+                'attributs' => ['href' => '/salle/'.$salle["ID"].'/edit', 'class' => 'btn', 'title' => 'Modifier'],
                 'icone' => 'fa-solid fa-pen'
             ];
 
@@ -159,6 +168,30 @@ class SallesController extends Controller
                 $this->erreurs = $e->getErreurs();
             }
         }
+    }
+
+    /**
+     * Fonction qui gère la modification d'une salle
+     * @param $salleId int Identifiant de la salle
+     */
+    public function modifierSalle($salleId)
+    {
+        $salle = $this->salleModel->getSalle($salleId);
+
+        try {
+            $ordinateurs = $this->ordinateurModel->getOrdinateursSalle($salleId);
+            $logicielsInstalles = $this->ordinateurModel->getLogicielsOrdinateur($salle['ID_ORDINATEUR']);
+            $logiciels = $this->ordinateurModel->getLogiciels();
+            $nbReservations = $this->reservationModel->getNbReservationsSalle($salleId);
+            $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
+        } catch (\Exception $e) {
+            $groupeOrdinateur = null;
+            $logiciels = null;
+            $logicielsInstalles = null;
+            $typesOrdinateur = null;
+        }
+
+        require __DIR__ . '/../views/modifierSalle.php';
     }
 
     /**
