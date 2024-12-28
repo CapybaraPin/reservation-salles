@@ -17,7 +17,7 @@
                             <div class="form-group mb-1">
                                 <label class="label-form" for="nom">Nom de la salle</label>
                                 <input class="form-control" id="nom" name="nom" type="text" placeholder="Entrez le nom"
-                                       required
+
                                        value="<?= isset($_POST['nom']) ? htmlspecialchars($_POST['nom']) : '' ?>">
                             </div>
                             <!-- Champ Capacite -->
@@ -56,7 +56,7 @@
                                 </button>
                             </div>
                             <div class="col-6">
-                                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#ajouterOrdinateur">Suivant </button>
+                                <button id="boutonSuivantSalle" class="btn btn-primary w-100">Suivant</button>
                             </div>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                             <div class="form-group mt-1 mb-1">
                                 <label class="label-form" for="logiciels">Logiciels présents sur les ordinateurs</label>
                                 <select class="form-select" id="logiciels" name="logiciels[]" multiple aria-label="multiple select example">
-                                    <option selected>Sélectionnez le(s) logiciel(s)</option>
+                                    <option value="-1" selected>Sélectionnez le(s) logiciel(s)</option>
                                     <?php foreach ($logiciels as $logiciel) : ?>
                                         <option value="<?= $logiciel['identifiant'] ?>"><?= $logiciel['nom'] ?></option>
                                     <?php endforeach; ?>
@@ -123,7 +123,7 @@
                         </div>
                         <div class="row mt-3 mb-2">
                             <div class="col-6">
-                                <button type="button" class="btn btn-outline-dark w-100" data-bs-dismiss="modal">
+                                <button type="button" class="btn btn-outline-dark w-100" data-bs-toggle="modal" data-bs-target="#ajouterSalle">
                                     Précédent
                                 </button>
                             </div>
@@ -137,5 +137,4 @@
         </div>
     </div>
 </form>
-
 <!-- Fin de la modal d'ajout d'employé -->

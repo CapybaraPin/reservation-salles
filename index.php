@@ -92,6 +92,11 @@ $router->get('/salle/{salleId}/view', function($salleId) {
     $salleController->get($salleId);
 });
 
+$router->post('/salle/{salleId}/view', function($salleId) {
+    $salleController = new SallesController();
+    $salleController->post($salleId);
+});
+
 // Définition des routes pour les réservations
 $router->get('/reservations', [new ReservationsController(), 'get']);
 $router->post('/reservations', [new ReservationsController(), 'post']);

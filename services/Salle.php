@@ -7,6 +7,20 @@ use PDO;
 class Salle
 {
     /**
+     * Permet de récuperer une salle dans la base de données.
+     *
+     * @param $id int, L'identifiant de la salle à récuperer
+     * @return mixed, Retourne la salle obtenue
+     */
+    public function getSalle($idSalle) {
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT identifiant AS 'ID_SALLE', nom AS 'NOM_SALLE', capacite AS 'CAPACITE' , videoProjecteur AS 'VIDEO_PROJECTEUR', ecranXXL AS 'ECRAN_XXL', idOrdinateur AS 'ID_ORDINATEUR' FROM salle WHERE identifiant = :id");
+        $req->execute(['id' => $idSalle]);
+
+        return $req->fetch();
+    }
+    /**
      * Permet de récuperer la liste des salles dans la base de données.
      *
      * @return mixed, Retourne la liste des salles obtenue
@@ -40,13 +54,38 @@ class Salle
      * @param $capacite int la capacité de la salle
      * @param $videoProjecteur bool si la salle a un video projecteur
      * @param $ecranXXL bool si la salle a un écran XXL
-     * @param $nbOrdinateurs int le nombre d'ordinateurs dans la salle
-     * @param $logiciels string les logiciels installés sur les ordinateurs
+     * @param $idOrdinateur int l'identifiant de l'ordinateur de la salle
      */
     public function ajouterSalle($nom, $capacite, $videoProjecteur, $ecranXXL, $idOrdinateur)
     {
         global $pdo;
 
+        // Vérification des données
+        if (empty($nom)) {
+            $erreurs["nom"] = "Le champ nom est requis.";
+        }
+
+        if (empty($capacite) || !is_numeric($capacite) || (int)$capacite <= 0) {
+            $erreurs["capacite"] = "La capacité doit être un nombre positif.";
+        }
+
+        if (!is_numeric($videoProjecteur)){
+            $erreurs["videoProjecteur"] = "Le champ videoProjecteur doit être un booléen.";
+        }
+
+        if (!is_numeric($ecranXXL)){
+            $erreurs["ecranXXL"] = "Le champ ecranXXL doit être un booléen.";
+        }
+
+        if (!is_numeric($idOrdinateur)){
+            $erreurs["idOrdinateur"] = "Le champ idOrdinateur doit être un nombre.";
+        }
+
+        if (!empty($erreurs)) {
+            throw new \Exception($erreurs);
+        }
+
+        // Insertion de la salle
         $req = $pdo->prepare("INSERT INTO salle (nom, capacite, videoProjecteur, ecranXXL, idOrdinateur) VALUES (:nom, :capacite, :videoProjecteur, :ecranXXL, :idOrdinateur)");
         $req->execute([
             'nom' => $nom,
@@ -68,4 +107,21 @@ class Salle
         $req->execute();
         return $req->fetchColumn();
     }
+
+    /**
+     * Permet de supprimer une salle de la base de données
+     * @param $idSalle int l'identifiant de la salle à supprimer
+     */
+    public function supprimerSalle($idSalle, $nbReservations)
+    {
+        global $pdo;
+
+        if ($nbReservations > 0) {
+            throw new \Exception("Impossible de supprimer une salle avec des réservations.");
+        }
+
+        $req = $pdo->prepare("DELETE FROM salle WHERE identifiant = ?");
+        $req->execute([$idSalle]);
+    }
+
 }

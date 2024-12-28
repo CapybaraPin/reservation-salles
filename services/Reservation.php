@@ -84,4 +84,21 @@ class Reservation
         $req->execute();
         return $req->fetchAll();
     }
+
+    /**
+     * Permet de récupérer le nombre de réservations d'une salle
+     * @param $idSalle int l'identifiant de la salle
+     * @return mixed, Retourne le nombre de réservations d'une salle
+     */
+    public function getNbReservationsSalle($idSalle)
+    {
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT COUNT(*) 
+                                FROM reservation 
+                                WHERE idSalle = ?");
+        $req->execute([$idSalle]);
+
+        return $req->fetchColumn();
+    }
 }

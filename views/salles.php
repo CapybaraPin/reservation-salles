@@ -35,6 +35,28 @@ require_once 'utils/tableau.php';
                         </div>
                     </div>
 
+                    <?php if (!empty($success)) : ?>
+                        <div class="alert alert-success">
+                            <?= htmlspecialchars($success) ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (isset($erreurs)) {
+                        var_dump($erreurs);
+                    }else {
+                        echo "Aucune erreur";
+                    } ?>
+
+                    <?php if (!empty($erreurs)) { ?>
+                        <div class="alert alert-danger">
+                            <ul>
+                                <?php foreach ($erreurs as $champ => $message) : ?>
+                                    <li><strong><?= htmlspecialchars($champ) ?> :</strong> <?= htmlspecialchars($message) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php } ?>
+
                     <!-- Section filtres et recherche -->
                     <div class="row mt-4 mb-4">
                         <div class="col-12 col-lg-9">

@@ -82,4 +82,45 @@ class Ordinateur
             'idLogiciel' => $idLogiciel
         ]);
     }
+
+    /**
+     * Permet de récupérer toutes les informations du groupe d'ordinateur associé à une salle
+     * @param $idSalle int l'identifiant de la salle
+     * @return mixed, Retourne les informations du groupe d'ordinateur associé à une salle
+     */
+    public function getOrdinateursSalle($idSalle) {
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT groupeOrdinateur.identifiant AS 'ID_GROUPE_ORDINATEUR', 
+                                            nbOrdinateur AS 'NB_ORDINATEUR', 
+                                            imprimante AS 'IMPRIMANTE', 
+                                            idType AS 'ID_TYPE', 
+                                            type AS 'DESIGNATION_TYPE'
+                                            FROM groupeOrdinateur 
+                                            JOIN typeOrdinateur 
+                                            ON idType = typeOrdinateur.identifiant 
+                                            WHERE groupeOrdinateur.identifiant = (SELECT idOrdinateur FROM salle WHERE identifiant = ?)");
+        $req->execute([$idSalle]);
+
+        return $req->fetch();
+    }
+
+    /**
+     * Permet de récupérer la liste des logiciels associés à un ordinateur
+     * @param $idOrdinateur int l'identifiant de l'ordinateur
+     */
+    public function getLogicielsOrdinateur($idOrdinateur)
+    {
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT logiciel.identifiant AS 'ID_LOGICIEL', 
+                                            nom AS 'NOM_LOGICIEL' 
+                                    FROM ordinateurLogiciel 
+                                    JOIN logiciel 
+                                    ON ordinateurLogiciel.idLogiciel = logiciel.identifiant 
+                                    WHERE ordinateurLogiciel.idOrdinateur = ?");
+        $req->execute([$idOrdinateur]);
+
+        return $req->fetchAll();
+    }
 }
