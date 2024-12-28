@@ -11,6 +11,8 @@ use services\Config;
  */
 class EmployesController extends FiltresController
 {
+    private $success; // Pour gérer les messages de succès
+    private $erreur;  // Pour gérer les messages d'erreur
     const FILTRES_DISPONIBLES = [
         'nom' => ['label' => 'Nom', 'type' => PDO::PARAM_STR],
         'prenom' => ['label' => 'Prénom', 'type' => PDO::PARAM_STR],
@@ -37,8 +39,18 @@ class EmployesController extends FiltresController
 
         $filtresRequete = $this->getFiltresRequete();
         $nbEmployes = $this->employeModel->getNbEmployes($filtresRequete);
-        list($page, $pageMax) = $this->getPagination($nbEmployes);
 
+        // Si aucun employé n'est trouvé
+        if ($nbEmployes === 0) {
+            $alerte = "Aucun employé trouvé pour les critères spécifiés. Le tableau reste inchangé.";
+            $filtresRequete = []; // Réinitialiser les filtres
+            $nbEmployes = $this->employeModel->getNbEmployes([]); // Récupérer le nombre total d'employés
+            $filtres = []; // Supprimer les filtres affichés
+        } else {
+            $alerte = null; // Pas d'alerte si des employés sont trouvés
+        }
+
+        list($page, $pageMax) = $this->getPagination($nbEmployes);
         $nbLignesPage = Config::get('NB_LIGNES');
         $employes = $this->employeModel->getEmployes(($page - 1) * $nbLignesPage, $filtresRequete);
 
@@ -58,7 +70,6 @@ class EmployesController extends FiltresController
 
         require __DIR__ . '/../views/employes.php';
     }
-
     public function post()
     {
         $this->setFiltres($_POST['filtres'] ?? []);

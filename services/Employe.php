@@ -77,23 +77,30 @@ class Employe
             $limit = Config::get('NB_LIGNES');
         }
 
-        $sql = "SELECT 
-                identifiant AS 'IDENTIFIANT_EMPLOYE', 
-                nom AS 'NOM_EMPLOYE', 
-                prenom AS 'PRENOM_EMPLOYE', 
-                telephone AS 'TELEPHONE_EMPLOYE' 
-            FROM individu ";
+        try {
+            $sql = "SELECT 
+                    identifiant AS 'IDENTIFIANT_EMPLOYE', 
+                    nom AS 'NOM_EMPLOYE', 
+                    prenom AS 'PRENOM_EMPLOYE', 
+                    telephone AS 'TELEPHONE_EMPLOYE' 
+                FROM individu ";
 
-        $sql .= SQLHelper::construireConditionsFiltres($filtre);
-        $sql .= " ORDER BY identifiant ASC LIMIT :limit OFFSET :offset";
+            $sql .= SQLHelper::construireConditionsFiltres($filtre);
+            $sql .= " ORDER BY identifiant ASC LIMIT :limit OFFSET :offset";
 
-        $req = $pdo->prepare($sql);
-        $req->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $req->bindParam(':offset', $offset, PDO::PARAM_INT);
-        SQLHelper::bindValues($req, $filtre);
+            $req = $pdo->prepare($sql);
+            $req->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $req->bindParam(':offset', $offset, PDO::PARAM_INT);
+            SQLHelper::bindValues($req, $filtre);
 
-        $req->execute();
-        return $req->fetchAll();
+            $req->execute();
+            $result = $req->fetchAll();
+
+            return $result ?: []; // Retourne un tableau vide si aucun résultat
+        } catch (\PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
     }
 
 
