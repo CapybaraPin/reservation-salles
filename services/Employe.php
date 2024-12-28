@@ -16,7 +16,7 @@ class Employe
      */
     public function ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         // Insérer dans la table individu
         $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
@@ -35,8 +35,9 @@ class Employe
      * @param $idEmploye int l'identifiant de l'employé
      * @return bool true si les suppressions sont bien effectuées
      */
-    public function suppressionEmploye($idEmploye){
-        global $pdo;
+    public function suppressionEmploye($idEmploye)
+    {
+        $pdo = Database::getPDO();
 
         try {
 
@@ -57,7 +58,7 @@ class Employe
 
     public function getNbEmployes($filtre = [])
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         $sql = "SELECT COUNT(*) FROM individu";
         $sql .= SQLHelper::construireConditionsFiltres($filtre);
@@ -71,7 +72,7 @@ class Employe
 
     public function getEmployes($offset = 0, $filtre = [], $limit = null)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         if (is_null($limit)) {
             $limit = Config::get('NB_LIGNES');
@@ -111,7 +112,7 @@ class Employe
      */
     public function verifReservationEmploye($idEmploye)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare("SELECT identifiant FROM reservation WHERE idEmploye = ?");
         $req->execute(array($idEmploye));

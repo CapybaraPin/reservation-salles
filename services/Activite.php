@@ -11,7 +11,7 @@ class Activite
      */
     public function getActivites()
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare("SELECT 
                                             identifiant AS 'IDENTIFIANT_ACTIVITE',
@@ -27,7 +27,7 @@ class Activite
      */
     public function getNbActivites()
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare("SELECT COUNT(*) FROM activite");
         $req->execute();

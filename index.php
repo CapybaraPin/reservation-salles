@@ -57,8 +57,7 @@ $router = new \Bramus\Router\Router();
 
 // Connexion à la base de données
 try {
-    $db = new Database();
-    $pdo = $db->getPDO();
+    $pdo = Database::getPDO(); // jamais utilisé
 } catch (PDOException $e) {
     $message = "<b>Erreur de connexion à la base de données</b><br>Détails : " . $e->getMessage();
     require __DIR__ . '/views/errors/500.php';

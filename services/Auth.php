@@ -19,7 +19,7 @@ class Auth
      */
     public function connexion($identifiant, $motDePasse)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         if (empty($identifiant) || empty($motDePasse)) {
             throw new \Exception("Veuillez entrer un identifiant et un mot de passe valide.");

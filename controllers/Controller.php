@@ -20,7 +20,7 @@ class Controller
 
     protected Auth $authModel;
     protected Config $configModel;
-    protected Database $databaseModel;
+
     protected Employe $employeModel;
     protected Ordinateur $ordinateurModel;
     protected Salle $salleModel;
@@ -38,7 +38,6 @@ class Controller
 
         $this->authModel = new Auth();
         $this->configModel = new Config();
-        $this->databaseModel = new Database();
         $this->employeModel = new Employe();
         $this->ordinateurModel = new Ordinateur();
         $this->salleModel = new Salle();

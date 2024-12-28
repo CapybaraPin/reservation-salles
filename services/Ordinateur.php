@@ -9,8 +9,9 @@ class Ordinateur
      * @param $idOrdinateur int l'identifiant de l'ordinateur
      * @return array, Retourne la liste des logiciels associés à un groupe d'ordinateur.
      */
-    public function getLogiciels($idOrdinateur = null) {
-        global $pdo;
+    public function getLogiciels($idOrdinateur = null)
+    {
+        $pdo = Database::getPDO();
 
         if (is_null($idOrdinateur)) {
             $req = $pdo->prepare("SELECT identifiant, nom FROM logiciel");
@@ -26,8 +27,9 @@ class Ordinateur
      * Permet de récupérer la liste des types d'ordinateur dans la base de donnée
      * @return array, Retourne la liste des types d'ordinateur
      */
-    public function getTypesOrdinateur(){
-        global $pdo;
+    public function getTypesOrdinateur()
+    {
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare("SELECT identifiant, type FROM typeOrdinateur");
         $req->execute();
@@ -39,8 +41,9 @@ class Ordinateur
      * @param $idOrdinateur
      * @return array, Retourne la liste des ordinateurs pour une salle
      */
-    public function getOrdinateur($idOrdinateur) {
-        global $pdo;
+    public function getOrdinateur($idOrdinateur)
+    {
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare("SELECT groupeOrdinateur.identifiant, nbOrdinateur, imprimante, idType, type AS DesignationType FROM groupeOrdinateur JOIN typeOrdinateur ON idType = typeOrdinateur.identifiant WHERE groupeOrdinateur.identifiant = ?");
         $req->execute(array($idOrdinateur));
@@ -54,8 +57,9 @@ class Ordinateur
      * @param $typeOrdinateur int le type d'ordinateur
      * @return string, Retourne l'identifiant du groupe d'ordinateur ajouté
      */
-    public function ajouterGroupeOrdinateur($nbOrdinateurs, $imprimante, $typeOrdinateur) {
-        global $pdo;
+    public function ajouterGroupeOrdinateur($nbOrdinateurs, $imprimante, $typeOrdinateur)
+    {
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare("INSERT INTO groupeOrdinateur (nbOrdinateur, imprimante, idType) VALUES (:nbOrdinateurs, :imprimante, :typeOrdinateur)");
         $req->execute([
@@ -74,7 +78,7 @@ class Ordinateur
      */
     public function ajouterLogiciel($idOrdinateur, $idLogiciel)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare("INSERT INTO ordinateurLogiciel (idOrdinateur, idLogiciel) VALUES (:idOrdinateur, :idLogiciel)");
         $req->execute([
