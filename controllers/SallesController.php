@@ -2,13 +2,15 @@
 
 namespace controllers;
 
+use http\Env\Request;
+use PDO;
 use services\Auth;
 use services\Config;
 
 /**
  * Contrôleur pour la page des salles
  */
-class SallesController extends Controller
+class SallesController extends FiltresController
 {
     /**
      * Variables pour les messages d'erreur d'ajout
@@ -19,6 +21,16 @@ class SallesController extends Controller
      * Variables pour les messages de succès d'ajout
      */
     private $success;
+
+    /**
+     * Liste des filtres disponibles pour les salles
+     */
+    const FILTRES_DISPONIBLES = [
+        'salle.nom' => ['label' => 'Salle', 'type' => PDO::PARAM_STR],
+        'salle.capacite' => ['label' => 'Capacité', 'type' => PDO::PARAM_INT, 'operateur' => '>='],
+        'salle.videoProjecteur' => ['label' => 'Vidéo Projecteur', 'type' => PDO::PARAM_INT, 'operateur' => '='],
+        'salle.ecranXXL' => ['label' => 'Écran XXL', 'type' => PDO::PARAM_INT, 'operateur' => '=']
+    ];
 
     /**
      * Fonction pour gérer les requêtes GET
@@ -44,9 +56,19 @@ class SallesController extends Controller
     /**
      * Fonction pour gérer les requêtes POST
      */
-    public function post($salleId = null)
+    public function post($salleId = null, $action = null)
     {
         if ($salleId){
+            switch ($action) {
+                case 'supprimer':
+                    $this->supprimerSalle($salleId);
+                    break;
+                case 'edit':
+                    $this->modifierSalle($salleId);
+                    break;
+                default:
+                    $this->listeSalles();
+            }
             $this->supprimerSalle($salleId);
         }
 
@@ -55,6 +77,17 @@ class SallesController extends Controller
 
         $erreurs = $this->erreurs;
         $success = $this->success;
+
+        $this->setFiltres($_POST['filtres'] ?? []);
+
+        $filtresDisponibles = self::FILTRES_DISPONIBLES;
+        $this->setFiltresDisponibles($filtresDisponibles);
+        if (isset($_POST['ajouter_filtre'])) {
+            $this->ajouterFiltre($_POST['nouveau_filtre']);
+        } elseif (isset($_POST['supprimer_filtre'])) {
+            $this->supprimerFiltre($_POST['supprimer_filtre']);
+        }
+
 
         $this->listeSalles();
     }
@@ -86,6 +119,10 @@ class SallesController extends Controller
      */
     public function listeSalles()
     {
+        $filtresDisponibles = self::FILTRES_DISPONIBLES;
+        $this->setFiltresDisponibles($filtresDisponibles);
+        $filtres = $this->getFiltres();
+
         $titre = 'Salles';
         $colonnes = [
             "ID_SALLE" => 'Identifiant',
@@ -95,10 +132,11 @@ class SallesController extends Controller
             "ECRAN_XXL" => 'Ecran XXL',
         ];
 
-        $nbSalles = $this->salleModel->getNbSalles();
+        $filtreReq = $this->getFiltresRequete();
+        $nbSalles = $this->salleModel->getNbSalles($filtreReq);
         list ($page, $pageMax) = $this->getPagination($nbSalles);
         $nbLignesPage = Config::get('NB_LIGNES');
-        $salles = $this->salleModel->getSalles(($page - 1) * $nbLignesPage);
+        $salles = $this->salleModel->getSalles(($page - 1) * $nbLignesPage, $filtreReq);
 
         // Création des actions pour chaque salle
         // et ajout des informations demandées par les colonnes

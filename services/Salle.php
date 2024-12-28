@@ -32,16 +32,25 @@ class Salle
             $limit = Config::get('NB_LIGNES');
         }
 
-        $sql = "SELECT identifiant AS 'ID_SALLE', nom AS 'NOM_SALLE', capacite AS 'CAPACITE' , videoProjecteur AS 'VIDEO_PROJECTEUR', ecranXXL AS 'ECRAN_XXL', idOrdinateur AS 'ID_ORDINATEUR' FROM salle";
+        $sql = "SELECT identifiant AS 'ID_SALLE', 
+                       nom AS 'NOM_SALLE', 
+                       capacite AS 'CAPACITE' , 
+                       videoProjecteur AS 'VIDEO_PROJECTEUR', 
+                       ecranXXL AS 'ECRAN_XXL', 
+                       idOrdinateur AS 'ID_ORDINATEUR' 
+                FROM salle";
 
-        // Ajout des conditions de filtre
-        // TODO : function filtre à écrire
+        // Ajout des filtres
+        $sql .= SQLHelper::construireConditionsFiltres($filtre);
 
         $sql .= " ORDER BY identifiant ASC LIMIT :limit OFFSET :offset";
 
         $req = $pdo->prepare($sql);
         $req->bindParam(':limit', $limit, PDO::PARAM_INT);
         $req->bindParam(':offset', $offset, PDO::PARAM_INT);
+
+        // Liaison des paramètres avec leurs valeurs et types
+        SQLHelper::bindValues($req, $filtre);
 
         $req->execute();
 
@@ -100,10 +109,14 @@ class Salle
      * Permet de récupérer le nombre total de salles
      * @return mixed Retourne le nombre total de salles
      */
-    public function getNbSalles() {
-        $pdo = Database::getPDO();;
+    public function getNbSalles($filtre = []) {
+        $pdo = Database::getPDO();
 
-        $req = $pdo->prepare("SELECT COUNT(*) FROM salle");
+        $sql = "SELECT COUNT(*) FROM salle";
+        $sql .= SQLHelper::construireConditionsFiltres($filtre);
+        $req = $pdo->prepare($sql);
+        SQLHelper::bindValues($req, $filtre);
+
         $req->execute();
         return $req->fetchColumn();
     }

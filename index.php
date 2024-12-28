@@ -82,10 +82,15 @@ $router->post('/auth', [new AuthController(), 'post']);
 $router->get('/', [new AccueilController(), 'get']);
 $router->post('/', [new AccueilController(), 'post']);
 
-// Défintion des routes pour les salles
+/*
+ * Définition des routes pour les salles
+ */
+
+// Liste des salles
 $router->get('/salles', [new SallesController(), 'get']);
 $router->post('/salles', [new SallesController(), 'post']);
 
+// Visualisation d'une salle
 $router->get('/salle/{salleId}/view', function($salleId) {
     $salleController = new SallesController();
     $salleController->get($salleId, "view");
@@ -96,9 +101,15 @@ $router->post('/salle/{salleId}/view', function($salleId) {
     $salleController->post($salleId);
 });
 
+// Modification d'une salle
 $router->get('/salle/{salleId}/edit', function($salleId) {
     $salleController = new SallesController();
     $salleController->get($salleId, "edit");
+});
+
+$router->get('/salle/{salleId}/edit', function($salleId) {
+    $salleController = new SallesController();
+    $salleController->post($salleId, "edit");
 });
 
 // Définition des routes pour les réservations
