@@ -15,13 +15,6 @@ require_once 'utils/tableau.php';
 <div class="container-fluid">
     <?php include 'elements/header.php'; ?>
 
-    <div class="row">
-        <?php if (isset($alerte)) { ?>
-            <div class="alert alert-warning mt-3" role="alert">
-                <?= htmlspecialchars($alerte) ?>
-            </div>
-        <?php } ?>
-    </div>
 
 
     <!-- Section principale -->
@@ -50,11 +43,15 @@ require_once 'utils/tableau.php';
                                 <?= $erreur ?>
                             </div>
                         <?php }
-
                             if (isset($success)) { ?>
                                 <div class="alert alert-success mt-3" role="alert">
                                     <?= $success ?>
                                 </div>
+                        <?php } ?>
+                        <?php if (isset($alerte)) { ?>
+                            <div class="alert alert-warning mt-3" role="alert">
+                                <?= $alerte ?>
+                            </div>
                         <?php } ?>
                     </div>
 

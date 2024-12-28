@@ -19,7 +19,8 @@ class ReservationsController extends FiltresController
             'individu.nom' => ['label' => 'Nom de l\'employé', 'type' => PDO::PARAM_STR],
             'individu.prenom' => ['label' => 'Prénom de l\'employé', 'type' => PDO::PARAM_STR],
         ];
-
+    const FILTRE_DATE = ['reservation.dateDebut' => ['label' => 'Date de début', 'type' => PDO::PARAM_STR, 'operateur' => '>='],
+                         'reservation.dateFin' => ['label' => 'Date de fin', 'type' => PDO::PARAM_STR, 'operateur' => '<=']];
     const TITRE = 'Réservations';
 
     const COLONNES = [
