@@ -19,7 +19,6 @@ class EmployesController extends FiltresController
         'telephone' => ['label' => 'Téléphone', 'type' => PDO::PARAM_STR],
     ];
 
-
     const TITRE = 'Employés';
     const COLONNES = [
         "IDENTIFIANT_EMPLOYE" => 'Identifiant',
@@ -54,22 +53,48 @@ class EmployesController extends FiltresController
         $nbLignesPage = Config::get('NB_LIGNES');
         $employes = $this->employeModel->getEmployes(($page - 1) * $nbLignesPage, $filtresRequete);
 
+
+        // ajout des employés ayant une réservation
+        $reservations = [];
+        foreach ($employes as $employe) {
+            $hasReservation = $this->employeModel->verifReservationEmploye($employe['IDENTIFIANT_EMPLOYE']);
+            $reservations[$employe['IDENTIFIANT_EMPLOYE']] = $hasReservation;
+        }
+
+        // Création des actions pour chaque employé
+        // et ajout des informations demandées par les colonnes
         $actions = [];
         foreach ($employes as &$employe) {
             $employe['ID'] = $employe['IDENTIFIANT_EMPLOYE'];
-            $actions[$employe['IDENTIFIANT_EMPLOYE']] = [
-                'info' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'], 'icone' => 'fa-solid fa-circle-info'],
+
+            $actions[$employe['IDENTIFIANT_EMPLOYE']]['info'] = [
+                'attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
+                'icone' => 'fa-solid fa-circle-info'
             ];
+
             if ($_SESSION['userRole'] == '1') {
-                $actions[$employe['IDENTIFIANT_EMPLOYE']] += [
-                    'modifier' => ['attributs' => ['class' => 'btn', 'title' => 'Modifier'], 'icone' => 'fa-solid fa-pen'],
-                    'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer'], 'icone' => 'fa-solid fa-trash-can'],
+                $actions[$employe['IDENTIFIANT_EMPLOYE']]['modifier'] = [
+                    'attributs' => ['class' => 'btn', 'title' => 'Modifier'],
+                    'icone' => 'fa-solid fa-pen'
+                ];
+
+                $actions[$employe['IDENTIFIANT_EMPLOYE']]['supprimer'] = [
+                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer',
+                        'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
+                        && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
+                        'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']
+                    ],
+                    'icone' => 'fa-solid fa-trash-can'
                 ];
             }
         }
 
+        $erreur = $this->erreur;
+        $success = $this->success;
+
         require __DIR__ . '/../views/employes.php';
     }
+
     public function post()
     {
         $this->setFiltres($_POST['filtres'] ?? []);
@@ -89,9 +114,9 @@ class EmployesController extends FiltresController
         // Vérifier si une demande de suppression est effectuée
         if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId'])) {
             try {
-                $this->erreur = $this->supprimerEmploye();
+                $this->success = $this->supprimerEmploye();
             } catch (\Exception $e) {
-                $this->success = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
+                $this->erreur = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
             }
         }
 

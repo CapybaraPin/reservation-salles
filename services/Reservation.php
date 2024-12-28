@@ -13,7 +13,7 @@ class Reservation
      */
     public function getNbReservations($filtre = [])
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         $sql = "SELECT COUNT(*) 
                 FROM reservation
@@ -45,7 +45,7 @@ class Reservation
      */
     public function getReservations($offset = 0, $filtre = [], $limit = null)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         if (is_null($limit)) {
             $limit = Config::get('NB_LIGNES');

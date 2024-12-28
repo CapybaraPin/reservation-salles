@@ -26,7 +26,7 @@ class Salle
      * @return mixed, Retourne la liste des salles obtenue
      */
     public function getSalles($offset = 0, $filtre = [], $limit = null) {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         if (is_null($limit)) {
             $limit = Config::get('NB_LIGNES');
@@ -58,7 +58,7 @@ class Salle
      */
     public function ajouterSalle($nom, $capacite, $videoProjecteur, $ecranXXL, $idOrdinateur)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         // Vérification des données
         if (empty($nom)) {
@@ -101,7 +101,7 @@ class Salle
      * @return mixed Retourne le nombre total de salles
      */
     public function getNbSalles() {
-        global $pdo;
+        $pdo = Database::getPDO();;
 
         $req = $pdo->prepare("SELECT COUNT(*) FROM salle");
         $req->execute();

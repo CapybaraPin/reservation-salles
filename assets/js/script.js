@@ -14,17 +14,17 @@ const togglePasswordButton = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("motdepasse");
 const passwordIcon = document.getElementById("passwordIcon");
 
-togglePasswordButton.addEventListener("click", () => {
-    if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-        passwordIcon.classList.remove("fa-eye");
-        passwordIcon.classList.add("fa-eye-slash");
-    } else {
-        passwordInput.type = "password";
-        passwordIcon.classList.remove("fa-eye-slash");
-        passwordIcon.classList.add("fa-eye");
-    }
-});
+// togglePasswordButton.addEventListener("click", () => {
+//     if (passwordInput.type === "password") {
+//         passwordInput.type = "text";
+//         passwordIcon.classList.remove("fa-eye");
+//         passwordIcon.classList.add("fa-eye-slash");
+//     } else {
+//         passwordInput.type = "password";
+//         passwordIcon.classList.remove("fa-eye-slash");
+//         passwordIcon.classList.add("fa-eye");
+//     }
+// });
 
 /*
  * Gestion de la suppression d'un employé

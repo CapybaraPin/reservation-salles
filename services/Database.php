@@ -15,7 +15,36 @@ use PDOException;
  */
 class Database
 {
-    private $pdo;
+
+    /**
+     * Instance unique de la classe PDO.
+     *
+     * @var PDO|null
+     */
+    private static $pdo;
+
+
+    /**
+     * Constructeur de la classe Database.
+     */
+    private function __construct()
+    {
+        $this->initialiserPDO();
+    }
+
+    /**
+     * Méthode statique pour obtenir une instance unique PDO
+     *
+     * @return PDO Retourne une instance de la classe Database.
+     */
+    public static function getPDO()
+    {
+        if (self::$pdo === null) {
+            new Database();
+        }
+
+        return self::$pdo;
+    }
 
     /**
      * Établit une connexion à la base de données et retourne l'instance PDO.
@@ -24,11 +53,9 @@ class Database
      * charset, utilisateur et mot de passe) récupérées à partir du fichier `.env` via la classe `Config`.
      * Si la connexion échoue, une exception PDOException est levée.
      *
-     * @return PDO|null Retourne une instance PDO représentant la connexion à la base de données,
-     *                  ou `null` en cas d'échec de la connexion.
      * @throws PDOException Si la connexion échoue, une exception est lancée.
      */
-    public function getPDO()
+    private function initialiserPDO()
     {
         try {
             // Récupère les informations de configuration depuis le fichier .env
@@ -45,10 +72,8 @@ class Database
                 PDO::ATTR_EMULATE_PREPARES => false
             ];
 
-            $this->pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=$charset", $user, $password, $options);
-            $this->pdo->exec("SET CHARACTER SET utf8");
-
-            return $this->pdo;
+            self::$pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=$charset", $user, $password, $options);
+            self::$pdo->exec("SET CHARACTER SET utf8");
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         }
