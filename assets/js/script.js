@@ -1,6 +1,77 @@
 const navbarToggler = document.querySelector(".navbar-burger");
 const contentNavBar = document.querySelector(".collapse");
 
+// Sélectionner le bouton "Suivant" et le conteneur de contenu
+const nextButton = document.getElementById('next-button');
+const contentSection = document.getElementById('content-section');
+const form = document.querySelector('form');  // Sélectionner le formulaire pour pouvoir gérer la soumission
+
+// Variable pour suivre l'étape actuelle
+let currentStep = 1;
+
+// Ajouter un écouteur d'événement pour le clic sur "Suivant"
+nextButton.addEventListener('click', (event) => {
+    event.preventDefault();  // Empêcher le comportement par défaut (soumission immédiate)
+
+    if (currentStep === 1) {
+        // Étape 1 : Remplacer avec le contenu de la première étape
+        contentSection.innerHTML = `
+            <div class="row">
+                <!-- Nouvelle liste déroulante -->
+                <div class="form-group mt-1 mb-1">
+                    <label class="label-form" for="typeReservation">Nouvelle liste déroulante</label>
+                    <select class="form-select" id="newSelection" name="newSelection">
+                        <option value="0">Sélectionner un type</option>
+                        <option value="1">Type 1</option>
+                        <option value="2">Type 2</option>
+                    </select>
+                </div>
+            </div>
+        `;
+        currentStep++; // Passer à l'étape suivante
+    } else if (currentStep === 2) {
+        // Étape 2 : Remplacer avec le contenu de la deuxième étape
+        contentSection.innerHTML = `
+            <div class="row">
+                <!-- Champ Nom formateur -->
+                <div class="form-group mb-1">
+                    <label class="label-form" for="nomFormateur">Nom du formateur</label>
+                    <input class="form-control" id="nomFormateur" name="nomFormateur" type="text" placeholder="Entrez le nom du formateur">
+                </div>
+                <!-- Champ Prénom formateur -->
+                <div class="form-group mt-1 mb-1">
+                    <label class="label-form" for="prenomFormateur">Prénom du formateur</label>
+                    <input class="form-control" id="prenomFormateur" name="prenomFormateur" type="text"
+                           placeholder="Entrez le prénom du formateur">
+                </div>
+                <!-- Champ Téléphone formateur -->
+                <div class="form-group mt-1 mb-1">
+                    <label class="label-form" for="telephoneFormateur">Téléphone du formateur</label>
+                    <input class="form-control" id="telephoneFormateur" name="telephoneFormateur" type="text"
+                           placeholder="Entrez le téléphone du formateur">
+                </div>
+                <!-- Champ Sujet formation -->
+                <div class="form-group mt-1 mb-1">
+                    <label class="label-form" for="sujetFormation">Sujet de la formation</label>
+                    <input class="form-control" id="sujetFormation" name="sujetFormation" type="text"
+                           placeholder="Sujet de la formation">
+                </div>
+            </div>
+        `;
+        nextButton.textContent = 'Réserver'; // Changer le texte du bouton
+        nextButton.setAttribute('type', 'submit'); // Modifier le type en "submit"
+        currentStep++; // Passer à l'étape suivante
+    }
+});
+
+// Ajouter un écouteur pour la soumission du formulaire
+form.addEventListener('submit', (event) => {
+    // Vous pouvez ajouter des actions ici avant la soumission réelle
+    console.log('Formulaire soumis');
+});
+
+
+
 const toggleNav = e => {
     navbarToggler.classList.toggle("open");
     const ariaToggle = navbarToggler.getAttribute("aria-expanded") === "true" ? "false" : "true";
