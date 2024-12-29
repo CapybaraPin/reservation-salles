@@ -15,7 +15,7 @@
 function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [], $page = null, $pageMax = null, $filtres = [])
 {
     // Début du tableau HTML
-    $html = '<div class="row">
+    $html = '<div class="row mb-5">
                <div class="col-12">
                    <div class="border border-1 rounded rounded-4 shadow-sm">
                        <p class="p-3 pb-0 fw-bold">' . htmlspecialchars($titre) . '
