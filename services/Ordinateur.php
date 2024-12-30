@@ -37,7 +37,7 @@ class Ordinateur
     }
 
     /**
-     * Permet de récupérer la liste des oridnateur pour une salle dans la base de donnée
+     * Permet de récupérer la liste des ordinateurs pour une salle dans la base de donnée
      * @param $idOrdinateur
      * @return array, Retourne la liste des ordinateurs pour une salle
      */
@@ -51,7 +51,7 @@ class Ordinateur
     }
 
     /**
-     * Permet d'ajouter un groupe d'ordinateur dans la base de donnée
+     * Permet d'ajouter un groupe d'ordinateurs dans la base de donnée
      * @param $nbOrdinateurs int le nombre d'ordinateurs
      * @param $imprimante bool si le groupe possède une imprimante
      * @param $typeOrdinateur int le type d'ordinateur
@@ -72,6 +72,26 @@ class Ordinateur
     }
 
     /**
+     * Permet de modifier un groupe d'ordinateurs dans la base de donnée
+     * @param $idOrdinateur int l'identifiant du groupe d'ordinateurs
+     * @param $nbOrdinateurs int le nombre d'ordinateurs
+     * @param $imprimante bool si le groupe possède une imprimante
+     * @param $typeOrdinateur int le type d'ordinateur
+     */
+    public function modifierGroupeOrdinateur($idOrdinateur, $nbOrdinateurs, $imprimante, $typeOrdinateur)
+    {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("UPDATE groupeOrdinateur SET nbOrdinateur = :nbOrdinateurs, imprimante = :imprimante, idType = :typeOrdinateur WHERE identifiant = :idOrdinateur");
+        $req->execute([
+            'idOrdinateur' => $idOrdinateur,
+            'nbOrdinateurs' => $nbOrdinateurs,
+            'imprimante' => $imprimante,
+            'typeOrdinateur' => $typeOrdinateur
+        ]);
+    }
+
+    /**
      * Permet d'ajouter un logiciel à un ordinateur
      * @param $idOrdinateur int l'identifiant de l'ordinateur
      * @param $idLogiciel int l'identifiant du logiciel
@@ -81,6 +101,22 @@ class Ordinateur
         $pdo = Database::getPDO();
 
         $req = $pdo->prepare("INSERT INTO ordinateurLogiciel (idOrdinateur, idLogiciel) VALUES (:idOrdinateur, :idLogiciel)");
+        $req->execute([
+            'idOrdinateur' => $idOrdinateur,
+            'idLogiciel' => $idLogiciel
+        ]);
+    }
+
+    /**
+     * Permet de supprimer le logiciel associé à un ordinateur
+     * @param $idOrdinateur int l'identifiant de l'ordinateur
+     * @param $idLogiciel int l'identifiant du logiciel
+     */
+    public function supprimerLogiciel($idOrdinateur, $idLogiciel)
+    {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("DELETE FROM ordinateurLogiciel WHERE idOrdinateur = :idOrdinateur AND idLogiciel = :idLogiciel");
         $req->execute([
             'idOrdinateur' => $idOrdinateur,
             'idLogiciel' => $idLogiciel

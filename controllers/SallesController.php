@@ -70,26 +70,22 @@ class SallesController extends FiltresController
                     $this->listeSalles();
             }
             $this->supprimerSalle($salleId);
+        } else {
+            $this->deconnexion();
+            $this->ajouterSalle();
+
+            $this->setFiltres($_POST['filtres'] ?? []);
+
+            $filtresDisponibles = self::FILTRES_DISPONIBLES;
+            $this->setFiltresDisponibles($filtresDisponibles);
+            if (isset($_POST['ajouter_filtre'])) {
+                $this->ajouterFiltre($_POST['nouveau_filtre']);
+            } elseif (isset($_POST['supprimer_filtre'])) {
+                $this->supprimerFiltre($_POST['supprimer_filtre']);
+            }
+
+            $this->listeSalles();
         }
-
-        $this->deconnexion();
-        $this->ajouterSalle();
-
-        $erreurs = $this->erreurs;
-        $success = $this->success;
-
-        $this->setFiltres($_POST['filtres'] ?? []);
-
-        $filtresDisponibles = self::FILTRES_DISPONIBLES;
-        $this->setFiltresDisponibles($filtresDisponibles);
-        if (isset($_POST['ajouter_filtre'])) {
-            $this->ajouterFiltre($_POST['nouveau_filtre']);
-        } elseif (isset($_POST['supprimer_filtre'])) {
-            $this->supprimerFiltre($_POST['supprimer_filtre']);
-        }
-
-
-        $this->listeSalles();
     }
 
     /**
@@ -152,6 +148,11 @@ class SallesController extends FiltresController
                     'attributs' => ['href' => '/salle/'.$salle["ID"].'/view', 'class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
                     'icone' => 'fa-solid fa-circle-info'
                 ];
+            } else {
+                $actions[$salle['ID_SALLE']]['info'] = [
+                    'attributs' => ['class' => 'btn btn-nav disabled', 'title' => 'Plus d\'informations', 'disabled' => 'disabled'],
+                    'icone' => 'fa-solid fa-circle-info'
+                ];
             }
 
             $actions[$salle['ID_SALLE']]['modifier'] = [
@@ -209,24 +210,55 @@ class SallesController extends FiltresController
     }
 
     /**
-     * Fonction qui gère la modification d'une salle
-     * @param $salleId int Identifiant de la salle
+     * Gère la modification d'une salle
+     * @param int $salleId
      */
     public function modifierSalle($salleId)
     {
         $salle = $this->salleModel->getSalle($salleId);
 
+        if (isset($_POST['supprimerLogiciel'])) {
+            $logicielId = htmlspecialchars($_POST['logicielId']);
+            $nbReservations = $this->ordinateurModel->supprimerLogiciel($salle['ID_ORDINATEUR'], $logicielId);
+        }
+
         try {
             $ordinateurs = $this->ordinateurModel->getOrdinateursSalle($salleId);
             $logicielsInstalles = $this->ordinateurModel->getLogicielsOrdinateur($salle['ID_ORDINATEUR']);
             $logiciels = $this->ordinateurModel->getLogiciels();
-            $nbReservations = $this->reservationModel->getNbReservationsSalle($salleId);
             $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
         } catch (\Exception $e) {
-            $groupeOrdinateur = null;
+            $ordinateurs = null;
             $logiciels = null;
             $logicielsInstalles = null;
             $typesOrdinateur = null;
+        }
+
+        if (isset($_POST['nom'])
+            && isset($_POST['capacite'])) {
+
+            // Récupérer les données du formulaire pour la salle
+            $nom = htmlspecialchars($_POST['nom']);
+            $capacite = (int)htmlspecialchars($_POST['capacite']);
+            $videoProjecteur = isset($_POST['videoProjecteur']) ? 1 : 0;
+            $ecranXXL = isset($_POST['ecranXXL']) ? 1 : 0;
+
+            // Récupérer les données du formulaire pour les ordinateurs
+            $nbOrdinateurs = isset($_POST['nbOrdinateurs']) && is_numeric($_POST['nbOrdinateurs']) ? (int)$_POST['nbOrdinateurs'] : 0;
+            $imprimante = isset($_POST['imprimante']) ? 1 : 0;
+            $typeOrdinateur = htmlspecialchars($_POST['typeOrdinateur']);
+            $logicielsSelectionnes = isset($_POST['logiciels']) ? $_POST['logiciels'] : [];
+
+            try {
+                // Modifier les informations de la salle
+                $this->salleModel->modifierSalle($salleId, $nom, $capacite, $videoProjecteur, $ecranXXL);
+
+                // Modifier les informations du groupe d'ordinateurs
+                $this->ordinateurModel->modifierGroupeOrdinateur($salle['ID_ORDINATEUR'], $nbOrdinateurs, $imprimante, $typeOrdinateur);
+
+            } catch (\Exception $e) {
+                $this->erreurs = $e->getMessage();
+            }
         }
 
         require __DIR__ . '/../views/modifierSalle.php';

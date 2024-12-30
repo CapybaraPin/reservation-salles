@@ -107,12 +107,16 @@ $router->get('/salle/{salleId}/edit', function($salleId) {
     $salleController->get($salleId, "edit");
 });
 
-$router->get('/salle/{salleId}/edit', function($salleId) {
+$router->post('/salle/{salleId}/edit', function($salleId) {
     $salleController = new SallesController();
     $salleController->post($salleId, "edit");
 });
 
-// Définition des routes pour les réservations
+/*
+ * Définition des routes pour les réservations
+ */
+
+// Liste des réservations
 $router->get('/reservations', [new ReservationsController(), 'get']);
 $router->post('/reservations', [new ReservationsController(), 'post']);
 

@@ -80,6 +80,11 @@ p {
     color: var(--color-label-text);
 }
 
+.disabled {
+    border: none !important;
+    color: var(--color-text-dark) !important;
+}
+
 /* État actif et survol des boutons de navigation */
 .btn-nav-active {
     background-color: var(--color-border-light);

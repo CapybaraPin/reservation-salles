@@ -13,9 +13,16 @@ class Salle
      * @return mixed, Retourne la salle obtenue
      */
     public function getSalle($idSalle) {
-        global $pdo;
+        $pdo = Database::getPDO();
 
-        $req = $pdo->prepare("SELECT identifiant AS 'ID_SALLE', nom AS 'NOM_SALLE', capacite AS 'CAPACITE' , videoProjecteur AS 'VIDEO_PROJECTEUR', ecranXXL AS 'ECRAN_XXL', idOrdinateur AS 'ID_ORDINATEUR' FROM salle WHERE identifiant = :id");
+        $req = $pdo->prepare("SELECT identifiant AS 'ID_SALLE', 
+                                           nom AS 'NOM_SALLE', 
+                                           capacite AS 'CAPACITE' , 
+                                           videoProjecteur AS 'VIDEO_PROJECTEUR', 
+                                           ecranXXL AS 'ECRAN_XXL', 
+                                           idOrdinateur AS 'ID_ORDINATEUR' 
+                                    FROM salle 
+                                    WHERE identifiant = :id");
         $req->execute(['id' => $idSalle]);
 
         return $req->fetch();
@@ -137,4 +144,45 @@ class Salle
         $req->execute([$idSalle]);
     }
 
+    /**
+     * Met à jour une salle existante dans la base de données
+     * @param int $idSalle l'identifiant de la salle à modifier
+     * @param string $nom le nom de la salle
+     * @param int $capacite la capacité de la salle
+     * @param bool $videoProjecteur si la salle a un video projecteur
+     * @param bool $ecranXXL si la salle a un écran XXL
+     * @throws \Exception si les données ne sont pas valides
+     */
+    public function modifierSalle($idSalle, $nom, $capacite, $videoProjecteur, $ecranXXL)
+    {
+        $pdo = Database::getPDO();
+
+        // Validation des données
+        $erreurs = [];
+        if (empty($nom)) {
+            $erreurs['nom'] = "Le champ nom est requis.";
+        }
+        if ($capacite <= 0) {
+            $erreurs['capacite'] = "La capacité doit être un nombre positif.";
+        }
+
+        if (!empty($erreurs)) {
+            throw new \Exception(json_encode($erreurs));
+        }
+
+        // Mise à jour de la salle
+        $req = $pdo->prepare("UPDATE salle 
+                              SET nom = :nom, 
+                                  capacite = :capacite, 
+                                  videoProjecteur = :videoProjecteur, 
+                                  ecranXXL = :ecranXXL
+                              WHERE identifiant = :idSalle");
+        $req->execute([
+            'nom' => $nom,
+            'capacite' => $capacite,
+            'videoProjecteur' => $videoProjecteur,
+            'ecranXXL' => $ecranXXL,
+            'idSalle' => $idSalle
+        ]);
+    }
 }

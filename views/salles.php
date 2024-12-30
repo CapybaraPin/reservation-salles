@@ -35,17 +35,11 @@ require_once 'utils/tableau.php';
                         </div>
                     </div>
 
-                    <?php if (!empty($success)) : ?>
+                    <?php if (!empty($success)) { ?>
                         <div class="alert alert-success">
                             <?= htmlspecialchars($success) ?>
                         </div>
-                    <?php endif; ?>
-
-                    <?php if (isset($erreurs)) {
-                        var_dump($erreurs);
-                    }else {
-                        echo "Aucune erreur";
-                    } ?>
+                    <?php } ?>
 
                     <?php if (!empty($erreurs)) { ?>
                         <div class="alert alert-danger">
@@ -61,9 +55,7 @@ require_once 'utils/tableau.php';
                     <?php include 'elements/filtres.php'; ?>
 
                     <!-- Tableau des salles -->
-                    <?php
-                        echo genererTableau($salles, $colonnes, $titre, $nbSalles, $actions, $page, $pageMax);
-                    ?>
+                    <?= genererTableau($salles, $colonnes, $titre, $nbSalles, $actions, $page, $pageMax); ?>
                 </div>
             </div>
         </div>
