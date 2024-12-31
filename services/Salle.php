@@ -3,6 +3,7 @@
 namespace services;
 
 use PDO;
+use services\exceptions\FieldValidationException;
 
 class Salle
 {
@@ -93,12 +94,12 @@ class Salle
             $erreurs["ecranXXL"] = "Le champ ecranXXL doit être un booléen.";
         }
 
-        if (!is_numeric($idOrdinateur)){
-            $erreurs["idOrdinateur"] = "Le champ idOrdinateur doit être un nombre.";
+        if (!is_numeric((int)$idOrdinateur)) {
+            $erreurs["idOrdinateur"] = "Le format du nombre d'ordinateurs n'est pas valide.";
         }
 
         if (!empty($erreurs)) {
-            throw new \Exception($erreurs);
+            throw new FieldValidationException($erreurs);
         }
 
         // Insertion de la salle
@@ -167,7 +168,7 @@ class Salle
         }
 
         if (!empty($erreurs)) {
-            throw new \Exception(json_encode($erreurs));
+            throw new FieldValidationException($erreurs);
         }
 
         // Mise à jour de la salle

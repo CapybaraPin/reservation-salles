@@ -21,6 +21,9 @@ if (version_compare(PHP_VERSION, '5.3', '<')) {
 // Autoload de Composer
 require __DIR__ . '/vendor/autoload.php';
 
+// Récupération des exceptions
+require __DIR__ . '/services/exceptions/FieldValidationException.php';
+
 // Récupération des classes du modèle
 require __DIR__ . '/services/Database.php';
 require __DIR__ . '/services/Config.php';

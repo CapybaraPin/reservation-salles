@@ -44,7 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const boutonSuivantSalle = document.querySelector('#boutonSuivantSalle');
     boutonSuivantSalle.addEventListener('click', (event) => {
         const champsSalle = [
-
+            {
+                element: document.getElementById('nom'),
+                condition: (champ) => champ.value.trim() !== '',
+                messageErreur: 'Veuillez entrer un nom valide.'
+            },
             {
                 element: document.getElementById('capacite'),
                 condition: (champ) => champ.value.trim() !== '' && !isNaN(champ.value) && parseInt(champ.value) > 0,

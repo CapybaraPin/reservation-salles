@@ -37,16 +37,16 @@ require_once 'utils/tableau.php';
 
                     <?php if (!empty($success)) { ?>
                         <div class="alert alert-success">
-                            <?= htmlspecialchars($success) ?>
+                            <?= $success ?>
                         </div>
                     <?php } ?>
 
                     <?php if (!empty($erreurs)) { ?>
                         <div class="alert alert-danger">
                             <ul>
-                                <?php foreach ($erreurs as $champ => $message) : ?>
-                                    <li><strong><?= htmlspecialchars($champ) ?> :</strong> <?= htmlspecialchars($message) ?></li>
-                                <?php endforeach; ?>
+                                <?php foreach ($erreurs as $champ => $message) { ?>
+                                    <li><?= $message ?></li>
+                                <?php } ?>
                             </ul>
                         </div>
                     <?php } ?>

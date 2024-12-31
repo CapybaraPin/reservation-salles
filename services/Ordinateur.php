@@ -59,6 +59,10 @@ class Ordinateur
      */
     public function ajouterGroupeOrdinateur($nbOrdinateurs, $imprimante, $typeOrdinateur)
     {
+        if ($nbOrdinateurs <= 0){
+            return null;
+        }
+
         $pdo = Database::getPDO();
 
         $req = $pdo->prepare("INSERT INTO groupeOrdinateur (nbOrdinateur, imprimante, idType) VALUES (:nbOrdinateurs, :imprimante, :typeOrdinateur)");

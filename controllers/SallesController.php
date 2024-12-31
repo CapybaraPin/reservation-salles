@@ -2,10 +2,9 @@
 
 namespace controllers;
 
-use http\Env\Request;
 use PDO;
-use services\Auth;
 use services\Config;
+use services\exceptions\FieldValidationException;
 
 /**
  * Contrôleur pour la page des salles
@@ -170,6 +169,9 @@ class SallesController extends FiltresController
         $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
         $logiciels = $this->ordinateurModel->getLogiciels();
 
+        $erreurs = $this->erreurs;
+        $success = $this->success;
+
         require __DIR__ . '/../views/salles.php';
     }
 
@@ -193,16 +195,18 @@ class SallesController extends FiltresController
             // Ajout du groupe d'ordinateurs
             $idGroupeOrdinateur = $this->ordinateurModel->ajouterGroupeOrdinateur($nbOrdinateurs, $imprimante, $typeOrdinateur);
 
-            // Ajout des logiciels si présents
-            foreach ($logiciels as $logiciel) {
-                if (!empty($logiciel) && $logiciel != -1) {
-                    $this->ordinateurModel->ajouterLogiciel($idGroupeOrdinateur, htmlspecialchars($logiciel));
+            if (!is_null($idGroupeOrdinateur)) {
+                // Ajout des logiciels si présents
+                foreach ($logiciels as $logiciel) {
+                    if (!empty($logiciel) && $logiciel != -1) {
+                        $this->ordinateurModel->ajouterLogiciel($idGroupeOrdinateur, $logiciel);
+                    }
                 }
             }
 
-            // Ajout de la salle
             try {
                 $this->salleModel->ajouterSalle($nom, $capacite, $videoProjecteur, $ecranXXL, $idGroupeOrdinateur);
+                $this->success = "La salle <b>« $nom »</b> a bien été ajoutée.";
             } catch (FieldValidationException $e) {
                 $this->erreurs = $e->getErreurs();
             }
