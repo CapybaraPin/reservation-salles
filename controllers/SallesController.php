@@ -224,6 +224,8 @@ class SallesController extends FiltresController
         if (isset($_POST['supprimerLogiciel'])) {
             $logicielId = htmlspecialchars($_POST['logicielId']);
             $nbReservations = $this->ordinateurModel->supprimerLogiciel($salle['ID_ORDINATEUR'], $logicielId);
+
+            $this->erreurs = "Le logiciel a bien été supprimé ce cette salle.";
         }
 
         try {

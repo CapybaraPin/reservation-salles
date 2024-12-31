@@ -34,6 +34,22 @@
                             </div>
                         </div>
 
+                        <?php if (!empty($success)) { ?>
+                            <div class="alert alert-success">
+                                <?= $success ?>
+                            </div>
+                        <?php } ?>
+
+                        <?php if (!empty($erreurs)) { ?>
+                            <div class="alert alert-danger">
+                                <ul>
+                                    <?php foreach ($erreurs as $champ => $message) { ?>
+                                        <li><?= $message ?></li>
+                                    <?php } ?>
+                                </ul>
+                            </div>
+                        <?php } ?>
+                        
                         <!-- Formulaire de modification de la salle et des ordinateurs -->
                         <div class="row">
                             <div class="col-12">
