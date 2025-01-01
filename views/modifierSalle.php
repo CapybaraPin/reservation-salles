@@ -49,7 +49,7 @@
                                 </ul>
                             </div>
                         <?php } ?>
-                        
+
                         <!-- Formulaire de modification de la salle et des ordinateurs -->
                         <div class="row">
                             <div class="col-12">

@@ -15,7 +15,7 @@
                         <div class="row mb-3">
                             <label for="selectLogiciel">Choisir un logiciel :</label>
 
-                                <select id="selectLogiciel" name="logiciel" class="form-select" required>
+                                <select id="selectLogiciel" name="logicielId" class="form-select" required>
                                     <option value="" disabled selected>Sélectionnez un logiciel</option>
                                     <?php foreach ($logiciels as $logiciel) : ?>
                                         <option value="<?= $logiciel['identifiant']; ?>">

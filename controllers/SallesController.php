@@ -42,6 +42,7 @@ class SallesController extends FiltresController
                     $this->consultationSalle($salleId);
                     break;
                 case 'edit':
+                    $this->ajouterLogiciel($salleId); 
                     $this->modifierSalle($salleId);
                     break;
                 default:
@@ -262,6 +263,13 @@ class SallesController extends FiltresController
                 // Modifier les informations du groupe d'ordinateurs
                 $this->ordinateurModel->modifierGroupeOrdinateur($salle['ID_ORDINATEUR'], $nbOrdinateurs, $imprimante, $typeOrdinateur);
 
+                $success = "Modification de la salle avec succès.";
+
+                $salle = $this->salleModel->getSalle($salleId);
+                $ordinateurs = $this->ordinateurModel->getOrdinateursSalle($salleId);
+                $logicielsInstalles = $this->ordinateurModel->getLogicielsOrdinateur($salle['ID_ORDINATEUR']);
+                $logiciels = $this->ordinateurModel->getLogiciels();
+                $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
             } catch (\Exception $e) {
                 $this->erreurs = $e->getMessage();
             }
@@ -281,6 +289,23 @@ class SallesController extends FiltresController
             $this->salleModel->supprimerSalle($salleId, $nbReservations);
 
             header('Location: /salles');
+        }
+    }
+
+    /**
+     *
+     * @param $salleId
+     * @return void
+     */
+    public function ajouterLogiciel($salleId){
+        if (isset($_POST["ajouterLogiciel"]) && isset($_POST["logicielId"])){
+            $salle = $this->salleModel->getSalle($salleId);
+            $logicielId = htmlspecialchars($_POST["logicielId"]);
+
+            die("test");
+            $this->ordinateurModel->ajouterLogiciel($salle["ID_ORDINATEUR"], $logicielId);
+
+            $this->success = "Vous avez bien ajouté le logiciel à la salle.";
         }
     }
 }

@@ -58,11 +58,36 @@ p {
     font-family: monospace;
 }
 
+/* typographie */
+h2 {
+    font-family: "Inter" !important;
+    font-weight: 580 !important;xzz
+    color: var(--color-heading) !important;
+}
+
+.sous-titre {
+    font-family: "Inter" !important;
+    font-weight: 300 !important;
+    color: var(--color-text-dark) !important;
+    font-size: 16px !important;
+}
 
 /* Navigation */
 .nav {
     display: inline-block;
     border-bottom: var(--color-border-light) 1px solid;
+}
+
+.btn{
+    font-weight: 500 !important;
+    font-family: "Inter" !important;
+    border: 1px #D5D7DA solid !important;
+    border-radius: 8px !important;
+    color: var(--color-label-text) !important;
+}
+
+.btn:hover{
+    background-color: #EEEEEE    !important;
 }
 
 /* Boutons de navigation */
