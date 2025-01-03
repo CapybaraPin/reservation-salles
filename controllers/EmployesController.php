@@ -79,7 +79,7 @@ class EmployesController extends FiltresController
                 ];
 
                 $actions[$employe['IDENTIFIANT_EMPLOYE']]['supprimer'] = [
-                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer',
+                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerEmploye',
                         'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
                         && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
                         'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']

@@ -32,7 +32,7 @@ if(togglePasswordButton != null) {
  * Gestion de la suppression d'un employé
  */
 function creerModalSuppressionEmploye(){
-    const button = event.target.closest('.btn-nav[title="Supprimer"]');
+    const button = event.target.closest('.btn-nav[title="SupprimerEmploye"]');
 
     // Met à jour le hash dans l'URL
     const employeeId = button.getAttribute('href').split('#')[1];
@@ -64,12 +64,41 @@ function creerModalSuppressionEmploye(){
 }
 
 document.addEventListener('click', function (event) {
-    if (event.target.closest('.btn-nav[title="Supprimer"]')) {
+    if (event.target.closest('.btn-nav[title="SupprimerEmploye"]')) {
         event.preventDefault(); // Empêche le comportement par défaut
 
         creerModalSuppressionEmploye();
     }
 });
+
+//Suppression d'une réservation
+function creerModalSuppressionReservation(){
+
+    const button = event.target.closest('.btn-nav[title="SupprimerReservation"]');
+
+    const reservationID = button.getAttribute('href').split('#')[1];
+    window.location.hash = `#${reservationID}`;
+
+    // Récupère le modal et ses éléments
+    const modal = document.getElementById('modal_supprimer_reservation');
+
+    const hiddenInput = modal.querySelector('input[name="idReservation"]');
+    hiddenInput.value = reservationID;
+
+    // Ouvre le modal
+    const bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+}
+
+document.addEventListener('click', function (event) {
+    if (event.target.closest('.btn-nav[title="SupprimerReservation"]')) {
+        event.preventDefault(); // Empêche le comportement par défaut
+
+        creerModalSuppressionReservation();
+    }
+});
+
+
 
 // Gestion du hash au chargement de la page pour ouvrir le modal correspondant
 document.addEventListener('DOMContentLoaded', () => {

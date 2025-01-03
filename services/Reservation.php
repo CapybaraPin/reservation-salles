@@ -36,6 +36,55 @@ class Reservation
     }
 
     /**
+     * Fonction permettant de récupérer les informations d'une réservation.
+     * @param $idReservation L'identifiant de la réservation.
+     * @return mixed Retourne toutes les informations de la réservation.
+     */
+    public function getReservation($idReservation) {
+
+        $pdo = Database::getPDO();
+
+        $sql = "SELECT
+                    reservation.identifiant AS 'IDENTIFIANT_RESERVATION',
+                    reservation.dateDebut AS 'DATE_DEBUT',
+                    reservation.dateFin AS 'DATE_FIN',
+                    reservation.description AS 'DESCRIPTION',
+                    salle.nom AS 'NOM_SALLE',
+                    activite.type AS 'TYPE_ACTIVITE',
+                    individu.prenom AS 'PRENOM_EMPLOYE',
+                    individu.nom AS 'NOM_EMPLOYE',
+                    individu.identifiant AS 'ID_EMPLOYE'
+                FROM reservation
+                JOIN salle 
+                ON salle.identifiant = reservation.idSalle
+                JOIN activite
+                ON activite.identifiant = reservation.idActivite
+                JOIN individu
+                ON individu.identifiant = reservation.idEmploye 
+                WHERE reservation.identifiant = ?";
+
+        $req = $pdo->prepare($sql);
+        $req->execute([$idReservation]);
+
+        return $req->fetch();
+
+    }
+
+    /**
+     * Fonction permettant la suppression d'une réservation.
+     * @param $idReservation L'identifiant de la réservation à supprimer.
+     * @return bool Retourne si la suppression a bien été effectuée.
+     */
+    public function supprimerReservation($idReservation) {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("DELETE FROM reservation WHERE identifiant = ?");
+        $resultat = $req->execute([$idReservation]);
+
+        return $resultat;
+    }
+
+    /**
      * Récupère la liste des réservations en fonction des filtres
      * passés en paramètre exemple du contenu de $filtre :
      * ['reservation.dateDebut' => ['2021-10-01', PDO::PARAM_STR], ETC...]
