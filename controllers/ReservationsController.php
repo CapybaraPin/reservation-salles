@@ -34,6 +34,17 @@ class ReservationsController extends FiltresController
     ];
 
     /**
+     * Fonction qui gère la consultation d'une salle
+     * @param $salleId int Identifiant de la salle
+     * @return void Affiche la page de consultation d'une
+     */
+    public function consultationReservation($reservationId)
+    {
+        $reservation = $this->reservationModel->getReservations($reservationId);
+        require __DIR__ . '/../views/consultationReservation.php';
+    }
+
+    /**
      * Fonction pour gérer les requêtes GET
      */
     public function get()
@@ -65,7 +76,8 @@ class ReservationsController extends FiltresController
             $reservation["DATE_FIN"] = date_format($dateFin, "d/m/Y H\hi");
             $reservation["DATE_DEBUT"] = date_format($dateDebut, "d/m/Y H\hi");
             $actions[$reservation['IDENTIFIANT_RESERVATION']] = [
-                'info' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'], 'icone' => 'fa-solid fa-circle-info'],
+                'info' => ['attributs' => ['href' => '/reservations/'.$reservation["IDENTIFIANT_RESERVATION"].'/view', 'class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
+                    'icone' => 'fa-solid fa-circle-info'],
             ];
 
             if ($_SESSION['userIndividuId'] == $reservation['ID_EMPLOYE']) {
@@ -101,4 +113,7 @@ class ReservationsController extends FiltresController
 
         $this->get();
         }
+
+
+
 }
