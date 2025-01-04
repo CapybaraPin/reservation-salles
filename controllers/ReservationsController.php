@@ -76,6 +76,9 @@ class ReservationsController extends FiltresController
             }
         }
 
+        $activites= $this->activiteModel->getActivites();
+        $salles = $this->salleModel->getSalles();
+
         require __DIR__ . '/../views/reservations.php';
     }
 

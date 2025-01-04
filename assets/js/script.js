@@ -6,45 +6,55 @@ const btnBack = document.getElementById('btn-back');
 const step1 = document.getElementById('step-1');
 const step2 = document.getElementById('step-2');
 const step3 = document.getElementById('step-3');
+const modal = document.getElementById('ajouterReservation'); // Le modal lui-même
 
 let currentStep = 1;
+
+// Initialisation : le bouton est affiché avec le texte "Fermer"
+btnBack.textContent = 'Fermer';
 
 // Fonction pour passer à l'étape suivante
 btnNext.addEventListener('click', () => {
     if (currentStep === 1) {
+        // Étape 1 -> Étape 2
         step1.style.display = 'none';
         step2.style.display = 'block';
-        btnBack.style.display = 'inline-block'; // Afficher le bouton "Précédent"
-        btnNext.textContent = 'Suivant';
+        btnBack.textContent = 'Précédent'; // Change "Fermer" en "Précédent"
         currentStep++;
-        btnBack.textContent = 'Précédent'; // Changer le texte du bouton
     } else if (currentStep === 2) {
+        // Étape 2 -> Étape 3
         step2.style.display = 'none';
         step3.style.display = 'block';
-        btnNext.textContent = 'Réserver';
-        btnNext.setAttribute('type', 'submit');
+        btnNext.textContent = 'Réserver'; // Change "Suivant" en "Réserver"
+        btnNext.setAttribute('type', 'submit'); // Préparer pour la soumission
         currentStep++;
     }
 });
 
-// Fonction pour revenir à l'étape précédente
+// Fonction pour revenir à l'étape précédente ou fermer le modal
 btnBack.addEventListener('click', () => {
     if (currentStep === 3) {
+        // Étape 3 -> Étape 2
         step3.style.display = 'none';
         step2.style.display = 'block';
-        btnNext.textContent = 'Suivant';
-        btnNext.setAttribute('type', 'button');
+        btnNext.textContent = 'Suivant'; // Revient au texte "Suivant"
+        btnNext.setAttribute('type', 'button'); // Revenir au type "button"
         currentStep--;
-        btnBack.textContent = 'Précédent'; // On garde "Précédent" à l'étape 2
     } else if (currentStep === 2) {
+        // Étape 2 -> Étape 1
         step2.style.display = 'none';
         step1.style.display = 'block';
-        btnBack.style.display = 'none'; // Masquer le bouton "Précédent" à l'étape 1
-        btnNext.textContent = 'Suivant';
+        btnBack.textContent = 'Fermer'; // Change "Précédent" en "Fermer"
         currentStep--;
-        btnBack.textContent = 'Fermer'; // Retour au texte "Fermer" à l'étape 1
+    } else if (currentStep === 1) {
+        // Fermer le modal à l'étape 1
+        const bootstrapModal = bootstrap.Modal.getInstance(modal);
+        bootstrapModal.hide(); // Ferme le modal
     }
 });
+
+
+
 
 
 
