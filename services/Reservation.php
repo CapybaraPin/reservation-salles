@@ -126,4 +126,66 @@ class Reservation
 
         return $req->fetch();
     }
+
+    /**
+     * Permet d'ajouter une réservation dans la base de données
+     * @param $dateDebut date date de début de la réservation
+     * @param $dateFin date date de fin de réservation
+     * @param $salle int identifiant de la salle concernée par la réservation
+     * @param $activite int identifiant de l'activité de la réservation
+     * @param $formateur int identifiant du formateur s'il y en a un
+     * @param $employe int identifiant de l'employé qui a effectué cette réservation
+     * @param $organisation int identifiant de l'organisation qui effectue la réservation
+     * @param $description string description de l'activité effectuée lors de la réservation
+     */
+    public function ajouterReservation($dateDebut, $dateFin, $salle, $activite, $formateur, $employe, $organisation, $description)
+    {
+        $pdo = Database::getPDO();
+
+        // Validation des paramètres
+        $erreurs = [];
+
+        if (empty($dateDebut) || empty($dateFin)) {
+            $erreurs["dates"] = "Les dates de début et de fin sont requises.";
+        } elseif (strtotime($dateDebut) >= strtotime($dateFin)) {
+            $erreurs["dates"] = "La date de début doit être antérieure à la date de fin.";
+        } elseif (strtotime($dateDebut) < strtotime(date('Y-m-d'))) {
+            $erreurs["dates"] = "La date de début ne peut pas être inférieure à aujourd'hui.";
+        }
+
+        if (empty($salle) || !is_numeric($salle)) {
+            $erreurs["salle"] = "Un identifiant de salle valide est requis.";
+        }
+
+        if (empty($activite) || !is_numeric($activite)) {
+            $erreurs["activite"] = "Un identifiant d'activité valide est requis.";
+        }
+        
+
+        if (empty($employe) || !is_numeric($employe)) {
+            $erreurs["employe"] = "Un identifiant d'employé valide est requis.";
+        }
+
+        if (!empty($erreurs)) {
+            throw new \Exception(json_encode($erreurs));
+        }
+
+        // Insertion de la réservation
+        $req = $pdo->prepare(
+            "INSERT INTO reservations (dateDebut, dateFin, salle, activite, formateur, employe, organisation, description) 
+        VALUES (:dateDebut, :dateFin, :salle, :activite, :formateur, :employe, :organisation, :description)"
+        );
+
+        $req->execute([
+            'dateDebut' => $dateDebut,
+            'dateFin' => $dateFin,
+            'salle' => $salle,
+            'activite' => $activite,
+            'formateur' => $formateur,
+            'employe' => $employe,
+            'organisation' => $organisation,
+            'description' => $description
+        ]);
+    }
+
 }
