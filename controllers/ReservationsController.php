@@ -40,7 +40,12 @@ class ReservationsController extends FiltresController
      */
     public function consultationReservation($reservationId)
     {
-        $reservation = $this->reservationModel->getReservations($reservationId);
+        $reservation = $this->reservationModel->getReservation($reservationId);
+        try {
+            $formateur = $this->employeModel->getindividu($reservation['FORMATEUR']);
+        }catch (\Exception $e){
+            $formateur = null;
+        }
         require __DIR__ . '/../views/consultationReservation.php';
     }
 

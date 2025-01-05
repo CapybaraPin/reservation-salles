@@ -119,4 +119,17 @@ class Employe
 
         return $req->rowCount() > 0;
     }
+
+    /**
+     *Permet de récupérer les information d'un individu
+     * @param $idIndividu int identifiant de l'individu rechercher
+     * @return mixed, Retourne l'individu obtenue
+     */
+    public function getindividu($idIndividu){
+        $pdo = Database::getPDO();
+        $req = $pdo->prepare("SELECT nom, prenom, telephone FROM individu WHERE identifiant = :id ");
+        $req->execute(['id' => $idIndividu]);
+        return $req->fetch();
+    }
+
 }

@@ -101,4 +101,29 @@ class Reservation
 
         return $req->fetchColumn();
     }
+
+    /**
+     * Permet de récuperer une réservation dans la base de données.
+     *
+     * @param $id int, L'identifiant de la réservation à récuperer
+     * @return mixed, Retourne la réservation obtenue
+     */
+    public function getReservation($idReservation) {
+        global $pdo;
+
+        $req = $pdo->prepare("SELECT reservation.identifiant as IDENTIFIANT_RESERVATION, dateDebut, dateFin, description, organisme.nomOrganisme AS NOM_ORGANISME,activite.type AS ACTIVITE, salle.nom AS NOM_SALLE, individu.nom AS NOM_EMPLOYE, individu.prenom AS PRENOM_EMPLOYE, reservation.idFormateur AS FORMATEUR    
+                                    FROM reservation 
+                                    JOIN organisme 
+                                    ON reservation.idOrganisation = organisme.identifiant 
+                                    JOIN activite 
+                                    ON reservation.idActivite = activite.identifiant 
+                                    JOIN salle 
+                                    ON reservation.idSalle = salle.identifiant
+                                    JOIN individu 
+                                    ON reservation.idEmploye = individu.identifiant
+                                    WHERE reservation.identifiant = :id");
+        $req->execute(['id' => $idReservation]);
+
+        return $req->fetch();
+    }
 }

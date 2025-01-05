@@ -43,31 +43,31 @@
                                         <tbody>
                                         <tr>
                                             <th scope="row" width="300px">Identifiant</th>
-                                            <td></td>
+                                            <td><?= $reservation["IDENTIFIANT_RESERVATION"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Date de début </th>
-                                            <td></td>
+                                            <td><?= $reservation["dateDebut"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Date de fin </th>
-                                            <td></td>
+                                            <td><?= $reservation["dateFin"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Déscription</th>
-                                            <td></td>
+                                            <td><?= $reservation["description"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Salle</th>
-                                            <td></td>
+                                            <td><?= $reservation["NOM_SALLE"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Activité</th>
-                                            <td></td>
+                                            <td><?= $reservation["ACTIVITE"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Employé</th>
-                                            <td></td>
+                                            <td><?= $reservation["PRENOM_EMPLOYE"] ?> <?= $reservation["NOM_EMPLOYE"] ?></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -77,34 +77,35 @@
                     </div>
 
                     <!-- Informations sur le formateur -->
+                    <?php if ($reservation["FORMATEUR"] != NULL) : ?>
                     <div class="row mt-4 mb-4">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header bg-secondary text-white">
-                                    <h3 class="card-title">Informations du formateur </h3>
+                                    <h3 class="card-title">Informations du formateur et organisme </h3>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">
                                         <tbody>
                                         <tr>
                                             <th scope="row" width="300px">Identifiant</th>
-                                            <td></td>
+                                            <td><?= $reservation["FORMATEUR"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Nom</th>
-                                            <td></td>
+                                            <td><?= $formateur["nom"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Prenom</th>
-                                            <td></td>
+                                            <td><?= $formateur["prenom"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Numéro de téléphone</th>
-                                            <td></td>
+                                            <td><?= $formateur["telephone"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Organisme</th>
-                                            <td></td>
+                                            <td><?= $reservation["NOM_ORGANISME"] ?></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -112,6 +113,30 @@
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
+
+                    <?php if ($reservation["FORMATEUR"] == NULL) : ?>
+                    <div class="row mt-4 mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-secondary text-white">
+                                    <h3 class="card-title">Informations de l'organisme </h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                        <tr>
+                                            <th scope="row" width="300px">Organisme</th>
+                                            <td><?= $reservation["NOM_ORGANISME"] ?></td>
+                                        </tr>
+                                        <tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
 
                 </div>
             </div>
