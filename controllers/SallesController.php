@@ -25,10 +25,10 @@ class SallesController extends FiltresController
      * Liste des filtres disponibles pour les salles
      */
     const FILTRES_DISPONIBLES = [
-        'salle.nom' => ['label' => 'Salle', 'type' => PDO::PARAM_STR],
-        'salle.capacite' => ['label' => 'Capacité', 'type' => PDO::PARAM_INT, 'operateur' => '>='],
-        'salle.videoProjecteur' => ['label' => 'Vidéo Projecteur', 'type' => PDO::PARAM_INT, 'operateur' => '='],
-        'salle.ecranXXL' => ['label' => 'Écran XXL', 'type' => PDO::PARAM_INT, 'operateur' => '=']
+        'nom' => ['label' => 'Salle', 'type' => PDO::PARAM_STR, 'champ' => 'salle.nom'],
+        'capacite' => ['label' => 'Capacité', 'type' => PDO::PARAM_INT, 'operateur' => '>=', 'champ' => 'salle.capacite'],
+        'videoProjecteur' => ['label' => 'Vidéo Projecteur', 'type' => PDO::PARAM_INT, 'operateur' => '=', 'champ' => 'salle.videoProjecteur'],
+        'ecranXXL' => ['label' => 'Écran XXL', 'type' => PDO::PARAM_INT, 'operateur' => '=', 'champ' => 'salle.ecranXXL'],
     ];
 
     /**
