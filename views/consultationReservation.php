@@ -25,7 +25,7 @@
                             <a href="" class="btn btn-primary">
                                 <i class="fa-solid fa-pencil"></i> Modifier
                             </a>
-                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerSalle">
+                            <button class="btn btn-danger" <?php if ($_SESSION['userPrenom'] != $reservation["PRENOM_EMPLOYE"]){ echo 'disabled' ; } ?> data-bs-toggle="modal" data-bs-target="#supprimerSalle">
                                 <i class="fa-solid fa-trash"></i> Supprimer
                             </button>
                         </div>
