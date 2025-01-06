@@ -14,9 +14,9 @@ class EmployesController extends FiltresController
     private $success; // Pour gérer les messages de succès
     private $erreur;  // Pour gérer les messages d'erreur
     const FILTRES_DISPONIBLES = [
-        'nom' => ['label' => 'Nom', 'type' => PDO::PARAM_STR],
-        'prenom' => ['label' => 'Prénom', 'type' => PDO::PARAM_STR],
-        'telephone' => ['label' => 'Téléphone', 'type' => PDO::PARAM_STR],
+        'nom' => ['label' => 'Nom', 'type' => PDO::PARAM_STR, 'champ' => 'nom'],
+        'prenom' => ['label' => 'Prénom', 'type' => PDO::PARAM_STR, 'champ' => 'prenom'],
+        'telephone' => ['label' => 'Téléphone', 'type' => PDO::PARAM_STR, 'champ' => 'telephone'],
     ];
 
     const TITRE = 'Employés';

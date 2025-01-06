@@ -55,7 +55,7 @@ require_once 'utils/tableau.php';
                     <?php include 'elements/filtres.php'; ?>
 
                     <!-- Tableau des salles -->
-                    <?= genererTableau($salles, $colonnes, $titre, $nbSalles, $actions, $page, $pageMax); ?>
+                    <?= genererTableau($salles, $colonnes, $titre, $nbSalles, $actions, $page, $pageMax, $filtres); ?>
                 </div>
             </div>
         </div>

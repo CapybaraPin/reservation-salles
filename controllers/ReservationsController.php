@@ -15,13 +15,13 @@ class ReservationsController extends FiltresController
     private $success; // Pour gérer les messages de succès
     private $erreur;  // Pour gérer les messages d'erreur
     const FILTRES_DISPONIBLES = [
-            'salle.nom' => ['label' => 'Salle', 'type' => PDO::PARAM_STR],
-            'activite.type' => ['label' => 'Activité', 'type' => PDO::PARAM_STR],
-            'reservation.dateDebut' => ['label' => 'Date de début', 'type' => PDO::PARAM_STR, 'operateur' => '>='],
-            'reservation.dateFin' => ['label' => 'Date de fin', 'type' => PDO::PARAM_STR, 'operateur' => '<='],
-            'individu.nom' => ['label' => 'Nom de l\'employé', 'type' => PDO::PARAM_STR],
-            'individu.prenom' => ['label' => 'Prénom de l\'employé', 'type' => PDO::PARAM_STR],
-        ];
+        'salle' => ['label' => 'Salle', 'type' => PDO::PARAM_STR, 'champ' => 'salle.nom'],
+        'type' => ['label' => 'Activité', 'type' => PDO::PARAM_STR, 'champ' => 'activite.type'],
+        'date' => ['label' => 'Date', 'type' => PDO::PARAM_STR, 'input' => 'date', 'champ' => 'reservation.dateDebut, reservation.dateFin'],
+        'periode' => ['label' => 'Periode', 'type' => PDO::PARAM_STR, 'input' => 'datetime-local', 'champ' => 'reservation.dateDebut, reservation.dateFin'],
+        'nom' => ['label' => 'Nom de l\'employé', 'type' => PDO::PARAM_STR, 'champ' => 'individu.nom'],
+        'prenom' => ['label' => 'Prénom de l\'employé', 'type' => PDO::PARAM_STR, 'champ' => 'individu.prenom'],
+    ];
     const FILTRE_DATE = ['reservation.dateDebut' => ['label' => 'Date de début', 'type' => PDO::PARAM_STR, 'operateur' => '>='],
                          'reservation.dateFin' => ['label' => 'Date de fin', 'type' => PDO::PARAM_STR, 'operateur' => '<=']];
     const TITRE = 'Réservations';

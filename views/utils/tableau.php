@@ -113,10 +113,10 @@ function genererLigne($ligne, $colonnes, $actions)
  * de manière POST page par page
  * @param int $page actuelle
  * @param int $pageMax nombre de pages
- * @param array $filtre Filtres de recherche
+ * @param array $filtres Filtres de recherche
  * @return string HTML de la pagination
  */
-function genererPagination(int $page, int $pageMax, $filtres = []): string
+function genererPagination($page, $pageMax, $filtres = [])
 {
     // Précédent mobile et desktop
     $html = '
@@ -127,8 +127,8 @@ function genererPagination(int $page, int $pageMax, $filtres = []): string
 
     // Ajout des filtres sous forme d'inputs cachés
     foreach ($filtres as $champ => $filtresParChamp) {
-        foreach ($filtresParChamp as $indice => $filtre) {
-            $html .= '<input type="hidden" name="filtres[' . htmlspecialchars($champ) . '][' . htmlspecialchars($indice) . ']" value="' . htmlspecialchars($filtre) . '">';
+        foreach ($filtresParChamp as $indice => $valeur) {
+            $html .= genererChampsCaches($champ, $valeur, $indice);
         }
     }
 
@@ -145,7 +145,7 @@ function genererPagination(int $page, int $pageMax, $filtres = []): string
         <div class="col-6 d-flex justify-content-center">
             <nav class="text-center">
                 <ul class="pagination-page">
-';
+    ';
 
     // Génération des numéros de page
     for ($i = 1; $i <= $pageMax; $i++) {
@@ -157,7 +157,7 @@ function genererPagination(int $page, int $pageMax, $filtres = []): string
         // Ajout des filtres pour chaque formulaire de numéro de page
         foreach ($filtres as $champ => $filtresParChamp) {
             foreach ($filtresParChamp as $indice => $filtre) {
-                $html .= '<input type="hidden" name="filtres[' . htmlspecialchars($champ) . '][' . htmlspecialchars($indice) . ']" value="' . htmlspecialchars($filtre) . '">';
+                $html .= genererChampsCaches($champ, $filtre, $indice);
             }
         }
 
@@ -179,7 +179,7 @@ function genererPagination(int $page, int $pageMax, $filtres = []): string
     // Ajout des filtres dans le formulaire "Suivant"
     foreach ($filtres as $champ => $filtresParChamp) {
         foreach ($filtresParChamp as $indice => $filtre) {
-            $html .= '<input type="hidden" name="filtres[' . htmlspecialchars($champ) . '][' . htmlspecialchars($indice) . ']" value="' . htmlspecialchars($filtre) . '">';
+            $html .= genererChampsCaches($champ, $filtre, $indice);
         }
     }
 
@@ -195,5 +195,24 @@ function genererPagination(int $page, int $pageMax, $filtres = []): string
     </div>
 </div>';
 
+    return $html;
+}
+
+/**
+* Génère des champs cachés pour les filtres
+* @param string $champ Nom du champ
+* @param array|string $filtresParChamp Valeurs des filtres
+* @param int $indice Indice du filtre
+* @return string HTML des champs cachés
+*/
+function genererChampsCaches($champ, $filtresParChamp, $indice)
+{
+    $html = '';
+
+    if (is_array($filtresParChamp)) {
+        $html .= '<input type="hidden" name="filtres[' . htmlspecialchars($champ) . '][' . htmlspecialchars($indice) . ']" value="' . htmlspecialchars(json_encode($filtresParChamp)) . '">';
+    } else {
+        $html .= '<input type="hidden" name="filtres[' . htmlspecialchars($champ) . '][' . htmlspecialchars($indice) . ']" value="' . htmlspecialchars($filtresParChamp) . '">';
+    }
     return $html;
 }

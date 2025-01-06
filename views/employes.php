@@ -66,7 +66,7 @@ require_once 'utils/tableau.php';
 
 
                     <!-- Tableau des employés -->
-                    <?= genererTableau($employes, $colonnes, $titre, $nbEmployes, $actions, $page, $pageMax); ?>
+                    <?= genererTableau($employes, $colonnes, $titre, $nbEmployes, $actions, $page, $pageMax, $filtres); ?>
                 </div>
             </div>
         </div>

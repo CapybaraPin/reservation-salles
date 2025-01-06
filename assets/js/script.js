@@ -146,6 +146,39 @@ const boutonAnnuler = document.getElementById('btn-annuler');
 boutonAnnuler.addEventListener('click', () => {
     menuDeroulant.style.display = 'none';
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const selectFiltre = document.querySelector('select[name="nouveau_filtre[champ]"]');
+    const inputText = document.getElementById("inputText");
+    const inputDate = document.getElementById("inputDate");
+    const inputDatetimeLocal = document.getElementById("inputDatetime-local");
+
+    // Fonction pour mettre à jour la visibilité des inputs
+    const updateInputVisibility = () => {
+        const valeurSelectionnee = selectFiltre ? selectFiltre.value : null;
+
+        // Réinitialisation des champs
+        if (inputText) inputText.style.display = "none";
+        if (inputDate) inputDate.style.display = "none";
+        if (inputDatetimeLocal) inputDatetimeLocal.style.display = "none";
+
+        // Afficher l'input correspondant
+        if (valeurSelectionnee === "date" && inputDate) {
+            inputDate.style.display = "block";
+        } else if (valeurSelectionnee === "periode" && inputDatetimeLocal) {
+            inputDatetimeLocal.style.display = "block";
+        } else if (valeurSelectionnee && inputText) {
+            inputText.style.display = "block";
+        }
+    };
+
+    // Écoute des changements de la liste déroulante (si elle existe)
+    if (selectFiltre) {
+        selectFiltre.addEventListener("change", updateInputVisibility);
+    }
+
+    // Initialisation des champs (par défaut)
+    updateInputVisibility();
+});
 
 // # Fin Gestion des filtres
 

@@ -16,7 +16,7 @@ class FieldValidationException extends \Exception
      * @param int $code Code de l'exception (par défaut : 0)
      * @param \Exception|null $precedente Exception précédente pour le chaînage (facultatif)
      */
-    public function __construct(array $erreurs, $code = 0, \Exception $precedente = null)
+    public function __construct(array $erreurs, $code = 0, ?\Exception $precedente = null)
     {
         $this->erreurs = $erreurs;
 
