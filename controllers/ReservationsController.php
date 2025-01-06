@@ -120,5 +120,42 @@ class ReservationsController extends FiltresController
         }
 
 
+    /**
+     * Fonction qui gère l'ajout d'une réservation
+     */
+    public function ajouterReservation()
+    {
+        // Récupération des données du formulaire
+        if (isset($_POST['nom']) && isset($_POST['capacite']) && isset($_POST['typeOrdinateur'])) {
+
+            $dateDebut = htmlspecialchars($_POST['dateDebut']);
+            $dateFin = (int)htmlspecialchars($_POST['capacite']);
+            $videoProjecteur = isset($_POST['videoProjecteur']) ? 1 : 0;
+            $nbOrdinateurs = isset($_POST['nbOrdinateurs']) && is_numeric($_POST['nbOrdinateurs']) ? (int)$_POST['nbOrdinateurs'] : 0;
+            $logiciels = isset($_POST['logiciels']) && is_array($_POST['logiciels']) ? $_POST['logiciels'] : [];
+            $imprimante = isset($_POST['imprimante']) ? 1 : 0;
+            $typeOrdinateur = htmlspecialchars($_POST['typeOrdinateur']);
+            $ecranXXL = isset($_POST['ecranXXL']) ? 1 : 0;
+
+            // Ajout du groupe d'ordinateurs
+            $idGroupeOrdinateur = $this->ordinateurModel->ajouterGroupeOrdinateur($nbOrdinateurs, $imprimante, $typeOrdinateur);
+
+            // Ajout des logiciels si présents
+            foreach ($logiciels as $logiciel) {
+                if (!empty($logiciel) && $logiciel != -1) {
+                    $this->ordinateurModel->ajouterLogiciel($idGroupeOrdinateur, htmlspecialchars($logiciel));
+                }
+            }
+
+            // Ajout de la salle
+            try {
+                $this->salleModel->ajouterSalle($nom, $capacite, $videoProjecteur, $ecranXXL, $idGroupeOrdinateur);
+            } catch (FieldValidationException $e) {
+                $this->erreurs = $e->getErreurs();
+            }
+        }
+    }
+
+
 
 }

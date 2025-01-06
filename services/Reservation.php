@@ -113,7 +113,7 @@ class Reservation
 
         $req = $pdo->prepare("SELECT reservation.identifiant as IDENTIFIANT_RESERVATION, dateDebut, dateFin, description, organisme.nomOrganisme AS NOM_ORGANISME,activite.type AS ACTIVITE, salle.nom AS NOM_SALLE, individu.nom AS NOM_EMPLOYE, individu.prenom AS PRENOM_EMPLOYE, reservation.idFormateur AS FORMATEUR    
                                     FROM reservation 
-                                    JOIN organisme 
+                                    LEFT JOIN organisme 
                                     ON reservation.idOrganisation = organisme.identifiant 
                                     JOIN activite 
                                     ON reservation.idActivite = activite.identifiant 

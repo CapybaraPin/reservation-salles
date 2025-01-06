@@ -22,7 +22,7 @@
 
                         <!-- Boutons pour supprimer et modifier -->
                         <div class="col-12 col-lg-4 text-lg-end">
-                            <a href="" class="btn btn-primary">
+                            <a href="" class="btn btn-primary" >
                                 <i class="fa-solid fa-pencil"></i> Modifier
                             </a>
                             <button class="btn btn-danger" <?php if ($_SESSION['userPrenom'] != $reservation["PRENOM_EMPLOYE"]){ echo 'disabled' ; } ?> data-bs-toggle="modal" data-bs-target="#supprimerSalle">
@@ -77,12 +77,12 @@
                     </div>
 
                     <!-- Informations sur le formateur -->
-                    <?php if ($reservation["FORMATEUR"] != NULL) : ?>
+                    <?php if ($reservation["ACTIVITE"] == "formation") : ?>
                     <div class="row mt-4 mb-4">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header bg-secondary text-white">
-                                    <h3 class="card-title">Informations du formateur et organisme </h3>
+                                    <h3 class="card-title">Informations du formateur</h3>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">
@@ -103,10 +103,6 @@
                                             <th scope="row">Numéro de téléphone</th>
                                             <td><?= $formateur["telephone"] ?></td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row">Organisme</th>
-                                            <td><?= $reservation["NOM_ORGANISME"] ?></td>
-                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -115,12 +111,12 @@
                     </div>
                     <?php endif; ?>
 
-                    <?php if ($reservation["FORMATEUR"] == NULL) : ?>
+                    <?php if ($reservation["ACTIVITE"] == "prêt" || $reservation["ACTIVITE"] == "location" ) : ?>
                     <div class="row mt-4 mb-4">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header bg-secondary text-white">
-                                    <h3 class="card-title">Informations de l'organisme </h3>
+                                    <h3 class="card-title">Informations de l'organisme et l'interlocuteur </h3>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">
@@ -130,6 +126,21 @@
                                             <td><?= $reservation["NOM_ORGANISME"] ?></td>
                                         </tr>
                                         <tr>
+                                            <th scope="row" width="300px">Identifiant</th>
+                                            <td><?= $reservation["FORMATEUR"] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Nom</th>
+                                            <td><?= $formateur["nom"] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Prenom</th>
+                                            <td><?= $formateur["prenom"] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Numéro de téléphone</th>
+                                            <td><?= $formateur["telephone"] ?></td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
