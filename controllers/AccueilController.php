@@ -77,7 +77,8 @@ class AccueilController extends Controller
         }
 
         $this->deconnexion();
-        require __DIR__ . '/../views/accueil.php';
+
+        $this->get();
     }
 
     /**
