@@ -5,7 +5,6 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="container">
-                        <form method="post" action="">
                             <!-- Étape 1 : Crénaux et Salle -->
                             <div id="step-1">
                                 <div class="row">
@@ -61,39 +60,97 @@
                                 </div>
                             </div>
 
-                            <!-- Étape 3 : Détails formateur -->
-                            <div id="step-3" style="display: none;">
-                                <div class="row">
-                                    <h1 class="modal-title fs-5 mt-2 titre text-start" id="ModalAjouterReservation">
-                                        Ajout d'une réservation
-                                    </h1>
+                        <!-- Étape 3.1 : Détails pour une activité spécifique -->
+                        <div id="step-3-1" class="step-3" style="display: none;">
+                            <div class="row">
+                                <h1 class="modal-title fs-5 mt-2 titre text-start" id="ModalAjouterReservation">
+                                    Ajout d'une réservation
+                                </h1>
+                            </div>
+                            <div class="row">
+                                <p class="mt-3">Vous ajoutez une réservation à votre nom, suivez le formulaire d’ajout de réservation.</p>
+                            </div>
+                            <div class="row">
+                                <!-- Champ Nom formateur -->
+                                <div class="form-group mb-1">
+                                    <label class="label-form" for="nomFormateur">Nom du formateur</label>
+                                    <input class="form-control" id="nomFormateur" name="nomFormateur" type="text" placeholder="Entrez le nom du formateur">
                                 </div>
-                                <div class="row">
-                                    <p class="mt-3">Vous ajoutez une réservation à votre nom, suivez le formulaire d’ajout de réservation.</p>
+                                <!-- Champ Prénom formateur -->
+                                <div class="form-group mt-1 mb-1">
+                                    <label class="label-form" for="prenomFormateur">Prénom du formateur</label>
+                                    <input class="form-control" id="prenomFormateur" name="prenomFormateur" type="text" placeholder="Entrez le prénom">
                                 </div>
-                                <div class="row">
-                                    <!-- Champ Nom formateur -->
-                                    <div class="form-group mb-1">
-                                        <label class="label-form" for="nomFormateur">Nom du formateur</label>
-                                        <input class="form-control" id="nomFormateur" name="nomFormateur" type="text" placeholder="Entrez le nom du formateur">
-                                    </div>
-                                    <!-- Champ Prénom formateur -->
-                                    <div class="form-group mt-1 mb-1">
-                                        <label class="label-form" for="prenomFormateur">Prénom du formateur</label>
-                                        <input class="form-control" id="prenomFormateur" name="prenomFormateur" type="text" placeholder="Entrez le prénom">
-                                    </div>
-                                    <!-- Champ Prénom formateur -->
-                                    <div class="form-group mt-1 mb-1">
-                                        <label class="label-form" for="telFormateur">Numéro de téléphone du formateur</label>
-                                        <input class="form-control" id="telFormateur" name="telFormateur" type="text" placeholder="Entrez le numéro de téléphone du formateur">
-                                    </div>
-                                    <!-- Champ Sujet formation -->
-                                    <div class="form-group mt-1 mb-1">
-                                        <label class="label-form" for="sujetFormation">Sujet de la formation</label>
-                                        <input class="form-control" id="sujetFormation" name="sujetFormation" type="text" placeholder="Sujet de la formation">
-                                    </div>
+                                <!-- Champ Prénom formateur -->
+                                <div class="form-group mt-1 mb-1">
+                                    <label class="label-form" for="telFormateur">Numéro de téléphone du formateur</label>
+                                    <input class="form-control" id="telFormateur" name="telFormateur" type="text" placeholder="Entrez le numéro de téléphone du formateur">
+                                </div>
+                                <!-- Champ Sujet formation -->
+                                <div class="form-group mt-1 mb-1">
+                                    <label class="label-form" for="sujetFormation">Sujet de la formation</label>
+                                    <input class="form-control" id="sujetFormation" name="sujetFormation" type="text" placeholder="Sujet de la formation">
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Étape 3.2 : Détails pour une autre activité -->
+                        <div id="step-3-2" class="step-3" style="display: none;">
+                            <div class="row">
+                                <h1 class="modal-title fs-5 mt-2 titre text-start" id="ModalAjouterReservation">
+                                    Ajout d'une réservation
+                                </h1>
+                            </div>
+                            <div class="row">
+                                <p class="mt-3">Vous ajoutez une réservation à votre nom, suivez le formulaire d’ajout de réservation.</p>
+                            </div>
+                            <div class="row">
+                                <!-- Champ Nom organisation -->
+                                <div class="form-group mb-1">
+                                    <label class="label-form" for="nomOrganisation">Nom de l'organisation</label>
+                                    <input class="form-control" id="nomOrganisation" name="nomOrganisation" type="text" placeholder="Entrez le nom de l'organisation">
+                                </div>
+                                <!-- Champ Nom intervenant -->
+                                <div class="form-group mb-1">
+                                    <label class="label-form" for="nomIntervenant">Nom du intervenant</label>
+                                    <input class="form-control" id="nomIntervenant" name="nomIntervenant" type="text" placeholder="Entrez le nom de intervenant">
+                                </div>
+                                <!-- Champ Prénom intervenant -->
+                                <div class="form-group mt-1 mb-1">
+                                    <label class="label-form" for="prenomIntervenant">Prénom du intervenant</label>
+                                    <input class="form-control" id="prenomIntervenant" name="prenomIntervenant" type="text" placeholder="Entrez le prénom de intervenant">
+                                </div>
+                                <!-- Champ téléphone intervenant -->
+                                <div class="form-group mt-1 mb-1">
+                                    <label class="label-form" for="telIntervenant">Numéro de téléphone du intervenant</label>
+                                    <input class="form-control" id="telIntervenant" name="telIntervenant" type="text" placeholder="Entrez le numéro de téléphone du intervenant">
+                                </div>
+                                <!-- Champ Sujet du prêt ou location -->
+                                <div class="form-group mt-1 mb-1">
+                                    <label class="label-form" for="sujetLocation">Sujet de la Location</label>
+                                    <input class="form-control" id="sujetLocation" name="sujetLocation" type="text" placeholder="Sujet de la location">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Étape 3 par défaut -->
+                        <div id="step-3-default" class="step-3" style="display: none;">
+                            <div class="row">
+                                <h1 class="modal-title fs-5 mt-2 titre text-start" id="ModalAjouterReservation">
+                                    Ajout d'une réservation
+                                </h1>
+                            </div>
+                            <div class="row">
+                                <p class="mt-3">Vous ajoutez une réservation à votre nom, suivez le formulaire d’ajout de réservation.</p>
+                            </div>
+                            <div class="row">
+                                <!-- Champ description -->
+                                <div class="form-group mt-1 mb-1">
+                                    <label class="label-form" for="description">Description</label>
+                                    <input class="form-control" id="description" name="description" type="text" placeholder="Description">
+                                </div>
+                            </div>
+                        </div>
 
                             <!-- Boutons -->
                             <div class="row mt-3 mb-2">
@@ -106,13 +163,10 @@
                                     <button type="button" id="btn-next" class="btn btn-primary w-100">Suivant</button>
                                 </div>
                             </div>
-                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
-
-
 <!-- Fin de la modal d'ajout réservation -->
