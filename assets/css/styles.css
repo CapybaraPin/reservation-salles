@@ -61,7 +61,7 @@ p {
 /* typographie */
 h2 {
     font-family: "Inter" !important;
-    font-weight: 580 !important;xzz
+    font-weight: 580 !important;
     color: var(--color-heading) !important;
 }
 
@@ -236,4 +236,46 @@ thead{
     display: none; /* Caché par défaut */
     z-index: 10;
     background-color: white;
+}
+
+.content {
+    padding: 2rem;
+}
+
+.stat-card {
+    background-color: rgba(53, 116, 240, 0.08);
+    opacity: 0.9;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.stat-card i {
+    background-color: var(--color-primary);
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.4rem;
+}
+
+.stat-card h5 {
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: black;
+}
+
+.stat-card p {
+    color: var(--color-primary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card h3 {
+    font-size: 1.8rem;
+    color: var(--color-primary);
+    margin-top: 0.5rem;
 }

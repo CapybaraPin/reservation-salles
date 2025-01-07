@@ -37,6 +37,9 @@ $page_actuelle = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                     <li class="btn-nav me-1 button-nav mb-1 mb-lg-0 <?= ($page_actuelle == '/activites') ? 'btn-nav-active' : ''; ?>">
                         <a href="/activites">Activités</a>
                     </li>
+                    <li class="btn-nav me-1 button-nav mb-1 mb-lg-0 <?= ($page_actuelle == '/exportation') ? 'btn-nav-active' : ''; ?>">
+                        <a href="/exportation">Exportation</a>
+                    </li>
                 </ul>
                 <!-- Bouton de déconnexion -->
                 <form method="post" action="">

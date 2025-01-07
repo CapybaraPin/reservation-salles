@@ -46,6 +46,7 @@ require __DIR__ . '/controllers/InformationSalleController.php';
 require __DIR__ . '/controllers/ReservationsController.php';
 require __DIR__ . '/controllers/EmployesController.php';
 require __DIR__ . '/controllers/ActivitesController.php';
+require __DIR__ . '/controllers/ExportController.php';
 
 // Import des classes
 use services\Database;
@@ -56,6 +57,7 @@ use controllers\InformationSalleController;
 use controllers\ReservationsController;
 use controllers\EmployesController;
 use controllers\ActivitesController;
+use controllers\ExportController;
 
 // Création d'une instance de Router
 $router = new \Bramus\Router\Router();
@@ -132,6 +134,12 @@ $router->post('/employes', [new EmployesController(), 'post']);
 // Définition des routes pour les activités
 $router->get('/activites', [new ActivitesController(), 'get']);
 $router->post('/activites', [new ActivitesController(), 'post']);
+
+/*
+ * Définition des routes pour l'exportation des données
+ */
+$router->get('/exportation', [new ExportController(), 'get']);
+
 
 // Défintion de la routeur pour l'erreur 404
 $router->set404(function() {
