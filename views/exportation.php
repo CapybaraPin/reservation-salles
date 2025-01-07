@@ -36,8 +36,8 @@ require_once 'utils/tableau.php';
                         </div>
 
                         <!-- Statistiques données -->
-                        <div class="row mt-4 pl">
-                            <div class="col-12 col-md-3">
+                        <div class="row mt-5 pl p-3">
+                            <div class="col-12 col-lg-4 col-xl-3 offset-lg-2 offset-xl-0">
                                 <div class="stat-card">
                                     <i class="fa-regular fa-calendar mb-md-5 mb-2"></i>
                                     <h5>Réservations</h5>
@@ -45,7 +45,7 @@ require_once 'utils/tableau.php';
                                     <h3>150</h3>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-3">
+                            <div class="col-12 col-lg-4 col-xl-3">
                                 <div class="stat-card">
                                     <i class="fa-solid fa-cube mb-md-5 mb-2"></i>
                                     <h5>Salles</h5>
@@ -53,7 +53,7 @@ require_once 'utils/tableau.php';
                                     <h3>24</h3>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-3">
+                            <div class="col-12 col-lg-4 col-xl-3 offset-lg-2 offset-xl-0">
                                 <div class="stat-card">
                                     <i class="fa-solid fa-users mb-md-5 mb-2"></i>
                                     <h5>Employés</h5>
@@ -61,7 +61,7 @@ require_once 'utils/tableau.php';
                                     <h3>12</h3>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-3">
+                            <div class="col-12 col-lg-4 col-xl-3">
                                 <div class="stat-card">
                                     <i class="fa-solid fa-list-ul mb-md-5 mb-2"></i>
                                     <h5>Activités</h5>
