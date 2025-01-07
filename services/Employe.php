@@ -18,16 +18,25 @@ class Employe
     {
         $pdo = Database::getPDO();
 
-        // Insérer dans la table individu
-        $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
-        $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
+        $pdo->beginTransaction();
 
-        // Récupérer l'identifiant de l'individu récemment inséré
-        $idIndividu = $pdo->lastInsertId();
+        try {
+            // Insérer dans la table individu
+            $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
+            $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
 
-        // Insérer dans la table utilisateur
-        $reqUtilisateur = $pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
-        $reqUtilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu]);
+            // Récupérer l'identifiant de l'individu récemment inséré
+            $idIndividu = $pdo->lastInsertId();
+
+            // Insérer dans la table utilisateur
+            $reqUtilisateur = $pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
+            $reqUtilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu]);
+
+            $pdo->commit();
+        } catch (\PDOException $e) {
+            $pdo->rollBack();
+            throw new \Exception($e->getMessage());
+        }
     }
 
     /**
@@ -38,6 +47,7 @@ class Employe
     public function suppressionEmploye($idEmploye)
     {
         $pdo = Database::getPDO();
+        $pdo->beginTransaction();
 
         try {
 
@@ -49,9 +59,12 @@ class Employe
             $req1 = $pdo->prepare("DELETE FROM individu WHERE identifiant = ?");
             $individus = $req1->execute([$idEmploye]);
 
+            $pdo->commit();
+
             return $individus && $utilisateurs;
         } catch (\PDOException $e) {
             error_log($e->getMessage());
+            $pdo->rollBack();
             return false;
         }
     }
