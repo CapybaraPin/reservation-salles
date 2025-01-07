@@ -31,14 +31,16 @@ if(togglePasswordButton != null) {
 //Ajout d'un nouveau logiciel
 selectLogiciel = document.getElementById('selectLogiciel');
 
-selectLogiciel.addEventListener('change', function (event) {
-    if (selectLogiciel.value == "autre") {
-        updateInputLogiciel(true);
-    } else {
-        updateInputLogiciel(false);
-    }
+if(selectLogiciel != null) {
+    selectLogiciel.addEventListener('change', function (event) {
+        if (selectLogiciel.value == "autre") {
+            updateInputLogiciel(true);
+        } else {
+            updateInputLogiciel(false);
+        }
 
-});
+    });
+}
 
 function updateInputLogiciel(active) {
 
