@@ -136,6 +136,10 @@ $router->post('/reservations', [new ReservationsController(), 'post']);
 $router->get('/employes', [new EmployesController(), 'get']);
 $router->post('/employes', [new EmployesController(), 'post']);
 
+// Modification d'un employé
+$router->get('/employe/{employeId}/edit', [new EmployesController(), 'edit']);
+$router->post('/employe/{employeId}/edit', [new EmployesController(), 'update']);
+
 // Définition des routes pour les activités
 $router->get('/activites', [new ActivitesController(), 'get']);
 $router->post('/activites', [new ActivitesController(), 'post']);

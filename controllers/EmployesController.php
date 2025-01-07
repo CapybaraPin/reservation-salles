@@ -5,6 +5,7 @@ namespace controllers;
 use PDO;
 use services\Auth;
 use services\Config;
+use services\Database;
 
 /**
  * Contrôleur pour la page des employés
@@ -27,7 +28,7 @@ class EmployesController extends FiltresController
         "TELEPHONE_EMPLOYE" => 'Téléphone',
     ];
 
-    public function get()
+    public function get($employeId = null, $action = null)
     {
         $filtresDisponibles = self::FILTRES_DISPONIBLES;
         $this->setFiltresDisponibles($filtresDisponibles);
@@ -67,26 +68,20 @@ class EmployesController extends FiltresController
         foreach ($employes as &$employe) {
             $employe['ID'] = $employe['IDENTIFIANT_EMPLOYE'];
 
-            $actions[$employe['IDENTIFIANT_EMPLOYE']]['info'] = [
-                'attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
-                'icone' => 'fa-solid fa-circle-info'
+            $actions[$employe['IDENTIFIANT_EMPLOYE']]['modifier'] = [
+                'attributs' => ['href' => '/employe/'.$employe["ID"].'/edit', 'class' => 'btn', 'title' => 'Modifier'],
+                'icone' => 'fa-solid fa-pen'
             ];
 
-            if ($_SESSION['userRole'] == '1') {
-                $actions[$employe['IDENTIFIANT_EMPLOYE']]['modifier'] = [
-                    'attributs' => ['class' => 'btn', 'title' => 'Modifier'],
-                    'icone' => 'fa-solid fa-pen'
-                ];
+            $actions[$employe['IDENTIFIANT_EMPLOYE']]['supprimer'] = [
+                'attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerEmploye',
+                    'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
+                    && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
+                    'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']
+                ],
+                'icone' => 'fa-solid fa-trash-can'
+            ];
 
-                $actions[$employe['IDENTIFIANT_EMPLOYE']]['supprimer'] = [
-                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerEmploye',
-                        'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
-                        && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
-                        'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']
-                    ],
-                    'icone' => 'fa-solid fa-trash-can'
-                ];
-            }
         }
 
         $erreur = $this->erreur;
@@ -161,6 +156,11 @@ class EmployesController extends FiltresController
         }
     }
 
+    /**
+     * Suppresion d'un employé lors du click sur le bouton de suppresion situé sur la page des employés
+     * @return string
+     * @throws \Exception
+     */
     public function supprimerEmploye()
     {
         if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId']) && is_numeric($_POST['employeId'])) {
@@ -181,6 +181,61 @@ class EmployesController extends FiltresController
             }
         } else {
             throw new \Exception("Données invalides. Veuillez vérifier les informations soumises.");
+        }
+    }
+
+    /**
+     * Edition d'un employé et de ses informations lors du click sur le bouton
+     * de modification sur la page des employés dans la vue administrateur.
+     * @param $employeId
+     * @return void
+     */
+    public function edit($employeId)
+    {
+        try {
+            // Récupérer les informations de l'employé
+            $employe = $this->employeModel->getEmploye($employeId);
+
+            if (!$employe) {
+                throw new \Exception("L'employé avec l'ID $employeId n'existe pas.");
+            }
+
+            // Charger la vue de modification
+            require __DIR__ . '/../views/modifierEmploye.php';
+
+        } catch (\Exception $e) {
+            $this->erreur = $e->getMessage();
+            $this->get(); // Retourner à la liste des employés en cas d'erreur
+        }
+    }
+
+    /**
+     * Mise à jour des informations d'un employé lors du click sur le bouton de
+     * confirmation dans la page de modification d'un employé.
+     * @param $employeId
+     * @return void
+     */
+    public function update($employeId)
+    {
+        if (isset($_POST['nom'], $_POST['prenom'], $_POST['telephone'])) {
+            try {
+                $this->employeModel->modifierEmploye(
+                    $employeId,
+                    htmlspecialchars($_POST['nom']),
+                    htmlspecialchars($_POST['prenom']),
+                    htmlspecialchars($_POST['telephone'])
+                );
+
+                $_SESSION['messageValidation'] = "Les informations de l'employé ont été mises à jour avec succès.";
+                header('Location: /employes');
+                exit;
+            } catch (\Exception $e) {
+                $this->erreur = $e->getMessage();
+                $this->edit($employeId); // Réafficher le formulaire avec un message d'erreur
+            }
+        } else {
+            $this->erreur = "Veuillez remplir tous les champs.";
+            $this->edit($employeId);
         }
     }
 }
