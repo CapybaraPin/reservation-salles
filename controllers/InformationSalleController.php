@@ -79,6 +79,7 @@ class InformationSalleController extends FiltresController {
 
         $salle = $this->salleModel->getSalle($salleId);
         $this->ajouterLogiciel($salleId);
+        $this->supprimerLogiciel();
 
         if (isset($_POST['supprimerLogiciel'])) {
             $logicielId = htmlspecialchars($_POST['logicielId']);
@@ -91,6 +92,7 @@ class InformationSalleController extends FiltresController {
             $ordinateurs = $this->ordinateurModel->getOrdinateursSalle($salleId);
             $logicielsInstalles = $this->ordinateurModel->getLogicielsOrdinateur($salle['ID_ORDINATEUR']);
             $logiciels = $this->ordinateurModel->getLogiciels();
+            $SuprLogiciels = $this->ordinateurModel->getLogicielsNonUtilise();
             $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
         } catch (\Exception $e) {
             $ordinateurs = null;
@@ -175,16 +177,47 @@ class InformationSalleController extends FiltresController {
      */
     public function ajouterLogiciel($salleId) {
         if (isset($_POST["ajouterLogiciel"]) && isset($_POST["logicielId"])){
-            $salle = $this->salleModel->getSalle($salleId);
+
             $logicielId = htmlspecialchars($_POST["logicielId"]);
 
-            $this->ordinateurModel->ajouterLogiciel($salle["ID_ORDINATEUR"], $logicielId);
+            if($_POST['logicielId'] == "autre" && isset($_POST['nomLogiciel'])) {
+                $logicielId = $this->ordinateurModel->nouveauLogiciel($_POST['nomLogiciel']);
+            }
 
-            $_SESSION['messageValidation'] = "Vous avez bien ajouté le logiciel à la salle.";
+            $salle = $this->salleModel->getSalle($salleId);
 
-            header("Location: " . $_SERVER['REQUEST_URI']);
-            exit;
+            try {
+                $this->ordinateurModel->ajouterLogiciel($salle["ID_ORDINATEUR"], $logicielId);
+
+                $_SESSION['messageValidation'] = "Vous avez bien ajouté le logiciel à la salle.";
+
+                header("Location: " . $_SERVER['REQUEST_URI']);
+                exit;
+
+            } catch (\Exception $e) {
+                $this->erreurs = "Vous avez déjà ajouter ce logiciel a la salle";
+            }
         }
+    }
+
+    private function supprimerLogiciel() {
+
+        if(isset($_POST['suprLogiciel']) && isset($_POST["logicielId"])) {
+            $logicielId = htmlspecialchars($_POST["logicielId"]);
+
+            try {
+                $this->ordinateurModel->supprimerLogiciels($logicielId);
+
+                $_SESSION['messageValidation'] = "Le logiciel a été supprimer avec succès";
+
+                header("Location: " . $_SERVER['REQUEST_URI']);
+                exit;
+            } catch (\Exception $e) {
+                $this->erreurs = "Une erreur est survenue lors de la suppression du Logiciel";
+            }
+
+        }
+
     }
 
 

@@ -164,15 +164,23 @@
                                             <hr>
 
                                             <div class="row">
-                                                <div class="col-10">
+                                                <div class="col-8">
                                                     <h5>Informations sur les logiciels installés</h5>
                                                 </div>
 
                                                 <div class="col-2 text">
                                                     <!-- Ajouter un logiciel -->
                                                     <div class="">
-                                                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#ajouterLogiciel">
+                                                        <button type="button" class="btn btn-sm btn-success w-100" data-bs-toggle="modal" data-bs-target="#ajouterLogiciel">
                                                             <i class="fa-solid fa-plus"></i> Ajouter un logiciel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2 text">
+                                                    <!-- Ajouter un logiciel -->
+                                                    <div class="">
+                                                        <button type="button" class="btn btn-sm btn-danger w-100" data-bs-toggle="modal" data-bs-target="#supprimerlogiciel">
+                                                            <i class="fa-solid fa-plus"></i> Supprimer un logiciel
                                                         </button>
                                                     </div>
                                                 </div>

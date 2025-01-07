@@ -110,6 +110,17 @@ class Ordinateur
         ]);
     }
 
+    public function nouveauLogiciel($nom) {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("INSERT INTO logiciel (nom) VALUES (:nomLogiciel)");
+        $req->execute(['nomLogiciel' => $nom]);
+        $res = $pdo->prepare("SELECT LAST_INSERT_ID()");
+        $res->execute();
+
+        return $res->fetchColumn();
+    }
+
     /**
      * Permet de supprimer le logiciel associé à un ordinateur
      * @param $idOrdinateur int l'identifiant de l'ordinateur
@@ -124,6 +135,9 @@ class Ordinateur
             'idOrdinateur' => $idOrdinateur,
             'idLogiciel' => $idLogiciel
         ]);
+
+
+
     }
 
     /**
@@ -166,4 +180,27 @@ class Ordinateur
 
         return $req->fetchAll();
     }
+
+    public function getLogicielsNonUtilise() {
+
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("SELECT * FROM logiciel WHERE identifiant NOT IN (SELECT DISTINCT idLogiciel FROM ordinateurLogiciel);");
+        $req->execute();
+
+        return $req->fetchAll();
+
+    }
+
+    public function supprimerLogiciels($idLogiciel) {
+
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("DELETE FROM logiciel WHERE identifiant = ?");
+        $req->execute(array($idLogiciel));
+
+        return $req;
+
+    }
+
 }

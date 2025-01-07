@@ -28,6 +28,33 @@ if(togglePasswordButton != null) {
     });
 }
 
+//Ajout d'un nouveau logiciel
+selectLogiciel = document.getElementById('selectLogiciel');
+
+selectLogiciel.addEventListener('change', function (event) {
+    if (selectLogiciel.value == "autre") {
+        updateInputLogiciel(true);
+    } else {
+        updateInputLogiciel(false);
+    }
+
+});
+
+function updateInputLogiciel(active) {
+
+    nomLogiciel = document.getElementById('groupnomlogiciel');
+
+
+    if(!active) {
+        nomLogiciel.classList.add('d-none');
+    } else {
+        nomLogiciel.classList.remove('d-none');
+    }
+
+}
+
+
+
 /*
  * Gestion de la suppression d'un employé
  */
@@ -207,5 +234,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // # Fin Gestion des filtres
+
 
 

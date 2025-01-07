@@ -70,4 +70,5 @@ class Controller
         $pageMax = max($pageMax, 1);
         return [min($page, $pageMax), $pageMax];
     }
+
 }
