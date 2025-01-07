@@ -116,11 +116,13 @@ $router->get('/salle/{salleId}/edit', function($salleId) {
 $router->get('/reservations', [new ReservationsController(), 'get']);
 $router->post('/reservations', [new ReservationsController(), 'post']);
 
+
 // Visualisation d'une réservation
 $router->get('/reservations/{reservationId}/view', function($reservationId) {
     $reservationsController = new ReservationsController();
     $reservationsController->consultationReservation($reservationId);
 });
+
 
 // Définition des routes pour les employés
 $router->get('/employes', [new EmployesController(), 'get']);

@@ -122,6 +122,9 @@ class Reservation
                                     JOIN individu 
                                     ON reservation.idEmploye = individu.identifiant
                                     WHERE reservation.identifiant = :id");
+
+
+
         $req->execute(['id' => $idReservation]);
 
         return $req->fetch();
@@ -133,12 +136,14 @@ class Reservation
      * @param $dateFin date date de fin de réservation
      * @param $salle int identifiant de la salle concernée par la réservation
      * @param $activite int identifiant de l'activité de la réservation
-     * @param $formateur int identifiant du formateur s'il y en a un
+     * @param $nomFormateur string nom du formateur s'il y en a un
+     * @param $prenomnomFormateur string prenom du formateur s'il y en a un
+     * @param $telFormateur int telephone du formateur s'il y en a un
      * @param $employe int identifiant de l'employé qui a effectué cette réservation
-     * @param $organisation int identifiant de l'organisation qui effectue la réservation
+     * @param $nomOrganisation string nom de l'organisation s'il y en a un
      * @param $description string description de l'activité effectuée lors de la réservation
      */
-    public function ajouterReservation($dateDebut, $dateFin, $salle, $activite, $formateur, $employe, $organisation, $description)
+    public function ajouterReservation($dateDebut, $dateFin, $salle, $activite, $nomFormateur,$prenomFormateur,$telFormateur, $employe, $nomOrganisation, $description)
     {
         $pdo = Database::getPDO();
 
@@ -153,11 +158,11 @@ class Reservation
             $erreurs["dates"] = "La date de début ne peut pas être inférieure à aujourd'hui.";
         }
 
-        if (empty($salle) || !is_numeric($salle)) {
+        if (empty($salle) || !is_numeric($salle) || $salle == 0) {
             $erreurs["salle"] = "Un identifiant de salle valide est requis.";
         }
 
-        if (empty($activite) || !is_numeric($activite)) {
+        if (empty($activite) || !is_numeric($activite) || $activite == 0) {
             $erreurs["activite"] = "Un identifiant d'activité valide est requis.";
         }
         
@@ -166,26 +171,132 @@ class Reservation
             $erreurs["employe"] = "Un identifiant d'employé valide est requis.";
         }
 
+        // Vérification si les champs du formateur sont remplis
+        if (empty(trim($nomFormateur)) || empty(trim($prenomFormateur)) || empty(trim($telFormateur))) {
+            $formateur = null; // Pas de formateur si les champs sont vides
+            error_log("Formateur non défini : nomFormateur, prenomFormateur ou telFormateur sont vides");
+        } else {
+            // Log des valeurs avant la requête pour déboguer
+            error_log("Recherche du formateur : nom = " . trim($nomFormateur) . ", prenom = " . trim($prenomFormateur) . ", tel = " . trim($telFormateur));
+
+            // Vérifier si le formateur existe déjà
+            $reqVerifIndividu = $pdo->prepare(
+                "SELECT identifiant 
+         FROM individu 
+         WHERE nom = :nom AND prenom = :prenom AND telephone = :telephone"
+            );
+            $reqVerifIndividu->execute([
+                'nom' => trim($nomFormateur),
+                'prenom' => trim($prenomFormateur),
+                'telephone' => trim($telFormateur)
+            ]);
+
+            // Récupérer l'identifiant
+            $formateurExiste = $reqVerifIndividu->fetchColumn();
+
+            // Log du résultat de la requête pour déboguer
+            if ($formateurExiste) {
+                error_log("Formateur trouvé avec identifiant : " . $formateurExiste);
+            } else {
+                error_log("Aucun formateur trouvé pour ces critères.");
+            }
+
+            if (!$formateurExiste) {
+                // Insérer un nouvel individu si le formateur n'existe pas
+                $reqInsertIndividu = $pdo->prepare(
+                    "INSERT INTO individu(nom, prenom, telephone) 
+             VALUES (:nom, :prenom, :telephone)"
+                );
+
+                $reqInsertIndividu->execute([
+                    'nom' => trim($nomFormateur),
+                    'prenom' => trim($prenomFormateur),
+                    'telephone' => trim($telFormateur)
+                ]);
+
+                // Récupérer l'identifiant de l'individu inséré
+                $formateur = $pdo->lastInsertId();
+                error_log("Nouveau formateur inséré avec identifiant : " . $formateur);
+            } else {
+                // Utiliser l'identifiant existant si le formateur existe déjà
+                $formateur = $formateurExiste;
+            }
+        }
+
+
+
+
+        // Vérification de l'existence de l'organisation
+        if ($nomOrganisation == ' ' || empty($nomOrganisation)) {
+            $organisation = null; // Si le champ est vide ou contient un espace, on met $organisation à null
+        } else {
+            // Vérifier si l'organisation existe
+            $reqVerifOrganisation = $pdo->prepare(
+                "SELECT identifiant 
+        FROM organisme 
+        WHERE nomOrganisme = :nom"
+            );
+            $reqVerifOrganisation->execute([
+                'nom' => $nomOrganisation
+            ]);
+            $organisationExiste = $reqVerifOrganisation->fetchColumn();
+
+            if (!$organisationExiste) {
+                // Insérer un nouvel organisme
+                $reqInsertOrganisation = $pdo->prepare(
+                    "INSERT INTO organisme(nomOrganisme) 
+            VALUES (:nom)"
+                );
+
+                $reqInsertOrganisation->execute([
+                    'nom' => $nomOrganisation
+                ]);
+
+                // Récupérer l'identifiant de l'organisation insérée
+                $organisation = $pdo->lastInsertId();
+            } else {
+                // Récupérer l'identifiant existant de l'organisation
+                $organisation = $organisationExiste;
+            }
+        }
+
+
+        $reqVerifReservation = $pdo->prepare(
+            "SELECT identifiant FROM reservation WHERE idSalle = :salle AND dateDebut = :dateDebut AND dateFin = :dateFin"
+        );
+        $reqVerifReservation->execute([
+            'salle' => $salle,
+            'dateDebut' => $dateDebut,
+            'dateFin' => $dateFin
+        ]);
+
+        $reservationExiste = $reqVerifReservation->fetchColumn(); // Récupère un identifiant si une réservation existe
+
+        if ($reservationExiste) {
+            $erreurs["reservation"] = "Une réservation existe déjà pour cette salle à ces dates.";
+        }
+
         if (!empty($erreurs)) {
             throw new \Exception(json_encode($erreurs));
         }
 
-        // Insertion de la réservation
+
         $req = $pdo->prepare(
-            "INSERT INTO reservations (dateDebut, dateFin, salle, activite, formateur, employe, organisation, description) 
-        VALUES (:dateDebut, :dateFin, :salle, :activite, :formateur, :employe, :organisation, :description)"
+            "INSERT INTO reservation (dateDebut, dateFin, idSalle, idActivite, idFormateur, idEmploye, idOrganisation, description) 
+     VALUES (:dateDebut, :dateFin, :salle, :activite, :formateur, :employe, :organisation, :description)"
         );
 
-        $req->execute([
-            'dateDebut' => $dateDebut,
-            'dateFin' => $dateFin,
-            'salle' => $salle,
-            'activite' => $activite,
-            'formateur' => $formateur,
-            'employe' => $employe,
-            'organisation' => $organisation,
-            'description' => $description
-        ]);
+        $req->bindValue(':dateDebut', $dateDebut);
+        $req->bindValue(':dateFin', $dateFin);
+        $req->bindValue(':salle', $salle, PDO::PARAM_INT);
+        $req->bindValue(':activite', $activite, PDO::PARAM_INT);
+        $req->bindValue(':formateur', $formateur, $formateur === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $req->bindValue(':employe', $employe, PDO::PARAM_INT);
+        $req->bindValue(':organisation', $organisation, $organisation === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $req->bindValue(':description', $description);
+
+        $req->execute();
+
     }
 
 }

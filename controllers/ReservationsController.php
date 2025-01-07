@@ -115,8 +115,77 @@ class ReservationsController extends FiltresController
         }
 
         $this->deconnexion();
+        $this->ajouterReservation();
 
         $this->get();
     }
+
+    /**
+     * Fonction qui gère l'ajout d'une réservation
+     */
+    public function ajouterReservation()
+    {
+        try {
+            if (!empty($_POST['nomIntervenant']) || !empty($_POST['prenomIntervenant']) || !empty($_POST['telIntervenant'])) {
+                $dateDebut = $_POST['dateDebut'];
+                $dateFin = $_POST['dateFin'];
+                $dateDebutAvecHeure = date('Y-m-d H:i:s', strtotime($dateDebut));
+                $dateFinAvecHeure = date('Y-m-d H:i:s', strtotime($dateFin));
+                $salle = $_POST['salle'];
+                $activite = $_POST['typeReservation'];
+
+                // Vérification des champs du formateur
+                $nomFormateur = htmlspecialchars($_POST['nomIntervenant']);
+                $prenomFormateur = htmlspecialchars($_POST['prenomIntervenant']);
+                $telFormateur = htmlspecialchars($_POST['telIntervenant']);
+            } else {
+                $dateDebut = $_POST['dateDebut'];
+                $dateFin = $_POST['dateFin'];
+                $dateDebutAvecHeure = date('Y-m-d H:i:s', strtotime($dateDebut));
+                $dateFinAvecHeure = date('Y-m-d H:i:s', strtotime($dateFin));
+                $salle = $_POST['salle'];
+                $activite = $_POST['typeReservation'];
+
+                // Vérification des champs du formateur
+                $nomFormateur = htmlspecialchars($_POST['nomIndividu']);
+                $prenomFormateur = htmlspecialchars($_POST['prenomIndividu']);
+                $telFormateur = htmlspecialchars($_POST['telIndividu']);
+            }
+
+            // Autres variables
+            $employe = $_SESSION['userIndividuId'];
+            $nomOrganisation = htmlspecialchars($_POST['nomOrganisation']);
+            $description = htmlspecialchars($_POST['description']);
+
+            // Ajout de la réservation
+            $this->reservationModel->ajouterReservation(
+                $dateDebutAvecHeure,
+                $dateFinAvecHeure,
+                $salle,
+                $activite,
+                $nomFormateur,
+                $prenomFormateur,
+                $telFormateur,
+                $employe,
+                $nomOrganisation,
+                $description
+            );
+        } catch (FieldValidationException $e) {
+            // Gérer les erreurs de validation des champs sans afficher sur la page
+            $this->erreurs = $e->getErreurs();
+            // Vous pouvez enregistrer l'erreur dans un fichier de log si nécessaire
+            error_log("Erreur de validation : " . implode(", ", $this->erreurs));
+        } catch (\Exception $e) {
+            // Gérer les erreurs générales sans afficher sur la page
+            // Optionnel: Enregistrer l'erreur dans un fichier de log
+            error_log("Erreur lors de l'ajout de la réservation : " . $e->getMessage());
+
+            // Définir un message d'erreur générique
+            $_SESSION['messageErreur'] = 'Une erreur est survenue, veuillez réessayer plus tard.';
+        }
+    }
+
+
+
 
 }

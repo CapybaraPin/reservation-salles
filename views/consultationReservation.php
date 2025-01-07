@@ -17,7 +17,7 @@
                     <div class="row mt-5 mb-4">
                         <div class="col-12 col-lg-8">
                             <h2 class="">Consultation de la réservation</h2>
-                            <p class="">Visualisez les informations de la réservation <b>« <?= $reservation["IDENTIFIANT_RESERVATION"] ?> »</b></p>
+                            <p class="">Visualisez les informations de la réservation du <b><?= $reservation["dateDebut"] ?></b> au <b><?= $reservation["dateFin"] ?></b></p>
                         </div>
 
                         <!-- Boutons pour supprimer et modifier -->

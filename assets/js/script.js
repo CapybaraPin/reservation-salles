@@ -1,8 +1,12 @@
 const navbarToggler = document.querySelector(".navbar-burger");
 const contentNavBar = document.querySelector(".collapse");
 
+
+
+
 const btnNext = document.getElementById('btn-next');
 const btnBack = document.getElementById('btn-back');
+const btnReserver = document.getElementById('btn-reserver'); // Bouton "Réserver"
 const step1 = document.getElementById('step-1');
 const step2 = document.getElementById('step-2');
 const step3Sections = document.querySelectorAll('.step-3'); // Tous les blocs de l'étape 3
@@ -13,6 +17,7 @@ let currentStep = 1;
 
 // Initialisation : le bouton est affiché avec le texte "Fermer"
 btnBack.textContent = 'Fermer';
+btnReserver.style.display = 'none'; // Cache le bouton "Réserver" par défaut
 
 // Fonction pour masquer toutes les sections de l'étape 3
 function hideAllStep3Sections() {
@@ -36,37 +41,61 @@ function showStep3Section() {
     }
 }
 
-// Fonction pour configurer le bouton "Suivant/Réserver"
-function updateNextButton() {
-    if (currentStep === 3) {
-        btnNext.textContent = 'Réserver';
-        btnNext.setAttribute('type', 'submit'); // Passer en mode soumission
-    } else {
+// Fonction pour mettre à jour les boutons dynamiquement
+function updateButtons() {
+    if (currentStep === 1) {
+        btnBack.textContent = 'Fermer';
+        btnNext.style.display = 'block';
         btnNext.textContent = 'Suivant';
-        btnNext.setAttribute('type', 'button'); // Rester en mode bouton normal
+        btnReserver.style.display = 'none';
+    } else if (currentStep === 2) {
+        btnBack.textContent = 'Précédent';
+        btnNext.style.display = 'block';
+        btnNext.textContent = 'Suivant';
+        btnReserver.style.display = 'none';
+    } else if (currentStep === 3) {
+        btnBack.textContent = 'Précédent';
+        btnNext.style.display = 'none'; // Cache le bouton "Suivant"
+        btnReserver.style.display = 'block'; // Affiche le bouton "Réserver"
     }
 }
 
 // Fonction pour passer à l'étape suivante
 btnNext.addEventListener('click', () => {
     if (currentStep === 1) {
+        // Vérification des champs obligatoires dans l'étape 1
+        const dateDebut = document.getElementById('dateDebut');
+        const dateFin = document.getElementById('dateFin');
+        const salle = document.getElementById('salle');
+
+        if (!dateDebut.value || !dateFin.value || salle.value === "0") {
+            alert("Veuillez remplir tous les champs obligatoires avant de continuer.");
+            return; // Empêche de passer à l'étape suivante
+        }
+
         // Étape 1 -> Étape 2
         step1.style.display = 'none';
         step2.style.display = 'block';
-        btnBack.textContent = 'Précédent'; // Change "Fermer" en "Précédent"
         currentStep++;
     } else if (currentStep === 2) {
+        // Vérification des champs obligatoires dans l'étape 2
+        const typeReservation = document.getElementById('typeReservation');
+
+        if (typeReservation.value === "0") {
+            alert("Veuillez sélectionner un type de réservation.");
+            return; // Empêche de passer à l'étape suivante
+        }
+
         // Étape 2 -> Étape 3
         step2.style.display = 'none';
 
         // Afficher la bonne section de l'étape 3
         showStep3Section();
-
         currentStep++;
     }
 
-    // Mettre à jour le bouton "Suivant/Réserver"
-    updateNextButton();
+    // Mettre à jour les boutons dynamiquement
+    updateButtons();
 });
 
 // Fonction pour revenir à l'étape précédente ou fermer le modal
@@ -80,7 +109,6 @@ btnBack.addEventListener('click', () => {
         // Étape 2 -> Étape 1
         step2.style.display = 'none';
         step1.style.display = 'block';
-        btnBack.textContent = 'Fermer'; // Change "Précédent" en "Fermer"
         currentStep--;
     } else if (currentStep === 1) {
         // Fermer le modal à l'étape 1
@@ -88,9 +116,14 @@ btnBack.addEventListener('click', () => {
         bootstrapModal.hide(); // Ferme le modal
     }
 
-    // Mettre à jour le bouton "Suivant/Réserver"
-    updateNextButton();
+    // Mettre à jour les boutons dynamiquement
+    updateButtons();
 });
+
+// Initialisation au chargement de la page
+updateButtons();
+
+
 
 
 

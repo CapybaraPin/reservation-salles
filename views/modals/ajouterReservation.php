@@ -20,8 +20,8 @@
                                     <!-- Champ Crénaux -->
                                     <div class="form-group mb-1">
                                         <label class="label-form" for="dateDebut">Crénaux</label>
-                                        <input class="form-control mb-1" id="dateDebut" name="dateDebut" type="date" placeholder="Date de début" required>
-                                        <input class="form-control" id="dateFin" name="dateFin" type="date" placeholder="Date de fin" required>
+                                        <input class="form-control mb-1" id="dateDebut" name="dateDebut" type="datetime-local" placeholder="Date de début" required>
+                                        <input class="form-control" id="dateFin" name="dateFin" type="datetime-local" placeholder="Date de fin" required>
                                     </div>
                                     <!-- Champ Salle -->
                                     <div class="form-group mt-1 mb-1">
@@ -73,23 +73,23 @@
                             <div class="row">
                                 <!-- Champ Nom formateur -->
                                 <div class="form-group mb-1">
-                                    <label class="label-form" for="nomFormateur">Nom du formateur</label>
-                                    <input class="form-control" id="nomFormateur" name="nomFormateur" type="text" placeholder="Entrez le nom du formateur">
+                                    <label class="label-form" for="nomIndividu">Nom du formateur</label>
+                                    <input class="form-control" id="nomIndividu" name="nomIndividu" type="text" placeholder="Entrez le nom du formateur">
                                 </div>
                                 <!-- Champ Prénom formateur -->
                                 <div class="form-group mt-1 mb-1">
-                                    <label class="label-form" for="prenomFormateur">Prénom du formateur</label>
-                                    <input class="form-control" id="prenomFormateur" name="prenomFormateur" type="text" placeholder="Entrez le prénom">
+                                    <label class="label-form" for="prenomIndividu">Prénom du formateur</label>
+                                    <input class="form-control" id="prenomIndividu" name="prenomIndividu" type="text" placeholder="Entrez le prénom">
                                 </div>
                                 <!-- Champ Prénom formateur -->
                                 <div class="form-group mt-1 mb-1">
-                                    <label class="label-form" for="telFormateur">Numéro de téléphone du formateur</label>
-                                    <input class="form-control" id="telFormateur" name="telFormateur" type="text" placeholder="Entrez le numéro de téléphone du formateur">
+                                    <label class="label-form" for="telIndividu">Numéro de téléphone du formateur</label>
+                                    <input class="form-control" id="telIndividu" name="telIndividu" type="text" placeholder="Entrez le numéro de téléphone du formateur">
                                 </div>
                                 <!-- Champ Sujet formation -->
                                 <div class="form-group mt-1 mb-1">
-                                    <label class="label-form" for="sujetFormation">Sujet de la formation</label>
-                                    <input class="form-control" id="sujetFormation" name="sujetFormation" type="text" placeholder="Sujet de la formation">
+                                    <label class="label-form" for="description">Sujet de la formation</label>
+                                    <input class="form-control" id="description" name="description" type="text" placeholder="Sujet de la formation">
                                 </div>
                             </div>
                         </div>
@@ -127,8 +127,8 @@
                                 </div>
                                 <!-- Champ Sujet du prêt ou location -->
                                 <div class="form-group mt-1 mb-1">
-                                    <label class="label-form" for="sujetLocation">Sujet de la Location</label>
-                                    <input class="form-control" id="sujetLocation" name="sujetLocation" type="text" placeholder="Sujet de la location">
+                                    <label class="label-form" for="description">Sujet de la Location</label>
+                                    <input class="form-control" id="description" name="description" type="text" placeholder="Sujet de la location">
                                 </div>
                             </div>
                         </div>
@@ -161,6 +161,7 @@
                                 </div>
                                 <div class="col-6">
                                     <button type="button" id="btn-next" class="btn btn-primary w-100">Suivant</button>
+                                    <button type="submit" id="btn-reserver" class="btn btn-primary w-100" style="display: none;">Réserver</button>
                                 </div>
                             </div>
                     </div>
