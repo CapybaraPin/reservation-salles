@@ -30,7 +30,7 @@ require_once 'utils/tableau.php';
 
                         <!-- Bouton pour exporter les données -->
                         <div class="col-12 col-lg-4 text-lg-end">
-                            <button class="btn btn-primary">
+                            <button class="btn btn-primary" style="color: white !important;">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Exporter les données
                             </button>
                         </div>
@@ -42,7 +42,7 @@ require_once 'utils/tableau.php';
                                     <i class="fa-regular fa-calendar mb-md-5 mb-2"></i>
                                     <h5>Réservations</h5>
                                     <p>Nombre de réservations :</p>
-                                    <h3>150</h3>
+                                    <h3><?=$nbReservations?></h3>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-4 col-xl-3">
@@ -50,7 +50,7 @@ require_once 'utils/tableau.php';
                                     <i class="fa-solid fa-cube mb-md-5 mb-2"></i>
                                     <h5>Salles</h5>
                                     <p>Nombre de salles :</p>
-                                    <h3>24</h3>
+                                    <h3><?=$nbSalles?></h3>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-4 col-xl-3 offset-lg-2 offset-xl-0">
@@ -58,7 +58,7 @@ require_once 'utils/tableau.php';
                                     <i class="fa-solid fa-users mb-md-5 mb-2"></i>
                                     <h5>Employés</h5>
                                     <p>Nombre d'employés :</p>
-                                    <h3>12</h3>
+                                    <h3><?=$nbEmployes?></h3>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-4 col-xl-3">
@@ -66,7 +66,7 @@ require_once 'utils/tableau.php';
                                     <i class="fa-solid fa-list-ul mb-md-5 mb-2"></i>
                                     <h5>Activités</h5>
                                     <p>Nombre d'activités :</p>
-                                    <h3>5</h3>
+                                    <h3><?=$nbActivites?></h3>
                                 </div>
                             </div>
                         </div>

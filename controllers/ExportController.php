@@ -12,6 +12,11 @@ class ExportController extends Controller
      */
     public function get()
     {
+        $nbReservations = $this->reservationModel->getNbReservations();
+        $nbSalles = $this->salleModel->getNbSalles();
+        $nbEmployes = $this->employeModel->getNbEmployes();
+        $nbActivites = $this->activiteModel->getNbActivites();
+
 
         require __DIR__ . '/../views/exportation.php';
     }
