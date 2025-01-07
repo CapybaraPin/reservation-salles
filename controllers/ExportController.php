@@ -17,7 +17,6 @@ class ExportController extends Controller
         $nbEmployes = $this->employeModel->getNbEmployes();
         $nbActivites = $this->activiteModel->getNbActivites();
 
-
         require __DIR__ . '/../views/exportation.php';
     }
 

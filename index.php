@@ -75,8 +75,13 @@ session_start();
 // Middleware pour vérifier la connexion de l'utilisateur
 $router->before('GET|POST', '/(?!auth).*', function() {
     if (!isset($_SESSION['userIdentifiant'])) {
-        // Redirection vers la page de connexion si l'utilisateur n'est pas connecté
-        header('Location: /auth');
+        if (isset($_COOKIE['authToken'])) {
+            $auth = new AuthController();
+            $auth->connexionToken();
+        } else {
+            // Redirection vers la page de connexion si l'utilisateur n'est pas connecté
+            header('Location: /auth');
+        }
         exit();
     }
 });

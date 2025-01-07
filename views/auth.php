@@ -43,6 +43,12 @@ use services\Config;
                            placeholder="Entrez votre mot de passe" required>
                 </div>
                 <br>
+                <!-- Groupe pour le champ "Se souvenir de moi" -->
+                <div class="form-group mb-3">
+                    <input class="form-check-input" id="memoriser" name="memoriser" type="checkbox">
+                    <label for="memoriser" class="label-form d-inline">Se Souvenir de moi</label>
+                </div>
+
                 <!-- Bouton d'envoi -->
                 <div class="d-grid">
                     <button class="btn btn-primary" type="submit">Se connecter</button>
