@@ -28,7 +28,7 @@ class EmployesController extends FiltresController
         "TELEPHONE_EMPLOYE" => 'Téléphone',
     ];
 
-    public function get($employeId = null, $action = null)
+    public function get()
     {
         $filtresDisponibles = self::FILTRES_DISPONIBLES;
         $this->setFiltresDisponibles($filtresDisponibles);
@@ -181,61 +181,6 @@ class EmployesController extends FiltresController
             }
         } else {
             throw new \Exception("Données invalides. Veuillez vérifier les informations soumises.");
-        }
-    }
-
-    /**
-     * Edition d'un employé et de ses informations lors du click sur le bouton
-     * de modification sur la page des employés dans la vue administrateur.
-     * @param $employeId
-     * @return void
-     */
-    public function edit($employeId)
-    {
-        try {
-            // Récupérer les informations de l'employé
-            $employe = $this->employeModel->getEmploye($employeId);
-
-            if (!$employe) {
-                throw new \Exception("L'employé avec l'ID $employeId n'existe pas.");
-            }
-
-            // Charger la vue de modification
-            require __DIR__ . '/../views/modifierEmploye.php';
-
-        } catch (\Exception $e) {
-            $this->erreur = $e->getMessage();
-            $this->get(); // Retourner à la liste des employés en cas d'erreur
-        }
-    }
-
-    /**
-     * Mise à jour des informations d'un employé lors du click sur le bouton de
-     * confirmation dans la page de modification d'un employé.
-     * @param $employeId
-     * @return void
-     */
-    public function update($employeId)
-    {
-        if (isset($_POST['nom'], $_POST['prenom'], $_POST['telephone'])) {
-            try {
-                $this->employeModel->modifierEmploye(
-                    $employeId,
-                    htmlspecialchars($_POST['nom']),
-                    htmlspecialchars($_POST['prenom']),
-                    htmlspecialchars($_POST['telephone'])
-                );
-
-                $_SESSION['messageValidation'] = "Les informations de l'employé ont été mises à jour avec succès.";
-                header('Location: /employes');
-                exit;
-            } catch (\Exception $e) {
-                $this->erreur = $e->getMessage();
-                $this->edit($employeId); // Réafficher le formulaire avec un message d'erreur
-            }
-        } else {
-            $this->erreur = "Veuillez remplir tous les champs.";
-            $this->edit($employeId);
         }
     }
 }

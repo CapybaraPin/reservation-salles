@@ -42,6 +42,7 @@ require __DIR__ . '/controllers/FiltresController.php';
 require __DIR__ . '/controllers/AuthController.php';
 require __DIR__ . '/controllers/AccueilController.php';
 require __DIR__ . '/controllers/SallesController.php';
+require __DIR__ . '/controllers/ModifierEmployesController.php';
 require __DIR__ . '/controllers/InformationSalleController.php';
 require __DIR__ . '/controllers/ReservationsController.php';
 require __DIR__ . '/controllers/EmployesController.php';
@@ -58,6 +59,8 @@ use controllers\ReservationsController;
 use controllers\EmployesController;
 use controllers\ActivitesController;
 use controllers\ExportController;
+use controllers\ModifierEmployesController;
+
 
 // Création d'une instance de Router
 $router = new \Bramus\Router\Router();
@@ -137,8 +140,15 @@ $router->get('/employes', [new EmployesController(), 'get']);
 $router->post('/employes', [new EmployesController(), 'post']);
 
 // Modification d'un employé
-$router->get('/employe/{employeId}/edit', [new EmployesController(), 'edit']);
-$router->post('/employe/{employeId}/edit', [new EmployesController(), 'update']);
+$router->get('/employe/{employeId}/edit', function($employeId) {
+    $employeController = new ModifierEmployesController();
+    $employeController->get($employeId, "edit");
+});
+
+$router->post('/employe/{employeId}/edit', function($employeId) {
+    $employeController = new ModifierEmployesController();
+    $employeController->post($employeId, "edit");
+});
 
 // Définition des routes pour les activités
 $router->get('/activites', [new ActivitesController(), 'get']);
