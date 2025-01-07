@@ -133,16 +133,13 @@ class Salle
      * Permet de supprimer une salle de la base de données
      * @param $idSalle int l'identifiant de la salle à supprimer
      */
-    public function supprimerSalle($idSalle, $nbReservations)
+    public function supprimerSalle($idSalle)
     {
         $pdo = Database::getPDO();
 
-        if ($nbReservations > 0) {
-            throw new \Exception("Impossible de supprimer une salle avec des réservations.");
-        }
-
         $req = $pdo->prepare("DELETE FROM salle WHERE identifiant = ?");
         $req->execute([$idSalle]);
+        return $req;
     }
 
     /**

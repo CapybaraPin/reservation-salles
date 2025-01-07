@@ -42,6 +42,7 @@ require __DIR__ . '/controllers/FiltresController.php';
 require __DIR__ . '/controllers/AuthController.php';
 require __DIR__ . '/controllers/AccueilController.php';
 require __DIR__ . '/controllers/SallesController.php';
+require __DIR__ . '/controllers/InformationSalleController.php';
 require __DIR__ . '/controllers/ReservationsController.php';
 require __DIR__ . '/controllers/EmployesController.php';
 require __DIR__ . '/controllers/ActivitesController.php';
@@ -51,6 +52,7 @@ use services\Database;
 use controllers\AuthController;
 use controllers\AccueilController;
 use controllers\SallesController;
+use controllers\InformationSalleController;
 use controllers\ReservationsController;
 use controllers\EmployesController;
 use controllers\ActivitesController;
@@ -95,23 +97,23 @@ $router->post('/salles', [new SallesController(), 'post']);
 
 // Visualisation d'une salle
 $router->get('/salle/{salleId}/view', function($salleId) {
-    $salleController = new SallesController();
+    $salleController = new InformationSalleController();
     $salleController->get($salleId, "view");
 });
 
 $router->post('/salle/{salleId}/view', function($salleId) {
-    $salleController = new SallesController();
-    $salleController->post($salleId);
+    $salleController = new InformationSalleController();
+    $salleController->post($salleId, 'view');
 });
 
 // Modification d'une salle
 $router->get('/salle/{salleId}/edit', function($salleId) {
-    $salleController = new SallesController();
+    $salleController = new InformationSalleController();
     $salleController->get($salleId, "edit");
 });
 
 $router->post('/salle/{salleId}/edit', function($salleId) {
-    $salleController = new SallesController();
+    $salleController = new InformationSalleController();
     $salleController->post($salleId, "edit");
 });
 

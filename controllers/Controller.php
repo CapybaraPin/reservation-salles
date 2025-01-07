@@ -50,10 +50,8 @@ class Controller
      * Permet la deconnexion de l'utilisateur
      * @return void
      */
-    public function deconnexion()
-    {
-        if (isset($_POST["deconnexion"]))
-        {
+    public function deconnexion() {
+        if (isset($_POST["deconnexion"])) {
             $this->authModel->deconnexion();
         }
     }

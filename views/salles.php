@@ -35,21 +35,23 @@ require_once 'utils/tableau.php';
                         </div>
                     </div>
 
-                    <?php if (!empty($success)) { ?>
-                        <div class="alert alert-success">
-                            <?= $success ?>
-                        </div>
-                    <?php } ?>
-
-                    <?php if (!empty($erreurs)) { ?>
-                        <div class="alert alert-danger">
-                            <ul>
-                                <?php foreach ($erreurs as $champ => $message) { ?>
-                                    <li><?= $message ?></li>
-                                <?php } ?>
-                            </ul>
-                        </div>
-                    <?php } ?>
+                    <div class="row">
+                        <?php if (isset($erreurs)) { ?>
+                            <div class="alert alert-danger mt-3" role="alert">
+                                <?= $erreurs ?>
+                            </div>
+                        <?php }
+                        if (isset($success)) { ?>
+                            <div class="alert alert-success mt-3" role="alert">
+                                <?= $success ?>
+                            </div>
+                        <?php } ?>
+                        <?php if (isset($alerte)) { ?>
+                            <div class="alert alert-warning mt-3" role="alert">
+                                <?= $alerte ?>
+                            </div>
+                        <?php } ?>
+                    </div>
 
                     <!-- Section filtres et recherche -->
                     <?php include 'elements/filtres.php'; ?>
@@ -62,6 +64,7 @@ require_once 'utils/tableau.php';
     </div>
 </div>
 
+<?php include 'modals/supprimerSalle.php'; ?>
 <?php include 'modals/ajouterSalle.php'; ?>
 
 </body>

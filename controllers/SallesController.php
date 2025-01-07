@@ -34,90 +34,12 @@ class SallesController extends FiltresController
     /**
      * Fonction pour gérer les requêtes GET
      */
-    public function get($salleId = null, $action = null)
-    {
-        if ($salleId) {
-            switch ($action) {
-                case 'view':
-                    $this->consultationSalle($salleId);
-                    break;
-                case 'edit':
-                    $this->ajouterLogiciel($salleId); 
-                    $this->modifierSalle($salleId);
-                    break;
-                default:
-                    $this->listeSalles();
-            }
-        } else {
-            $this->listeSalles();
-        }
-    }
+    public function get() {
 
-    /**
-     * Fonction pour gérer les requêtes POST
-     */
-    public function post($salleId = null, $action = null)
-    {
-        if ($salleId){
-            switch ($action) {
-                case 'supprimer':
-                    $this->supprimerSalle($salleId);
-                    break;
-                case 'edit':
-                    $this->modifierSalle($salleId);
-                    break;
-                default:
-                    $this->listeSalles();
-            }
-            $this->supprimerSalle($salleId);
-        } else {
-            $this->deconnexion();
-            $this->ajouterSalle();
-
-            $this->setFiltres($_POST['filtres'] ?? []);
-
-            $filtresDisponibles = self::FILTRES_DISPONIBLES;
-            $this->setFiltresDisponibles($filtresDisponibles);
-            if (isset($_POST['ajouter_filtre'])) {
-                $this->ajouterFiltre($_POST['nouveau_filtre']);
-            } elseif (isset($_POST['supprimer_filtre'])) {
-                $this->supprimerFiltre($_POST['supprimer_filtre']);
-            }
-
-            $this->listeSalles();
-        }
-    }
-
-    /**
-     * Fonction qui gère la consultation d'une salle
-     * @param $salleId int Identifiant de la salle
-     * @return void Affiche la page de consultation d'une
-     */
-    public function consultationSalle($salleId)
-    {
-        $salle = $this->salleModel->getSalle($salleId);
-
-        try {
-            $ordinateurs = $this->ordinateurModel->getOrdinateursSalle($salleId);
-            $logiciels = $this->ordinateurModel->getLogicielsOrdinateur($salle['ID_ORDINATEUR']);
-            $nbReservations = $this->reservationModel->getNbReservationsSalle($salleId);
-        } catch (\Exception $e) {
-            $groupeOrdinateur = null;
-            $logiciels = null;
-        }
-
-        require __DIR__ . '/../views/consultationSalle.php';
-    }
-
-    /**
-     * Fonction qui gère l'affichage de la liste des salles
-     * @return void
-     */
-    public function listeSalles()
-    {
         $filtresDisponibles = self::FILTRES_DISPONIBLES;
         $this->setFiltresDisponibles($filtresDisponibles);
         $filtres = $this->getFiltres();
+
 
         $titre = 'Salles';
         $colonnes = [
@@ -161,7 +83,7 @@ class SallesController extends FiltresController
             ];
 
             $actions[$salle['ID_SALLE']]['supprimer'] = [
-                'attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer'],
+                'attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerSalle', 'href' => '#'.$salle['ID']],
                 'icone' => 'fa-solid fa-trash-can'
             ];
 
@@ -170,17 +92,53 @@ class SallesController extends FiltresController
         $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
         $logiciels = $this->ordinateurModel->getLogiciels();
 
+        if(isset($_SESSION['messageValidation'])) {
+            $this->success = $_SESSION['messageValidation'];
+            unset($_SESSION['messageValidation']);
+        }
+
         $erreurs = $this->erreurs;
         $success = $this->success;
 
         require __DIR__ . '/../views/salles.php';
+
+    }
+
+    /**
+     * Fonction pour gérer les requêtes POST
+     */
+    public function post() {
+
+        $this->deconnexion();
+        $this->ajouterSalle();
+
+        $this->setFiltres($_POST['filtres'] ?? []);
+
+        $filtresDisponibles = self::FILTRES_DISPONIBLES;
+        $this->setFiltresDisponibles($filtresDisponibles);
+        if (isset($_POST['ajouter_filtre'])) {
+            $this->ajouterFiltre($_POST['nouveau_filtre']);
+        } elseif (isset($_POST['supprimer_filtre'])) {
+            $this->supprimerFiltre($_POST['supprimer_filtre']);
+        }
+
+        if (isset($_POST['supprimerSalle']) && isset($_POST['idSalle'])) {
+            try {
+                $id = intval($_POST['idSalle']);
+                $this->supprimerSalle($id);
+            } catch (\Exception $e) {
+                $this->erreurs = "Erreur lors de la suppression de la salle : " . $e->getMessage();
+            }
+        }
+
+        $this->get();
+
     }
 
     /**
      * Fonction qui gère l'ajout d'une salle
      */
-    public function ajouterSalle()
-    {
+    public function ajouterSalle() {
         // Récupération des données du formulaire
         if (isset($_POST['nom']) && isset($_POST['capacite']) && isset($_POST['typeOrdinateur'])) {
 
@@ -211,101 +169,33 @@ class SallesController extends FiltresController
             } catch (FieldValidationException $e) {
                 $this->erreurs = $e->getErreurs();
             }
+
         }
     }
 
-    /**
-     * Gère la modification d'une salle
-     * @param int $salleId
-     */
-    public function modifierSalle($salleId)
-    {
-        $salle = $this->salleModel->getSalle($salleId);
 
-        if (isset($_POST['supprimerLogiciel'])) {
-            $logicielId = htmlspecialchars($_POST['logicielId']);
-            $nbReservations = $this->ordinateurModel->supprimerLogiciel($salle['ID_ORDINATEUR'], $logicielId);
-
-            $this->erreurs = "Le logiciel a bien été supprimé ce cette salle.";
-        }
-
-        try {
-            $ordinateurs = $this->ordinateurModel->getOrdinateursSalle($salleId);
-            $logicielsInstalles = $this->ordinateurModel->getLogicielsOrdinateur($salle['ID_ORDINATEUR']);
-            $logiciels = $this->ordinateurModel->getLogiciels();
-            $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
-        } catch (\Exception $e) {
-            $ordinateurs = null;
-            $logiciels = null;
-            $logicielsInstalles = null;
-            $typesOrdinateur = null;
-        }
-
-        if (isset($_POST['nom'])
-            && isset($_POST['capacite'])) {
-
-            // Récupérer les données du formulaire pour la salle
-            $nom = htmlspecialchars($_POST['nom']);
-            $capacite = (int)htmlspecialchars($_POST['capacite']);
-            $videoProjecteur = isset($_POST['videoProjecteur']) ? 1 : 0;
-            $ecranXXL = isset($_POST['ecranXXL']) ? 1 : 0;
-
-            // Récupérer les données du formulaire pour les ordinateurs
-            $nbOrdinateurs = isset($_POST['nbOrdinateurs']) && is_numeric($_POST['nbOrdinateurs']) ? (int)$_POST['nbOrdinateurs'] : 0;
-            $imprimante = isset($_POST['imprimante']) ? 1 : 0;
-            $typeOrdinateur = htmlspecialchars($_POST['typeOrdinateur']);
-            $logicielsSelectionnes = isset($_POST['logiciels']) ? $_POST['logiciels'] : [];
-
-            try {
-                // Modifier les informations de la salle
-                $this->salleModel->modifierSalle($salleId, $nom, $capacite, $videoProjecteur, $ecranXXL);
-
-                // Modifier les informations du groupe d'ordinateurs
-                $this->ordinateurModel->modifierGroupeOrdinateur($salle['ID_ORDINATEUR'], $nbOrdinateurs, $imprimante, $typeOrdinateur);
-
-                $success = "Modification de la salle avec succès.";
-
-                $salle = $this->salleModel->getSalle($salleId);
-                $ordinateurs = $this->ordinateurModel->getOrdinateursSalle($salleId);
-                $logicielsInstalles = $this->ordinateurModel->getLogicielsOrdinateur($salle['ID_ORDINATEUR']);
-                $logiciels = $this->ordinateurModel->getLogiciels();
-                $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
-            } catch (\Exception $e) {
-                $this->erreurs = $e->getMessage();
-            }
-        }
-
-        require __DIR__ . '/../views/modifierSalle.php';
-    }
 
     /**
      * Fonction qui gère la suppression d'une salle
      * @param $salleId int Identifiant de la salle
      */
-    public function supprimerSalle($salleId)
-    {
+    public function supprimerSalle($salleId) {
         if (isset($_POST['supprimerSalle'])) {
             $nbReservations = $this->reservationModel->getNbReservationsSalle($salleId);
-            $this->salleModel->supprimerSalle($salleId, $nbReservations);
+            if($nbReservations == 0) {
+                $result = $this->salleModel->supprimerSalle($salleId);
 
-            header('Location: /salles');
+                if($result) {
+                    $_SESSION['messageValidation'] =  "La salle n°".$salleId." a bien été supprimée.";
+
+                    header("Location: " . $_SERVER['REQUEST_URI']);
+                    exit;
+                }
+
+            } else {
+                throw new \Exception("Impossible de supprimer une salle avec des réservations.");
+            }
         }
     }
 
-    /**
-     *
-     * @param $salleId
-     * @return void
-     */
-    public function ajouterLogiciel($salleId){
-        if (isset($_POST["ajouterLogiciel"]) && isset($_POST["logicielId"])){
-            $salle = $this->salleModel->getSalle($salleId);
-            $logicielId = htmlspecialchars($_POST["logicielId"]);
-
-            die("test");
-            $this->ordinateurModel->ajouterLogiciel($salle["ID_ORDINATEUR"], $logicielId);
-
-            $this->success = "Vous avez bien ajouté le logiciel à la salle.";
-        }
-    }
 }

@@ -100,8 +100,7 @@ class Ordinateur
      * @param $idOrdinateur int l'identifiant de l'ordinateur
      * @param $idLogiciel int l'identifiant du logiciel
      */
-    public function ajouterLogiciel($idOrdinateur, $idLogiciel)
-    {
+    public function ajouterLogiciel($idOrdinateur, $idLogiciel) {
         $pdo = Database::getPDO();
 
         $req = $pdo->prepare("INSERT INTO ordinateurLogiciel (idOrdinateur, idLogiciel) VALUES (:idOrdinateur, :idLogiciel)");

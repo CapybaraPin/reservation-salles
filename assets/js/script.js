@@ -71,6 +71,32 @@ document.addEventListener('click', function (event) {
     }
 });
 
+function creerModalSuppressionSalle(){
+
+    const button = event.target.closest('.btn-nav[title="SupprimerSalle"]');
+
+    const salleID = button.getAttribute('href').split('#')[1];
+    window.location.hash = `#${salleID}`;
+
+    // Récupère le modal et ses éléments
+    const modal = document.getElementById('modal_supprimer_salle');
+
+    const hiddenInput = modal.querySelector('input[name="idSalle"]');
+    hiddenInput.value = salleID;
+
+    // Ouvre le modal
+    const bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+}
+
+document.addEventListener('click', function (event) {
+    if (event.target.closest('.btn-nav[title="SupprimerSalle"]')) {
+        event.preventDefault(); // Empêche le comportement par défaut
+
+        creerModalSuppressionSalle();
+    }
+});
+
 //Suppression d'une réservation
 function creerModalSuppressionReservation(){
 

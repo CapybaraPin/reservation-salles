@@ -26,7 +26,7 @@
                             <a href="/salle/<?= $salle["ID_SALLE"] ?>/edit" class="btn btn-primary">
                                 <i class="fa-solid fa-pencil"></i> Modifier
                             </a>
-                            <button class="btn btn-danger" <?php if ($nbReservations > 0){ echo 'disabled' ; } ?> data-bs-toggle="modal" data-bs-target="#supprimerSalle">
+                            <button class="btn btn-danger" <?php if ($nbReservations > 0){ echo 'disabled' ; } ?> data-bs-toggle="modal" data-bs-target="#modal_supprimer_salle">
                                 <i class="fa-solid fa-trash"></i> Supprimer
                             </button>
                         </div>
@@ -120,27 +120,7 @@
     </div>
 </div>
 
-<!-- Modals pour supprimer et modifier -->
-<!-- Modal supprimer salle -->
-<div class="modal fade" id="supprimerSalle" tabindex="-1" aria-labelledby="supprimerSalleLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="post" action="">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="supprimerSalleLabel">Confirmation de la suppression</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Êtes-vous sûr de vouloir supprimer la salle « <?= $salle["NOM_SALLE"] ?> » ?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-danger" name="supprimerSalle">Supprimer</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+<?php include 'modals/supprimerSalle.php'; ?>
 
 <?php
 include 'elements/scripts.php'; ?>
