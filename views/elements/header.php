@@ -20,7 +20,7 @@ $page_actuelle = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-lg-0">
                     <li class="ms-2 me-2 logo d-none d-lg-flex">
-                        <a class="logo-text">IT</a>
+                        <a href="/" class="logo-text">IT</a>
                     </li>
                     <li class="btn-nav me-1 button-nav mb-1 ms-lg-0 mb-lg-0 mt-lg-0 mt-2 <?= ($page_actuelle == '/') ? 'btn-nav-active' : ''; ?>">
                         <a href="/">Tableau de bord</a>

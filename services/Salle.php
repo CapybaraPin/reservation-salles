@@ -2,6 +2,7 @@
 
 namespace services;
 
+use MongoDB\Driver\Exception\ExecutionTimeoutException;
 use PDO;
 use services\exceptions\FieldValidationException;
 
@@ -26,7 +27,11 @@ class Salle
                                     WHERE identifiant = :id");
         $req->execute(['id' => $idSalle]);
 
-        return $req->fetch();
+        if($req->rowCount() > 0) {
+            return $req->fetch();
+        } else {
+            throw new \Exception("Salle non trouver");
+        }
     }
     /**
      * Permet de récuperer la liste des salles dans la base de données.
@@ -137,9 +142,15 @@ class Salle
     {
         $pdo = Database::getPDO();
 
+        $this->getSalle($idSalle);
+
         $req = $pdo->prepare("DELETE FROM salle WHERE identifiant = ?");
+
         $req->execute([$idSalle]);
+
         return $req;
+
+
     }
 
     /**

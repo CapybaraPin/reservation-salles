@@ -48,7 +48,12 @@ class InformationSalleController extends FiltresController {
      */
     public function consultationSalle($salleId) {
 
-        $salle = $this->salleModel->getSalle($salleId);
+        try {
+            $salle = $this->salleModel->getSalle($salleId);
+        } catch (\Exception $e) {
+            header('HTTP/1.1 404 Not Found');
+            require_once __DIR__ . "/../views/errors/404.php";
+        }
         $this->supprimerSalle($salleId);
 
         try {
@@ -64,6 +69,10 @@ class InformationSalleController extends FiltresController {
             $this->success = $_SESSION['messageValidation'];
             unset($_SESSION['messageValidation']);
         }
+        if(isset($_SESSION['messageErreur'])) {
+            $this->erreurs = $_SESSION['messageErreur'];
+            unset($_SESSION['messageErreur']);
+        }
 
         $erreurs = $this->erreurs;
         $success = $this->success;
@@ -77,7 +86,12 @@ class InformationSalleController extends FiltresController {
      */
     public function modifierSalle($salleId) {
 
-        $salle = $this->salleModel->getSalle($salleId);
+        try {
+            $salle = $this->salleModel->getSalle($salleId);
+        } catch (\Exception $e) {
+            header('HTTP/1.1 404 Not Found');
+            require_once __DIR__ . "/../views/errors/404.php";
+        }
         $this->ajouterLogiciel($salleId);
         $this->supprimerLogiciel();
 
@@ -139,6 +153,10 @@ class InformationSalleController extends FiltresController {
             $this->success = $_SESSION['messageValidation'];
             unset($_SESSION['messageValidation']);
         }
+        if(isset($_SESSION['messageErreur'])) {
+            $this->erreurs = $_SESSION['messageErreur'];
+            unset($_SESSION['messageErreur']);
+        }
 
         $erreurs = $this->erreurs;
         $success = $this->success;
@@ -154,16 +172,19 @@ class InformationSalleController extends FiltresController {
         if (isset($_POST['supprimerSalle'])) {
             $nbReservations = $this->reservationModel->getNbReservationsSalle($salleId);
             if($nbReservations == 0) {
-                $result = $this->salleModel->supprimerSalle($salleId);
-
-                if($result) {
+                try {
+                    $this->salleModel->supprimerSalle($salleId);
                     $_SESSION['messageValidation'] =  "La salle n°".$salleId." a bien été supprimée.";
+                } catch (\Exception $e) {
+                    $_SESSION['messageErreur'] =  "La salle n°".$salleId." n'existe plus.";
 
                     header("Location: /salles");
                     exit;
-                } else {
-                    throw new \Exception("Une erreur est survenue");
                 }
+
+                header("Location: /salles");
+                exit;
+
 
             } else {
                 throw new \Exception("Impossible de supprimer une salle avec des réservations. ". $salleId . " - " . $nbReservations);

@@ -96,6 +96,10 @@ class SallesController extends FiltresController
             $this->success = $_SESSION['messageValidation'];
             unset($_SESSION['messageValidation']);
         }
+        if(isset($_SESSION['messageErreur'])) {
+            $this->erreurs = $_SESSION['messageErreur'];
+            unset($_SESSION['messageErreur']);
+        }
 
         $erreurs = $this->erreurs;
         $success = $this->success;
@@ -183,10 +187,12 @@ class SallesController extends FiltresController
         if (isset($_POST['supprimerSalle'])) {
             $nbReservations = $this->reservationModel->getNbReservationsSalle($salleId);
             if($nbReservations == 0) {
-                $result = $this->salleModel->supprimerSalle($salleId);
 
-                if($result) {
+                try {
+                    $this->salleModel->supprimerSalle($salleId);
                     $_SESSION['messageValidation'] =  "La salle n°".$salleId." a bien été supprimée.";
+                } catch (\Exception $e) {
+                    $_SESSION['messageErreur'] =  "La salle n°".$salleId." n'existe plus.";
 
                     header("Location: " . $_SERVER['REQUEST_URI']);
                     exit;
