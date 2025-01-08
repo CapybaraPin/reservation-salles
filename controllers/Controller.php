@@ -5,9 +5,10 @@ namespace controllers;
 use services\Activite;
 use services\Auth;
 use services\Config;
-use services\Database;
 use services\Employe;
+use services\Exportation;
 use services\Ordinateur;
+use services\Organisme;
 use services\Reservation;
 use services\Salle;
 
@@ -27,7 +28,9 @@ class Controller
     protected Activite $activiteModel;
     protected Reservation $reservationModel;
 
-    protected $pdo;
+    protected Organisme $organismeModel;
+
+    protected Exportation $exportationModel;
 
     /**
      * Constructeur du contrôleur général.
@@ -43,17 +46,16 @@ class Controller
         $this->salleModel = new Salle();
         $this->activiteModel = new Activite();
         $this->reservationModel = new Reservation();
-        
+        $this->organismeModel = new Organisme();
+        $this->exportationModel = new Exportation();
     }
 
     /**
      * Permet la deconnexion de l'utilisateur
      * @return void
      */
-    public function deconnexion()
-    {
-        if (isset($_POST["deconnexion"]))
-        {
+    public function deconnexion() {
+        if (isset($_POST["deconnexion"])) {
             $this->authModel->deconnexion();
         }
     }

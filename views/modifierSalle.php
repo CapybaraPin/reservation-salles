@@ -14,34 +14,53 @@
         <div class="row">
             <div class="col-12">
                 <div class="container">
-                    <!-- Section de bienvenue et actions -->
-                    <div class="row mt-5 mb-4">
-                        <div class="col-12 col-lg-8">
-                            <h2 class="">Modification de la salle</h2>
-                            <p class="">Modifiez les informations de la salle <b>« <?= $salle["NOM_SALLE"] ?> »</b></p>
-                        </div>
-
-                        <!-- Boutons pour revenir ou soumettre -->
-                        <div class="col-12 col-lg-4 text-lg-end">
-                            <a href="/salle/<?= $salle['ID_SALLE'] ?>/view" class="btn btn-secondary">
-                                <i class="fa-solid fa-info-circle"></i> Informations
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Formulaire de modification de la salle et des ordinateurs -->
                     <form method="POST" action="" class="needs-validation" novalidate>
+                        <!-- Section de bienvenue et actions -->
+                        <div class="row mt-5 mb-4">
+                            <div class="col-12 col-lg-8">
+                                <h2 class="">Modification de la salle</h2>
+                                <p class="">Modifiez les informations de la salle <b>« <?= $salle["NOM_SALLE"] ?> »</b></p>
+                            </div>
+
+                            <!-- Boutons pour revenir ou soumettre -->
+                            <div class="col-12 col-lg-4 text-lg-end">
+                                <a href="/salle/<?= $salle['ID_SALLE'] ?>/view" class="btn btn-secondary">
+                                    <i class="fa-solid fa-info-circle"></i> Informations
+                                </a>
+
+                                <button type="submit" class="btn btn-primary" name="modifierSalleOrdinateurs">
+                                    <i class="fa-solid fa-save"></i> Sauvegarder
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <?php if (isset($erreurs)) { ?>
+                                <div class="alert alert-danger mt-3" role="alert">
+                                    <?= $erreurs ?>
+                                </div>
+                            <?php }
+                            if (isset($success)) { ?>
+                                <div class="alert alert-success mt-3" role="alert">
+                                    <?= $success ?>
+                                </div>
+                            <?php } ?>
+                            <?php if (isset($alerte)) { ?>
+                                <div class="alert alert-warning mt-3" role="alert">
+                                    <?= $alerte ?>
+                                </div>
+                            <?php } ?>
+                        </div>
+
+                        <!-- Formulaire de modification de la salle et des ordinateurs -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header bg-secondary text-white">
-                                        <h3 class="card-title">Formulaire de modification</h3>
+                                        <h3 class="card-title">Informations sur la salle</h3>
                                     </div>
                                     <div class="card-body">
                                         <div class="container">
-                                            <!-- SECTION 1: Informations sur la salle -->
-
-                                            <h4>Informations sur la salle</h4>
 
                                             <!-- Nom de la salle -->
                                             <div class="row">
@@ -89,13 +108,18 @@
                                                 </div>
                                             </div>
 
-                                            <!-- SECTION 2: Informations sur les ordinateurs -->
-                                            <?php if($salle["ID_ORDINATEUR"] != 0 ){ ?>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                            <hr>
+                                <?php if($salle["ID_ORDINATEUR"] != 0 ){ ?>
 
-                                            <h4>Informations sur les ordinateurs</h4>
-
+                                <div class="card mt-4">
+                                    <div class="card-header bg-secondary text-white">
+                                        <h3 class="card-title">Informations sur les ordinateurs</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="container">
                                             <!-- Nombre d'ordinateurs -->
                                             <div class="row">
                                                 <div class="form-group mb-3">
@@ -104,19 +128,6 @@
                                                     <div class="invalid-feedback">
                                                         Veuillez entrer le nombre d'ordinateurs.
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Logiciels installés -->
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <label class="label-form" for="logiciels">Logiciels présents sur les ordinateurs</label>
-                                                    <select class="form-select" id="logiciels" name="logiciels[]" multiple aria-label="multiple select example">
-                                                        <option value="-1" selected>Sélectionnez le(s) logiciel(s)</option>
-                                                        <?php foreach ($logiciels as $logiciel) : ?>
-                                                            <option value="<?= $logiciel['identifiant'] ?>" <?= in_array($logiciel['identifiant'], $logicielsInstalles) ? 'selected' : '' ?>><?= $logiciel['nom'] ?></option>
-                                                        <?php endforeach; ?>
-                                                    </select>
                                                 </div>
                                             </div>
 
@@ -148,35 +159,91 @@
                                                 </div>
                                             </div>
 
-                                            <?php } ?>
+                                        </form>
 
-                                            <!-- Boutons de soumission -->
-                                            <div class="row mt-3 mb-2">
-                                                <div class="col-6">
-                                                    <a href="/salle/<?= $salle["ID_SALLE"] ?>/view" class="btn btn-outline-dark w-100" >
-                                                        Annuler
-                                                    </a>
+                                            <hr>
+
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <h5>Informations sur les logiciels installés</h5>
                                                 </div>
-                                                <div class="col-6">
-                                                    <button type="submit" class="btn btn-primary w-100" name="modifierSalleOrdinateurs">
-                                                        <i class="fa-solid fa-save"></i> Sauvegarder les modifications
-                                                    </button>
+
+                                                <div class="col-2 text">
+                                                    <!-- Ajouter un logiciel -->
+                                                    <div class="">
+                                                        <button type="button" class="btn btn-sm btn-success w-100" data-bs-toggle="modal" data-bs-target="#ajouterLogiciel">
+                                                            <i class="fa-solid fa-plus"></i> Ajouter un logiciel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2 text">
+                                                    <!-- Ajouter un logiciel -->
+                                                    <div class="">
+                                                        <button type="button" class="btn btn-sm btn-danger w-100" data-bs-toggle="modal" data-bs-target="#supprimerlogiciel">
+                                                            <i class="fa-solid fa-plus"></i> Supprimer un logiciel
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
 
+                                            <!-- Logiciels installés -->
+                                            <div class="row">
+                                                <div class="form-group mb-3">
+                                                    <!-- Table des logiciels installés -->
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered table-hover w-50">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">Nom du logiciel</th>
+                                                                    <th scope="col" width="170px" class="text-center">Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <?php if (!empty($logicielsInstalles)){ ?>
+                                                                <?php foreach ($logicielsInstalles as $logicielId) {
+
+                                                                    // Récupérer le nom du logiciel depuis la base de données
+                                                                    $logiciel = array_filter($logiciels, fn($l) => $l['identifiant'] == $logicielId["ID_LOGICIEL"]);
+                                                                    $logiciel = reset($logiciel);
+                                                                    ?>
+                                                                    <tr>
+                                                                        <td><?= $logiciel['nom'] ?></td>
+                                                                        <td class="text-center">
+                                                                            <!-- Bouton de suppression -->
+                                                                           <form method="post" action="">
+                                                                               <button type="submit" name="supprimerLogiciel" class="btn btn-danger btn-sm">
+                                                                                   <i class="fa-solid fa-trash"></i> Supprimer
+                                                                               </button>
+
+                                                                               <input type="hidden" name="logicielId" value="<?= $logiciel['identifiant'] ?>">
+                                                                           </form>
+                                                                        </td>
+                                                                    </tr>
+                                                                <?php }
+                                                                    } else { ?>
+                                                                <tr>
+                                                                    <td colspan="2" class="text-center">Aucun logiciel installé.</td>
+                                                                </tr>
+                                                            <?php } ?>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <?php } ?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<?php include 'modals/ajouterLogiciel.php'; ?>
 <?php include 'elements/scripts.php'; ?>
 </body>
 </html>

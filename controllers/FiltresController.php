@@ -29,7 +29,7 @@ class FiltresController extends Controller
         foreach ($filtres as $champ => $valeurs) {
             foreach ($valeurs as $valeur) {
                 $filtre[$champ][] = ['valeur' => $valeur, "type" => $this->filtresDisponibles[$champ]['type'],
-                                     'operateur' => $this->filtresDisponibles[$champ]['operateur'] ?? null];
+                                     'operateur' => $this->filtresDisponibles[$champ]['operateur'] ?? null, 'champ' => $this->filtresDisponibles[$champ]['champ']];
             }
         }
         return $filtre;
@@ -46,10 +46,16 @@ class FiltresController extends Controller
 
     /**
      * Affecte les filtres actuels.
+     * si le filtre contient un json, on le décode
      */
     public function setFiltres($filtres)
     {
-        $this->filtres = $filtres;
+        foreach ($filtres as $champ => $valeurs) {
+            foreach ($valeurs as $index => $valeur) {
+                $valeurDecode = json_decode($valeur, true);
+                $this->filtres[$champ][$index] = is_array($valeurDecode) ? $valeurDecode : $valeur;
+            }
+        }
     }
 
     /**
@@ -59,7 +65,19 @@ class FiltresController extends Controller
     public function ajouterFiltre(array $nouveauFiltre)
     {
         $champ = $nouveauFiltre['champ'] ?? null;
-        $valeur = $nouveauFiltre['valeur'] ?? null;
+        if ($champ == "date" && isset($nouveauFiltre['date'])) {
+            $valeur = date('Y-m-d', strtotime($nouveauFiltre['date']));
+        } elseif ($champ == "periode" && isset($nouveauFiltre['dateDebut']) && isset($nouveauFiltre['dateFin']))  {
+            $datedebut = date_create($nouveauFiltre['dateDebut']);
+            $datefin = date_create($nouveauFiltre['dateFin']);
+            if (date_diff($datedebut, $datefin)->format('%R') == '-') {
+                $valeur = [$datefin->format('Y-m-d H:i:s'), $datedebut->format('Y-m-d H:i:s')];
+            } else {
+                $valeur = [$datedebut->format('Y-m-d H:i:s'), $datefin->format('Y-m-d H:i:s')];
+            }
+        } else {
+            $valeur = $nouveauFiltre['valeur'] ?? null;
+        }
 
         if ($champ && $valeur && isset($this->filtresDisponibles[$champ])) {
             if (!isset($this->filtres[$champ])) {

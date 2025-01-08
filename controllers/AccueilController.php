@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use Exception;
 use PDO;
 use services\Config;
 
@@ -12,11 +13,11 @@ use services\Config;
  *
  * @package controllers
  */
-class AccueilController extends Controller
+class AccueilController extends ReservationsController
 {
+
     public function get()
     {
-
         $titre = 'Mes Réservations';
         $colonnes = [
             "IDENTIFIANT_RESERVATION" => 'Identifiant',
@@ -27,7 +28,7 @@ class AccueilController extends Controller
             "TYPE_ACTIVITE" => 'Activité',
         ];
 
-        $filtre["reservation.idEmploye"][] = ['valeur' => $_SESSION['userIndividuId'], "type" => PDO::PARAM_INT, 'operateur' => "="];
+        $filtre["employe"][] = ['valeur' => $_SESSION['userIndividuId'], "type" => PDO::PARAM_INT, 'operateur' => "=", 'champ' => 'reservation.idEmploye'];
         $nbReservations = $this->reservationModel->getNbReservations($filtre);
         list($page, $pageMax) = $this->getPagination($nbReservations);
         $nbLignesPage = Config::get('NB_LIGNES');
@@ -46,16 +47,31 @@ class AccueilController extends Controller
             $actions[$reservation['IDENTIFIANT_RESERVATION']] = [
                 'info' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'], 'icone' => 'fa-solid fa-circle-info'],
                 'modifier' => ['attributs' => ['class' => 'btn', 'title' => 'Modifier'], 'icone' => 'fa-solid fa-pen'],
-                'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer'], 'icone' => 'fa-solid fa-trash-can'],
+                'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerReservation', 'href' => '#'.$reservation['ID']], 'icone' => 'fa-solid fa-trash-can'],
             ];
         }
+
+        $erreur = $this->erreur;
+        $success = $this->success;
 
         require __DIR__ . '/../views/accueil.php';
     }
 
     public function post()
     {
+        // Vérifier si une demande de suppression est effectuée
+        if (isset($_POST['supprimerReservation']) && isset($_POST['idReservation'])) {
+            try {
+                $this->supprimerReservation();
+            } catch (Exception $e) {
+                $this->erreur = "Erreur lors de la suppression de la reservation : " . $e->getMessage();
+            }
+        }
+
         $this->deconnexion();
-        require __DIR__ . '/../views/accueil.php';
+
+        $this->get();
     }
+
+
 }

@@ -18,16 +18,25 @@ class Employe
     {
         $pdo = Database::getPDO();
 
-        // Insérer dans la table individu
-        $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
-        $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
+        $pdo->beginTransaction();
 
-        // Récupérer l'identifiant de l'individu récemment inséré
-        $idIndividu = $pdo->lastInsertId();
+        try {
+            // Insérer dans la table individu
+            $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
+            $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
 
-        // Insérer dans la table utilisateur
-        $reqUtilisateur = $pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
-        $reqUtilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu]);
+            // Récupérer l'identifiant de l'individu récemment inséré
+            $idIndividu = $pdo->lastInsertId();
+
+            // Insérer dans la table utilisateur
+            $reqUtilisateur = $pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
+            $reqUtilisateur->execute([$identifiantEmploye, $motDePasseEmploye, 0, $idIndividu]);
+
+            $pdo->commit();
+        } catch (\PDOException $e) {
+            $pdo->rollBack();
+            throw new \Exception($e->getMessage());
+        }
     }
 
     /**
@@ -38,6 +47,7 @@ class Employe
     public function suppressionEmploye($idEmploye)
     {
         $pdo = Database::getPDO();
+        $pdo->beginTransaction();
 
         try {
 
@@ -49,9 +59,12 @@ class Employe
             $req1 = $pdo->prepare("DELETE FROM individu WHERE identifiant = ?");
             $individus = $req1->execute([$idEmploye]);
 
+            $pdo->commit();
+
             return $individus && $utilisateurs;
         } catch (\PDOException $e) {
             error_log($e->getMessage());
+            $pdo->rollBack();
             return false;
         }
     }
@@ -119,7 +132,78 @@ class Employe
 
         return $req->rowCount() > 0;
     }
+  
+     /* 
+     * Récupère les informations d'un employé en fonction de son ID
+     * @param $idEmploye
+     * @return mixed
+     */
+    public function getEmploye($idEmploye)
+    {
+        $pdo = Database::getPDO();
+        $req = $pdo->prepare("SELECT identifiant AS 'ID_EMPLOYE', nom AS 'NOM_EMPLOYE', prenom AS 'PRENOM_EMPLOYE', telephone AS 'TELEPHONE_EMPLOYE' FROM individu WHERE identifiant = ?");
+        $req->execute([$idEmploye]);
 
+        if($req->rowCount() < 1) {
+            throw new \Exception("L'employé avec l'ID ". $idEmploye . " n'existe pas.");
+        }
+
+        return $req->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Modification des informations d'un employé en fonction de toutes les informations dans la base de données.
+     * @param $idEmploye
+     * @param $nom
+     * @param $prenom
+     * @param $telephone
+     * @return void
+     */
+    public function modifierEmploye($idEmploye, $nom, $prenom, $telephone)
+    {
+        $pdo = Database::getPDO();
+
+        // Validation des données
+        $erreurs = [];
+        if (empty($nom)) {
+            $erreurs['nom'] = "Le champ nom est requis.";
+        }
+        if (empty($prenom)) {
+            $erreurs['prenom'] = "Le champ prénom est requis.";
+        }
+        if (!preg_match('/^(?:\+33|0)[1-9](?:[\d]{2}){4}$/', $telephone)) {
+            $erreurs['telephone'] = "Le numéro de téléphone est invalide.";
+        }
+
+        if (!empty($erreurs)) {
+            throw new FieldValidationException($erreurs);
+        }
+
+        // Mise à jour de l'employé
+        $req = $pdo->prepare("
+        UPDATE individu 
+        SET nom = :nom, 
+            prenom = :prenom, 
+            telephone = :telephone 
+        WHERE identifiant = :idEmploye
+    ");
+        $req->execute([
+            'nom' => $nom,
+            'prenom' => $prenom,
+            'telephone' => $telephone,
+            'idEmploye' => $idEmploye
+        ]);
+    }
+
+    public function modifierMotDePasse($idEmploye, $pass) {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("UPDATE utilisateur SET motDePasse = ? WHERE individu = ?");
+        $req->execute(array($pass, $idEmploye));
+
+        return $req;
+    }
+  
     /**
      *Permet de récupérer les information d'un individu
      * @param $idIndividu int identifiant de l'individu rechercher

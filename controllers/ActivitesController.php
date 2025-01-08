@@ -12,8 +12,6 @@ class ActivitesController extends Controller
      */
     public function get()
     {
-        // Récupération de la liste des activités
-        global $db;
 
         $titre = "Activités";
 

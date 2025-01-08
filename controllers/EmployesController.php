@@ -5,6 +5,7 @@ namespace controllers;
 use PDO;
 use services\Auth;
 use services\Config;
+use services\Database;
 
 /**
  * Contrôleur pour la page des employés
@@ -14,9 +15,9 @@ class EmployesController extends FiltresController
     private $success; // Pour gérer les messages de succès
     private $erreur;  // Pour gérer les messages d'erreur
     const FILTRES_DISPONIBLES = [
-        'nom' => ['label' => 'Nom', 'type' => PDO::PARAM_STR],
-        'prenom' => ['label' => 'Prénom', 'type' => PDO::PARAM_STR],
-        'telephone' => ['label' => 'Téléphone', 'type' => PDO::PARAM_STR],
+        'nom' => ['label' => 'Nom', 'type' => PDO::PARAM_STR, 'champ' => 'nom'],
+        'prenom' => ['label' => 'Prénom', 'type' => PDO::PARAM_STR, 'champ' => 'prenom'],
+        'telephone' => ['label' => 'Téléphone', 'type' => PDO::PARAM_STR, 'champ' => 'telephone'],
     ];
 
     const TITRE = 'Employés';
@@ -41,12 +42,7 @@ class EmployesController extends FiltresController
 
         // Si aucun employé n'est trouvé
         if ($nbEmployes === 0) {
-            $alerte = "Aucun employé trouvé pour les critères spécifiés. Le tableau reste inchangé.";
-            $filtresRequete = []; // Réinitialiser les filtres
-            $nbEmployes = $this->employeModel->getNbEmployes([]); // Récupérer le nombre total d'employés
-            $filtres = []; // Supprimer les filtres affichés
-        } else {
-            $alerte = null; // Pas d'alerte si des employés sont trouvés
+            $alerte = "Aucun employé trouvé pour les critères spécifiés.";
         }
 
         list($page, $pageMax) = $this->getPagination($nbEmployes);
@@ -67,19 +63,15 @@ class EmployesController extends FiltresController
         foreach ($employes as &$employe) {
             $employe['ID'] = $employe['IDENTIFIANT_EMPLOYE'];
 
-            $actions[$employe['IDENTIFIANT_EMPLOYE']]['info'] = [
-                'attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
-                'icone' => 'fa-solid fa-circle-info'
-            ];
+            if($_SESSION['userRole'] == '1') {
 
-            if ($_SESSION['userRole'] == '1') {
                 $actions[$employe['IDENTIFIANT_EMPLOYE']]['modifier'] = [
-                    'attributs' => ['class' => 'btn', 'title' => 'Modifier'],
+                    'attributs' => ['href' => '/employe/'.$employe["ID"].'/edit', 'class' => 'btn', 'title' => 'Modifier'],
                     'icone' => 'fa-solid fa-pen'
                 ];
 
                 $actions[$employe['IDENTIFIANT_EMPLOYE']]['supprimer'] = [
-                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer',
+                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerEmploye',
                         'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
                         && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
                         'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']
@@ -87,6 +79,16 @@ class EmployesController extends FiltresController
                     'icone' => 'fa-solid fa-trash-can'
                 ];
             }
+
+        }
+
+        if(isset($_SESSION['messageValidation'])) {
+            $this->success = $_SESSION['messageValidation'];
+            unset($_SESSION['messageValidation']);
+        }
+        if(isset($_SESSION['messageErreur'])) {
+            $this->erreurs = $_SESSION['messageErreur'];
+            unset($_SESSION['messageErreur']);
         }
 
         $erreur = $this->erreur;
@@ -161,6 +163,11 @@ class EmployesController extends FiltresController
         }
     }
 
+    /**
+     * Suppresion d'un employé lors du click sur le bouton de suppresion situé sur la page des employés
+     * @return string
+     * @throws \Exception
+     */
     public function supprimerEmploye()
     {
         if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId']) && is_numeric($_POST['employeId'])) {

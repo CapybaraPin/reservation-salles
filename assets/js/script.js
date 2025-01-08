@@ -136,23 +136,54 @@ const togglePasswordButton = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("motdepasse");
 const passwordIcon = document.getElementById("passwordIcon");
 
-// togglePasswordButton.addEventListener("click", () => {
-//     if (passwordInput.type === "password") {
-//         passwordInput.type = "text";
-//         passwordIcon.classList.remove("fa-eye");
-//         passwordIcon.classList.add("fa-eye-slash");
-//     } else {
-//         passwordInput.type = "password";
-//         passwordIcon.classList.remove("fa-eye-slash");
-//         passwordIcon.classList.add("fa-eye");
-//     }
-// });
+if(togglePasswordButton != null) {
+    togglePasswordButton.addEventListener("click", () => {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            passwordIcon.classList.remove("fa-eye");
+            passwordIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            passwordIcon.classList.remove("fa-eye-slash");
+            passwordIcon.classList.add("fa-eye");
+        }
+    });
+}
+
+//Ajout d'un nouveau logiciel
+selectLogiciel = document.getElementById('selectLogiciel');
+
+if(selectLogiciel != null) {
+    selectLogiciel.addEventListener('change', function (event) {
+        if (selectLogiciel.value == "autre") {
+            updateInputLogiciel(true);
+        } else {
+            updateInputLogiciel(false);
+        }
+
+    });
+}
+
+function updateInputLogiciel(active) {
+
+    nomLogiciel = document.getElementById('groupnomlogiciel');
+
+
+    if(!active) {
+        nomLogiciel.classList.add('d-none');
+    } else {
+        nomLogiciel.classList.remove('d-none');
+    }
+
+}
+
+
 
 /*
  * Gestion de la suppression d'un employé
  */
 function creerModalSuppressionEmploye(){
-    const button = event.target.closest('.btn-nav[title="Supprimer"]');
+    const button = event.target.closest('.btn-nav[title="SupprimerEmploye"]');
 
     // Met à jour le hash dans l'URL
     const employeeId = button.getAttribute('href').split('#')[1];
@@ -184,12 +215,67 @@ function creerModalSuppressionEmploye(){
 }
 
 document.addEventListener('click', function (event) {
-    if (event.target.closest('.btn-nav[title="Supprimer"]')) {
+    if (event.target.closest('.btn-nav[title="SupprimerEmploye"]')) {
         event.preventDefault(); // Empêche le comportement par défaut
 
         creerModalSuppressionEmploye();
     }
 });
+
+function creerModalSuppressionSalle(){
+
+    const button = event.target.closest('.btn-nav[title="SupprimerSalle"]');
+
+    const salleID = button.getAttribute('href').split('#')[1];
+    window.location.hash = `#${salleID}`;
+
+    // Récupère le modal et ses éléments
+    const modal = document.getElementById('modal_supprimer_salle');
+
+    const hiddenInput = modal.querySelector('input[name="idSalle"]');
+    hiddenInput.value = salleID;
+
+    // Ouvre le modal
+    const bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+}
+
+document.addEventListener('click', function (event) {
+    if (event.target.closest('.btn-nav[title="SupprimerSalle"]')) {
+        event.preventDefault(); // Empêche le comportement par défaut
+
+        creerModalSuppressionSalle();
+    }
+});
+
+//Suppression d'une réservation
+function creerModalSuppressionReservation(){
+
+    const button = event.target.closest('.btn-nav[title="SupprimerReservation"]');
+
+    const reservationID = button.getAttribute('href').split('#')[1];
+    window.location.hash = `#${reservationID}`;
+
+    // Récupère le modal et ses éléments
+    const modal = document.getElementById('modal_supprimer_reservation');
+
+    const hiddenInput = modal.querySelector('input[name="idReservation"]');
+    hiddenInput.value = reservationID;
+
+    // Ouvre le modal
+    const bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+}
+
+document.addEventListener('click', function (event) {
+    if (event.target.closest('.btn-nav[title="SupprimerReservation"]')) {
+        event.preventDefault(); // Empêche le comportement par défaut
+
+        creerModalSuppressionReservation();
+    }
+});
+
+
 
 // Gestion du hash au chargement de la page pour ouvrir le modal correspondant
 document.addEventListener('DOMContentLoaded', () => {
@@ -237,7 +323,41 @@ const boutonAnnuler = document.getElementById('btn-annuler');
 boutonAnnuler.addEventListener('click', () => {
     menuDeroulant.style.display = 'none';
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const selectFiltre = document.querySelector('select[name="nouveau_filtre[champ]"]');
+    const inputText = document.getElementById("inputText");
+    const inputDate = document.getElementById("inputDate");
+    const inputDatetimeLocal = document.getElementById("inputDatetime-local");
+
+    // Fonction pour mettre à jour la visibilité des inputs
+    const updateInputVisibility = () => {
+        const valeurSelectionnee = selectFiltre ? selectFiltre.value : null;
+
+        // Réinitialisation des champs
+        if (inputText) inputText.style.display = "none";
+        if (inputDate) inputDate.style.display = "none";
+        if (inputDatetimeLocal) inputDatetimeLocal.style.display = "none";
+
+        // Afficher l'input correspondant
+        if (valeurSelectionnee === "date" && inputDate) {
+            inputDate.style.display = "block";
+        } else if (valeurSelectionnee === "periode" && inputDatetimeLocal) {
+            inputDatetimeLocal.style.display = "block";
+        } else if (valeurSelectionnee && inputText) {
+            inputText.style.display = "block";
+        }
+    };
+
+    // Écoute des changements de la liste déroulante (si elle existe)
+    if (selectFiltre) {
+        selectFiltre.addEventListener("change", updateInputVisibility);
+    }
+
+    // Initialisation des champs (par défaut)
+    updateInputVisibility();
+});
 
 // # Fin Gestion des filtres
+
 
 

@@ -31,11 +31,13 @@ require_once 'utils/tableau.php';
                             <p>Créer et gérer vos employés depuis le tableau ci-dessous.</p>
                         </div>
                         <!-- Bouton pour ajouter une salle -->
+                        <?php if ($_SESSION['userRole'] == '1') { ?>
                         <div class="col-12 col-lg-2 text-lg-end">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajouterEmployee">
                                 <i class="fa-solid fa-plus"></i> Ajouter un employé
                             </button>
                         </div>
+                        <?php } ?>
                     </div>
                     <div class="row">
                         <?php if (isset($erreur)) { ?>
@@ -56,7 +58,7 @@ require_once 'utils/tableau.php';
                     </div>
 
                     <!-- Section filtres et recherche -->
-                    <div class="row mt-4 mb-4">
+                    <div class="row mt-4">
                         <div class="col-12">
                             <?php include 'elements/filtres.php'; ?>
                         </div>
@@ -64,7 +66,7 @@ require_once 'utils/tableau.php';
 
 
                     <!-- Tableau des employés -->
-                    <?= genererTableau($employes, $colonnes, $titre, $nbEmployes, $actions, $page, $pageMax); ?>
+                    <?= genererTableau($employes, $colonnes, $titre, $nbEmployes, $actions, $page, $pageMax, $filtres); ?>
                 </div>
             </div>
         </div>

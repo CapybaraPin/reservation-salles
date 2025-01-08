@@ -12,16 +12,19 @@ use services\exceptions\FieldValidationException;
  */
 class ReservationsController extends FiltresController
 {
-    public $erreurs; // Pour gérer les messages d'erreur
-    public $success; // Pour gérer les messages de succès
+
+    protected $erreurs; // Pour gérer les messages d'erreur
+    protected $erreur;  // Pour gérer les messages d'erreur
+    protected $success; // Pour gérer les messages de succès
+
     const FILTRES_DISPONIBLES = [
-            'salle.nom' => ['label' => 'Salle', 'type' => PDO::PARAM_STR],
-            'activite.type' => ['label' => 'Activité', 'type' => PDO::PARAM_STR],
-            'reservation.dateDebut' => ['label' => 'Date de début', 'type' => PDO::PARAM_STR, 'operateur' => '>='],
-            'reservation.dateFin' => ['label' => 'Date de fin', 'type' => PDO::PARAM_STR, 'operateur' => '<='],
-            'individu.nom' => ['label' => 'Nom de l\'employé', 'type' => PDO::PARAM_STR],
-            'individu.prenom' => ['label' => 'Prénom de l\'employé', 'type' => PDO::PARAM_STR],
-        ];
+        'salle' => ['label' => 'Salle', 'type' => PDO::PARAM_STR, 'champ' => 'salle.nom'],
+        'type' => ['label' => 'Activité', 'type' => PDO::PARAM_STR, 'champ' => 'activite.type'],
+        'date' => ['label' => 'Date', 'type' => PDO::PARAM_STR, 'input' => 'date', 'champ' => 'reservation.dateDebut, reservation.dateFin'],
+        'periode' => ['label' => 'Periode', 'type' => PDO::PARAM_STR, 'input' => 'datetime-local', 'champ' => 'reservation.dateDebut, reservation.dateFin'],
+        'nom' => ['label' => 'Nom de l\'employé', 'type' => PDO::PARAM_STR, 'champ' => 'individu.nom'],
+        'prenom' => ['label' => 'Prénom de l\'employé', 'type' => PDO::PARAM_STR, 'champ' => 'individu.prenom'],
+    ];
     const FILTRE_DATE = ['reservation.dateDebut' => ['label' => 'Date de début', 'type' => PDO::PARAM_STR, 'operateur' => '>='],
                          'reservation.dateFin' => ['label' => 'Date de fin', 'type' => PDO::PARAM_STR, 'operateur' => '<=']];
     const TITRE = 'Réservations';
@@ -93,10 +96,11 @@ class ReservationsController extends FiltresController
                     'icone' => 'fa-solid fa-circle-info'],
             ];
 
+            //data-bs-toggle="modal" data-bs-target="#ajouterEmployee"
             if ($_SESSION['userIndividuId'] == $reservation['ID_EMPLOYE']) {
                 $actions[$reservation['IDENTIFIANT_RESERVATION']] += [
                     'modifier' => ['attributs' => ['class' => 'btn', 'title' => 'Modifier'], 'icone' => 'fa-solid fa-pen'],
-                    'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer'], 'icone' => 'fa-solid fa-trash-can'],
+                    'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerReservation', 'href' => '#'.$reservation['ID']], 'icone' => 'fa-solid fa-trash-can'],
                 ];
             }
         }
@@ -105,6 +109,7 @@ class ReservationsController extends FiltresController
         $salles = $this->salleModel->getSalles();
 
         $erreurs = $this->erreurs;
+        $erreur = $this->erreur;
         $success = $this->success;
 
         require __DIR__ . '/../views/reservations.php';
@@ -123,6 +128,15 @@ class ReservationsController extends FiltresController
             $this->ajouterFiltre($_POST['nouveau_filtre']);
         } elseif (isset($_POST['supprimer_filtre'])) {
             $this->supprimerFiltre($_POST['supprimer_filtre']);
+        }
+
+        // Vérifier si une demande de suppression est effectuée
+        if (isset($_POST['supprimerReservation']) && isset($_POST['idReservation'])) {
+            try {
+                $this->supprimerReservation();
+            } catch (\Exception $e) {
+                $this->erreur = "Erreur lors de la suppression de la reservation : " . $e->getMessage();
+            }
         }
 
         $this->deconnexion();
@@ -192,8 +206,32 @@ class ReservationsController extends FiltresController
     }
 
 
+    /**
+     * Fonction qui gère la suppression d'une réservation.
+     */
+    protected function supprimerReservation()
+    {
+        if(isset($_POST['idReservation']) && is_numeric($_POST['idReservation'])) {
 
+            $id = intval($_POST['idReservation']);
 
+            $res = $this->reservationModel->getReservation($id);
+            if (!$res || $res['ID_EMPLOYE'] != $_SESSION['userIndividuId']) {
+                throw new \Exception("Données invalides. Veuillez vérifier les informations soumises.");
+            }
 
+            try {
+                $result = $this->reservationModel->supprimerReservation($id);
 
+                if (!$result) {
+                    throw new \Exception("La suppression de la réservation a échoué. Veuillez réessayer.");
+                }
+
+                $this->success = "La réservation n°" . $id . " a bien été supprimée.";
+            } catch (\Exception $e) {
+                throw new \Exception("Une erreur s'est produite lors de la suppression de la réservation.");
+            }
+
+        }
+    }
 }
