@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use Exception;
 use PDO;
 use services\Config;
 
@@ -12,11 +13,9 @@ use services\Config;
  *
  * @package controllers
  */
-class AccueilController extends Controller
+class AccueilController extends ReservationsController
 {
 
-    private $success; // Pour gérer les messages de succès
-    private $erreur;  // Pour gérer les messages d'erreur
     public function get()
     {
         $titre = 'Mes Réservations';
@@ -52,11 +51,6 @@ class AccueilController extends Controller
             ];
         }
 
-        if(isset($_SESSION['messageValidation'])) {
-            $this->success = $_SESSION['messageValidation'];
-            unset($_SESSION['messageValidation']);
-        }
-
         $erreur = $this->erreur;
         $success = $this->success;
 
@@ -65,12 +59,11 @@ class AccueilController extends Controller
 
     public function post()
     {
-
         // Vérifier si une demande de suppression est effectuée
         if (isset($_POST['supprimerReservation']) && isset($_POST['idReservation'])) {
             try {
                 $this->supprimerReservation();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->erreur = "Erreur lors de la suppression de la reservation : " . $e->getMessage();
             }
         }
@@ -78,44 +71,6 @@ class AccueilController extends Controller
         $this->deconnexion();
 
         $this->get();
-    }
-
-    /**
-     * Fonction qui gère la suppression d'une réservation.
-     */
-    private function supprimerReservation()
-    {
-        if(isset($_POST['idReservation']) && is_numeric($_POST['idReservation'])) {
-
-            $id = intval($_POST['idReservation']);
-
-            $res = $this->reservationModel->getReservation($id);
-
-            if($res['ID_EMPLOYE'] == $_SESSION['userIndividuId']) {
-
-                try {
-                    $result = $this->reservationModel->supprimerReservation($id);
-
-
-                    if ($result) {
-                        $_SESSION['messageValidation'] =  "La réservation n°".$id." a bien été supprimée.";
-
-                        header("Location: " . $_SERVER['REQUEST_URI']);
-                        exit;
-
-                    } else {
-                        throw new \Exception("La suppression de la réservation a échoué. Veuillez réessayer.");
-                    }
-
-                } catch (\Exception $e) {
-                    throw new \Exception("Une erreur s'est produite lors de la suppression de la réservation.");
-                }
-
-            } else {
-                throw new \Exception("Données invalides. Veuillez vérifier les informations soumises.");
-            }
-
-        }
     }
 
 

@@ -42,11 +42,11 @@ require __DIR__ . '/services/Exportation.php';
 require __DIR__ . '/controllers/Controller.php';
 require __DIR__ . '/controllers/FiltresController.php';
 require __DIR__ . '/controllers/AuthController.php';
-require __DIR__ . '/controllers/AccueilController.php';
 require __DIR__ . '/controllers/SallesController.php';
 require __DIR__ . '/controllers/ModifierEmployesController.php';
 require __DIR__ . '/controllers/InformationSalleController.php';
 require __DIR__ . '/controllers/ReservationsController.php';
+require __DIR__ . '/controllers/AccueilController.php';
 require __DIR__ . '/controllers/EmployesController.php';
 require __DIR__ . '/controllers/ActivitesController.php';
 require __DIR__ . '/controllers/ExportController.php';
@@ -54,10 +54,10 @@ require __DIR__ . '/controllers/ExportController.php';
 // Import des classes
 use services\Database;
 use controllers\AuthController;
-use controllers\AccueilController;
 use controllers\SallesController;
 use controllers\InformationSalleController;
 use controllers\ReservationsController;
+use controllers\AccueilController;
 use controllers\EmployesController;
 use controllers\ActivitesController;
 use controllers\ExportController;
@@ -67,9 +67,9 @@ use controllers\ModifierEmployesController;
 // Création d'une instance de Router
 $router = new \Bramus\Router\Router();
 
-// Connexion à la base de données
+// Essaie de connexion à la base de données
 try {
-    $pdo = Database::getPDO(); // jamais utilisé
+    Database::getPDO(); // jamais utilisé
 } catch (PDOException $e) {
     $message = "<b>Erreur de connexion à la base de données</b><br>Détails : " . $e->getMessage();
     require __DIR__ . '/views/errors/500.php';
