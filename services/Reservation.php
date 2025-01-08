@@ -50,6 +50,8 @@ class Reservation
                     reservation.dateDebut AS 'DATE_DEBUT',
                     reservation.dateFin AS 'DATE_FIN',
                     reservation.description AS 'DESCRIPTION',
+                    reservation.idOrganisation AS 'IDENTIFIANT_ORGANISATION',
+                    reservation.idFormateur AS 'IDENTIFIANT_FORMATEUR',
                     salle.nom AS 'NOM_SALLE',
                     activite.type AS 'TYPE_ACTIVITE',
                     individu.prenom AS 'PRENOM_EMPLOYE',
@@ -188,38 +190,12 @@ class Reservation
     }
 
     /**
-     * Permet de récuperer une réservation dans la base de données.
-     *
-     * @param $idReservation int, L'identifiant de la réservation à récuperer
-     * @return mixed, Retourne la réservation obtenue
-     */
-    public function getReservation($idReservation) {
-        global $pdo;
-
-        $req = $pdo->prepare("SELECT reservation.identifiant as IDENTIFIANT_RESERVATION, dateDebut, dateFin,reservation.idOrganisation AS ORGANISATION, description, activite.type AS ACTIVITE, salle.nom AS NOM_SALLE, individu.nom AS NOM_EMPLOYE, individu.prenom AS PRENOM_EMPLOYE, reservation.idFormateur AS FORMATEUR    
-                                    FROM reservation 
-                                    JOIN activite 
-                                    ON reservation.idActivite = activite.identifiant 
-                                    JOIN salle 
-                                    ON reservation.idSalle = salle.identifiant
-                                    JOIN individu 
-                                    ON reservation.idEmploye = individu.identifiant
-                                    WHERE reservation.identifiant = :id");
-
-
-
-        $req->execute(['id' => $idReservation]);
-
-        return $req->fetch();
-    }
-
-    /**
      * @param $idOrganisme int, L'identifiant de l'organisation à récuperer
      * @return mixed, Retourne l'organisation obtenue
      */
     public function getOrganisation($idOrganisme)
     {
-        global $pdo;
+        $pdo = Database::getPDO();
 
         $req = $pdo->prepare(
             "SELECT identifiant, nomOrganisme, idInterlocuteur

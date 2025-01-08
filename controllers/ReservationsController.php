@@ -48,11 +48,11 @@ class ReservationsController extends FiltresController
     {
         $reservation = $this->reservationModel->getReservation($reservationId);
         try {
-            if($reservation['ORGANISATION']!= NULL || !empty($reservation['ORGANISATION'])){
-                $organisation =$this->reservationModel->getOrganisation($reservation['ORGANISATION']);
+            if($reservation['IDENTIFIANT_ORGANISATION']!= NULL || !empty($reservation['IDENTIFIANT_ORGANISATION'])){
+                $organisation =$this->reservationModel->getOrganisation($reservation['IDENTIFIANT_ORGANISATION']);
                 $formateur = $this->employeModel->getindividu($organisation['idInterlocuteur']);
             }else{
-                $formateur = $this->employeModel->getindividu($reservation['FORMATEUR']);
+                $formateur = $this->employeModel->getindividu($reservation['IDENTIFIANT_FORMATEUR']);
             }
         }catch (\Exception $e){
             $formateur = null;
