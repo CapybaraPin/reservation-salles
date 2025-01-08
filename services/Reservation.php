@@ -135,6 +135,41 @@ class Reservation
     }
 
     /**
+     * @return mixed Retourne les champs nécessaires pour l'exportation des données
+     */
+    public function getReservationsExport()
+    {
+        $pdo = Database::getPDO();
+
+        $sql = "SELECT
+                    reservation.identifiant AS 'IDENTIFIANT_RESERVATION',
+                    reservation.dateDebut AS 'DATE_DEBUT',
+                    reservation.dateFin AS 'DATE_FIN',
+                    reservation.description AS 'DESCRIPTION',
+                    idSalle AS 'IDENTIFIANT_SALLE',
+                    activite.type AS 'TYPE_ACTIVITE',
+                    idEmploye AS 'IDENTIFIANT_EMPLOYE',
+                    individu.nom AS 'NOM_FORMATEUR',
+                    individu.prenom AS 'PRENOM_FORMATEUR',
+                    individu.telephone AS 'TELEPHONE_FORMATEUR',
+                    organisme.nomOrganisme AS 'NOM_ORGANISME',
+                    idOrganisation AS 'IDENTIFIANT_ORGANISME'
+                FROM reservation
+                JOIN activite
+                ON activite.identifiant = reservation.idActivite
+                LEFT JOIN individu
+                ON individu.identifiant = reservation.idFormateur
+                LEFT JOIN organisme
+                ON organisme.identifiant = reservation.idOrganisation";
+
+        $req = $pdo->prepare($sql);
+
+        $req->execute();
+
+        return $req->fetchAll();
+    }
+
+    /**
      * Permet de récupérer le nombre de réservations d'une salle
      * @param $idSalle int l'identifiant de la salle
      * @return mixed, Retourne le nombre de réservations d'une salle

@@ -19,7 +19,6 @@ class AccueilController extends Controller
     private $erreur;  // Pour gérer les messages d'erreur
     public function get()
     {
-
         $titre = 'Mes Réservations';
         $colonnes = [
             "IDENTIFIANT_RESERVATION" => 'Identifiant',

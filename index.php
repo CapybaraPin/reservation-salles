@@ -35,6 +35,8 @@ require __DIR__ . '/services/Salle.php';
 require __DIR__ . '/services/Activite.php';
 require __DIR__ . '/services/Ordinateur.php';
 require __DIR__ . '/services/SQLHelper.php';
+require __DIR__ . '/services/Organisme.php';
+require __DIR__ . '/services/Exportation.php';
 
 // Récupération des classes des contrôleurs
 require __DIR__ . '/controllers/Controller.php';

@@ -42,12 +42,7 @@ class EmployesController extends FiltresController
 
         // Si aucun employé n'est trouvé
         if ($nbEmployes === 0) {
-            $alerte = "Aucun employé trouvé pour les critères spécifiés. Le tableau reste inchangé.";
-            $filtresRequete = []; // Réinitialiser les filtres
-            $nbEmployes = $this->employeModel->getNbEmployes([]); // Récupérer le nombre total d'employés
-            $filtres = []; // Supprimer les filtres affichés
-        } else {
-            $alerte = null; // Pas d'alerte si des employés sont trouvés
+            $alerte = "Aucun employé trouvé pour les critères spécifiés.";
         }
 
         list($page, $pageMax) = $this->getPagination($nbEmployes);
