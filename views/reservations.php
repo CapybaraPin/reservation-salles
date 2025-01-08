@@ -30,29 +30,41 @@ require_once 'utils/tableau.php';
                         </div>
                         <!-- Bouton pour ajouter une réservation -->
                         <div class="col-12 col-lg-4 text-lg-end">
-                            <button class="btn btn-primary">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajouterReservation">
                                 <i class="fa-solid fa-plus"></i> Ajouter une réservation
                             </button>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <?php if (isset($erreur)) { ?>
-                            <div class="alert alert-danger mt-3" role="alert">
-                                <?= $erreur ?>
-                            </div>
-                        <?php }
-                        if (isset($success)) { ?>
-                            <div class="alert alert-success mt-3" role="alert">
-                                <?= $success ?>
-                            </div>
-                        <?php } ?>
-                        <?php if (isset($alerte)) { ?>
-                            <div class="alert alert-warning mt-3" role="alert">
-                                <?= $alerte ?>
-                            </div>
-                        <?php } ?>
-                    </div>
+                    <?php if (!empty($success)) { ?>
+                        <div class="alert alert-success">
+                            <?= htmlspecialchars($success) ?>
+                        </div>
+                    <?php } ?>
+                    
+
+                    <?php if (!empty($erreurs)) { ?>
+                        <div class="alert alert-danger">
+                            <ul>
+                                <?php foreach ($erreurs as $champ => $message) : ?>
+                                    <li><strong><?= htmlspecialchars($champ) ?> :</strong> <?= htmlspecialchars($message) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php } ?>
+                  
+                    <?php if (isset($erreur)) { ?>
+                        <div class="alert alert-danger mt-3" role="alert">
+                            <?= $erreur ?>
+                        </div>
+                    <?php } ?>
+                  
+                    <?php if (isset($alerte)) { ?>
+                        <div class="alert alert-warning mt-3" role="alert">
+                            <?= $alerte ?>
+                        </div>
+                    <?php } ?>
+             
 
                     <!-- Section filtres et recherche -->
                     <?php include 'elements/filtres.php'; ?>
@@ -66,6 +78,7 @@ require_once 'utils/tableau.php';
     </div>
 </div>
 
+<?php include 'modals/ajouterReservation.php'; ?>
 
 <!-- Modal pour supprimer une réservation -->
 <form method="POST" action="">

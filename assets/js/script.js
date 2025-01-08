@@ -1,6 +1,128 @@
 const navbarToggler = document.querySelector(".navbar-burger");
 const contentNavBar = document.querySelector(".collapse");
 
+
+
+
+const btnNext = document.getElementById('btn-next');
+const btnBack = document.getElementById('btn-back');
+const btnReserver = document.getElementById('btn-reserver');
+const step1 = document.getElementById('step-1');
+const step2 = document.getElementById('step-2');
+const step3Sections = document.querySelectorAll('.step-3');
+const modal = document.getElementById('ajouterReservation');
+const typeReservation = document.getElementById('typeReservation');
+
+let currentStep = 1;
+
+// Fonction pour masquer toutes les sections de l'étape 3
+function hideAllStep3Sections() {
+    step3Sections.forEach(section => section.style.display = 'none');
+}
+
+// Fonction pour afficher la section de l'étape 3 appropriée
+function showStep3Section() {
+    const selectedType = typeReservation.value;
+
+    hideAllStep3Sections();
+
+    if (selectedType === "2") {
+        document.getElementById('step-3-1').style.display = 'block';
+    } else if (selectedType === "4" || selectedType === "5") {
+        document.getElementById('step-3-2').style.display = 'block';
+    } else {
+        document.getElementById('step-3-default').style.display = 'block';
+    }
+}
+
+// Fonction pour mettre à jour les boutons dynamiquement
+function updateButtons() {
+    if (currentStep === 1) {
+        btnBack.textContent = 'Fermer';
+        btnNext.style.display = 'block';
+        btnNext.textContent = 'Suivant';
+        btnReserver.style.display = 'none';
+    } else if (currentStep === 2) {
+        btnBack.textContent = 'Précédent';
+        btnNext.style.display = 'block';
+        btnNext.textContent = 'Suivant';
+        btnReserver.style.display = 'none';
+    } else if (currentStep === 3) {
+        btnBack.textContent = 'Précédent';
+        btnNext.style.display = 'none';
+        btnReserver.style.display = 'block';
+    }
+}
+
+// Fonction pour passer à l'étape suivante
+btnNext.addEventListener('click', () => {
+    const dateDebut = document.getElementById('dateDebut');
+    const dateFin = document.getElementById('dateFin');
+    const salle = document.getElementById('salle');
+
+    if (!dateDebut.checkValidity()) {
+        dateDebut.reportValidity();
+        return;
+    }
+    if (!dateFin.checkValidity()) {
+        dateFin.reportValidity();
+        return;
+    }
+    if (!salle.checkValidity()) {
+        salle.reportValidity();
+        return;
+    }
+
+    if (currentStep === 1) {
+        step1.style.display = 'none';
+        step2.style.display = 'block';
+        currentStep++;
+    } else if (currentStep === 2) {
+        const typeReservation = document.getElementById('typeReservation');
+        if (typeReservation.value === "0") {
+            alert("Veuillez sélectionner un type de réservation.");
+            return;
+        }
+
+        step2.style.display = 'none';
+        showStep3Section();
+        currentStep++;
+    }
+
+    updateButtons();
+});
+
+// Fonction pour revenir à l'étape précédente ou fermer le modal
+btnBack.addEventListener('click', () => {
+    if (currentStep === 3) {
+        hideAllStep3Sections();
+        step2.style.display = 'block';
+        currentStep--;
+    } else if (currentStep === 2) {
+        step2.style.display = 'none';
+        step1.style.display = 'block';
+        currentStep--;
+    } else if (currentStep === 1) {
+        const bootstrapModal = bootstrap.Modal.getInstance(modal);
+        bootstrapModal.hide();
+    }
+
+    updateButtons();
+});
+
+updateButtons();
+
+
+
+
+
+
+
+
+
+
+
+
 const toggleNav = e => {
     navbarToggler.classList.toggle("open");
     const ariaToggle = navbarToggler.getAttribute("aria-expanded") === "true" ? "false" : "true";

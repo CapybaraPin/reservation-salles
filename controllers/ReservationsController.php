@@ -5,14 +5,17 @@ namespace controllers;
 use PDO;
 use services\Auth;
 use services\Config;
+use services\exceptions\FieldValidationException;
 
 /**
  * Contrôleur pour la page des réservations
  */
 class ReservationsController extends FiltresController
 {
-    protected $success; // Pour gérer les messages de succès
+
+    protected $erreurs; // Pour gérer les messages d'erreur
     protected $erreur;  // Pour gérer les messages d'erreur
+    protected $success; // Pour gérer les messages de succès
 
     const FILTRES_DISPONIBLES = [
         'salle' => ['label' => 'Salle', 'type' => PDO::PARAM_STR, 'champ' => 'salle.nom'],
@@ -35,6 +38,27 @@ class ReservationsController extends FiltresController
         "TYPE_ACTIVITE" => 'Activité',
         "EMPLOYE" => 'Employé',
     ];
+
+    /**
+     * Fonction qui gère la consultation d'une salle
+     * @param $salleId int Identifiant de la salle
+     * @return void Affiche la page de consultation d'une
+     */
+    public function consultationReservation($reservationId)
+    {
+        $reservation = $this->reservationModel->getReservation($reservationId);
+        try {
+            if($reservation['ORGANISATION']!= NULL || !empty($reservation['ORGANISATION'])){
+                $organisation =$this->reservationModel->getOrganisation($reservation['ORGANISATION']);
+                $formateur = $this->employeModel->getindividu($organisation['idInterlocuteur']);
+            }else{
+                $formateur = $this->employeModel->getindividu($reservation['FORMATEUR']);
+            }
+        }catch (\Exception $e){
+            $formateur = null;
+        }
+        require __DIR__ . '/../views/consultationReservation.php';
+    }
 
     /**
      * Fonction pour gérer les requêtes GET
@@ -68,7 +92,8 @@ class ReservationsController extends FiltresController
             $reservation["DATE_FIN"] = date_format($dateFin, "d/m/Y H\hi");
             $reservation["DATE_DEBUT"] = date_format($dateDebut, "d/m/Y H\hi");
             $actions[$reservation['IDENTIFIANT_RESERVATION']] = [
-                'info' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'], 'icone' => 'fa-solid fa-circle-info'],
+                'info' => ['attributs' => ['href' => '/reservations/'.$reservation["IDENTIFIANT_RESERVATION"].'/view', 'class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
+                    'icone' => 'fa-solid fa-circle-info'],
             ];
 
             //data-bs-toggle="modal" data-bs-target="#ajouterEmployee"
@@ -80,6 +105,10 @@ class ReservationsController extends FiltresController
             }
         }
 
+        $activites= $this->activiteModel->getActivites();
+        $salles = $this->salleModel->getSalles();
+
+        $erreurs = $this->erreurs;
         $erreur = $this->erreur;
         $success = $this->success;
 
@@ -112,8 +141,70 @@ class ReservationsController extends FiltresController
 
         $this->deconnexion();
 
-        $this->get();
+        if(isset($_POST['ajouterReservation'])){
+            $this->ajouterReservation();
         }
+
+        $erreurs = $this->erreurs;
+        $success = $this->success ;
+
+        $this->get();
+    }
+
+    /**
+     * Fonction qui gère l'ajout d'une réservation
+     */
+    public function ajouterReservation()
+    {
+        try {
+            // Initialisation des variables communes
+            $dateDebut = $_POST['dateDebut'];
+            $dateFin = $_POST['dateFin'];
+            $dateDebutAvecHeure = date('Y-m-d H:i:s', strtotime($dateDebut));
+            $dateFinAvecHeure = date('Y-m-d H:i:s', strtotime($dateFin));
+            $salle = $_POST['salle'];
+            $activite = $_POST['typeReservation'];
+
+            // Déterminer les champs du formateur
+            if (!empty($_POST['nomIntervenant']) || !empty($_POST['prenomIntervenant']) || !empty($_POST['telIntervenant'])) {
+                $nomFormateur = htmlspecialchars($_POST['nomIntervenant']);
+                $prenomFormateur = htmlspecialchars($_POST['prenomIntervenant']);
+                $telFormateur = htmlspecialchars($_POST['telIntervenant']);
+            } else {
+                $nomFormateur = htmlspecialchars($_POST['nomIndividu']);
+                $prenomFormateur = htmlspecialchars($_POST['prenomIndividu']);
+                $telFormateur = htmlspecialchars($_POST['telIndividu']);
+            }
+
+            // Autres variables
+            $employe = $_SESSION['userIndividuId'];
+            $nomOrganisation = htmlspecialchars($_POST['nomOrganisation']);
+            $description = !empty($_POST['sujetLocation']) ? htmlspecialchars($_POST['sujetLocation']) :
+                (!empty($_POST['sujetFormation']) ? htmlspecialchars($_POST['sujetFormation']) : htmlspecialchars($_POST['description']));
+
+            // Ajout de la réservation
+            $this->reservationModel->ajouterReservation(
+                $dateDebutAvecHeure,
+                $dateFinAvecHeure,
+                $salle,
+                $activite,
+                $nomFormateur,
+                $prenomFormateur,
+                $telFormateur,
+                $employe,
+                $nomOrganisation,
+                $description
+            );
+
+            // Définir le message de succès
+            $this->success = 'La réservation a été ajoutée avec succès.';
+        } catch (FieldValidationException $e) {
+            $this->erreurs = $e->getErreurs();
+        } catch (\Exception $e) {
+            $_SESSION['messageErreur'] = 'Une erreur est survenue, veuillez réessayer plus tard.';
+        }
+    }
+
 
     /**
      * Fonction qui gère la suppression d'une réservation.
