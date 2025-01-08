@@ -17,7 +17,7 @@
                     <div class="row mt-5 mb-4">
                         <div class="col-12 col-lg-8">
                             <h2 class="">Consultation de la réservation</h2>
-                            <p class="">Visualisez les informations de la réservation du <b><?= $reservation["dateDebut"] ?></b> au <b><?= $reservation["dateFin"] ?></b></p>
+                            <p class="">Visualisez les informations de la réservation <?= $reservation["IDENTIFIANT_RESERVATION"] ?> du <b><?= $reservation["dateDebut"] ?></b> au <b><?= $reservation["dateFin"] ?></b></p>
                         </div>
 
                         <!-- Boutons pour supprimer et modifier -->
@@ -54,26 +54,31 @@
                                             <td><?= $reservation["dateFin"] ?></td>
                                         </tr>
                                         <tr>
+                                        <tr>
+                                        <tr>
                                             <?php if ($reservation["ACTIVITE"] == "formation") : ?>
-                                            <th scope="row">Sujet de la formation</th>
-                                            <td><?= $reservation["description"] ?></td>
-                                            <?php endif; ?>
-                                            <?php if ($reservation["ACTIVITE"] == "prêt") : ?>
+                                                <th scope="row">Sujet de la formation</th>
+                                                <td><?= $reservation["description"] ?></td>
+                                            <?php elseif ($reservation["ACTIVITE"] == "prêt") : ?>
                                                 <th scope="row">Sujet du prêt</th>
                                                 <td><?= $reservation["description"] ?></td>
-                                            <?php endif; ?>
-                                            <?php if ($reservation["ACTIVITE"] == "location") : ?>
+                                            <?php elseif ($reservation["ACTIVITE"] == "location") : ?>
                                                 <th scope="row">Sujet de la location</th>
                                                 <td><?= $reservation["description"] ?></td>
-                                            <?php endif; ?>
-                                            <?php if ($reservation["ACTIVITE"] == "réunion") : ?>
+                                            <?php elseif ($reservation["ACTIVITE"] == "réunion") : ?>
                                                 <th scope="row">Sujet de la réunion</th>
                                                 <td><?= $reservation["description"] ?></td>
-                                            <?php endif; ?>
-                                            <?php if ($reservation["ACTIVITE"] == "entretien") : ?>
+                                            <?php elseif ($reservation["ACTIVITE"] == "entretien de la salle") : ?>
                                                 <th scope="row">Raison de l'entretien</th>
                                                 <td><?= $reservation["description"] ?></td>
+                                            <?php else : ?>
+                                                <th scope="row">Description</th>
+                                                <td><?= $reservation["description"] ?></td>
                                             <?php endif; ?>
+                                        </tr>
+
+                                        </tr>
+
                                         </tr>
                                         <tr>
                                             <th scope="row">Salle</th>
