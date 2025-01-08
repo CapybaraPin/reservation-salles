@@ -144,6 +144,10 @@ class Employe
         $req = $pdo->prepare("SELECT identifiant AS 'ID_EMPLOYE', nom AS 'NOM_EMPLOYE', prenom AS 'PRENOM_EMPLOYE', telephone AS 'TELEPHONE_EMPLOYE' FROM individu WHERE identifiant = ?");
         $req->execute([$idEmploye]);
 
+        if($req->rowCount() < 1) {
+            throw new \Exception("L'employé avec l'ID ". $idEmploye . " n'existe pas.");
+        }
+
         return $req->fetch(PDO::FETCH_ASSOC);
     }
 
