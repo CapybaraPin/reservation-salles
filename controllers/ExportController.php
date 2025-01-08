@@ -28,4 +28,12 @@ class ExportController extends Controller
         $this->deconnexion();
         $this->get();
     }
+
+    /**
+     * Exporte les données au format CSV
+     */
+    public function exportation()
+    {
+        $this->exportationModel->exportationDonnees();
+    }
 }

@@ -3,6 +3,7 @@
 namespace services;
 
 use DateInterval;
+use ZipArchive;
 
 /**
  * Class Exportation
@@ -58,7 +59,7 @@ class Exportation
      */
     const ENTETE_ACTIVITE = [
         'Ident',
-        'Activite'
+        'Activité'
     ];
 
     /**
@@ -154,7 +155,14 @@ class Exportation
             $ligne[0] = "E" . $this->genererIdentifiant($employe['IDENTIFIANT_EMPLOYE'], 6);
             $ligne[1] = $employe['NOM_EMPLOYE'];
             $ligne[2] = $employe['PRENOM_EMPLOYE'];
-            $ligne[3] = $employe['TELEPHONE_EMPLOYE'];
+
+            $telephone = $employe['TELEPHONE_EMPLOYE'];
+
+            if (substr($telephone, 0, 1) !== '0') {
+                $telephone = '0' . $telephone;
+            }
+
+            $ligne[3] = substr($telephone, -4);
 
             $employesExport[] = $ligne;
         }
@@ -235,5 +243,86 @@ class Exportation
     public static function genererIdentifiant($id, $taille)
     {
         return str_pad($id, $taille, "0", STR_PAD_LEFT);
+    }
+
+    public function creationFichierCsv($nomFichier, $donnees)
+    {
+        $cheminFichier = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $nomFichier . '.csv';
+
+        $fichier = fopen($cheminFichier, 'w');
+
+        fprintf($fichier, chr(0xEF).chr(0xBB).chr(0xBF));
+
+        foreach ($donnees as $ligne) {
+            fputcsv($fichier, $ligne, ';');
+        }
+
+        fclose($fichier);
+
+        return $cheminFichier;
+    }
+
+    public function creationArchive($fichiersCsv)
+    {
+        $archiveZip = new ZipArchive();
+
+        $cheminArchiveZip = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'sauvegarde-'.date("d-m-Y").'.zip';
+
+        if ($archiveZip->open($cheminArchiveZip, ZipArchive::CREATE) !== TRUE) {
+            throw new \Exception('Impossible de créer l\'archive');
+        }
+
+        foreach ($fichiersCsv as $cheminFichierCsv) {
+            $archiveZip->addFile($cheminFichierCsv, basename($cheminFichierCsv));
+        }
+
+        $archiveZip->close();
+
+        return $cheminArchiveZip;
+    }
+
+    public function telechargementArchive($cheminArchive)
+    {
+        if (file_exists($cheminArchive)) {
+
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename="' . basename($cheminArchive) . '"');
+            header('Content-Length: ' . filesize($cheminArchive));
+
+            readfile($cheminArchive);
+        } else {
+            exit("Le fichier ZIP n'existe pas.\n");
+        }
+    }
+
+    public function exportationDonnees()
+    {
+        $reservations = $this->getReservations();
+        $salles = $this->getSalles();
+        $employes = $this->getEmployes();
+        $activites = $this->getActivites();
+
+        $donnees = [
+            'reservations' => $reservations,
+            'salles' => $salles,
+            'employes' => $employes,
+            'activites' => $activites
+        ];
+
+        $fichiersCsv = [];
+
+        foreach ($donnees as $cle => $donnee) {
+            $fichiersCsv[$cle] = $this->creationFichierCsv($cle, $donnee);
+        }
+
+        $cheminArchive = $this->creationArchive($fichiersCsv);
+        $this->telechargementArchive($cheminArchive);
+
+        // Suppression des fichiers temporaires
+        foreach ($fichiersCsv as $fichier) {
+            unlink($fichier);
+        }
+
+        unlink($cheminArchive);
     }
 }

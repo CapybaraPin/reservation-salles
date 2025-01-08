@@ -1,4 +1,7 @@
 <?php
+
+use services\Config;
+
 require_once 'utils/tableau.php';
 ?>
 <!doctype html>
@@ -30,9 +33,9 @@ require_once 'utils/tableau.php';
 
                         <!-- Bouton pour exporter les données -->
                         <div class="col-12 col-lg-4 text-lg-end">
-                            <button class="btn btn-primary">
+                            <a class="btn btn-primary" href="<?= Config::get("APP_URL") ?>/exportation/telecharger" target="_blank">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Exporter les données
-                            </button>
+                            </a>
                         </div>
 
                         <!-- Statistiques données -->
