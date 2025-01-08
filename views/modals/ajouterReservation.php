@@ -89,7 +89,7 @@
                                 <!-- Champ Sujet formation -->
                                 <div class="form-group mt-1 mb-1">
                                     <label class="label-form" for="description">Sujet de la formation</label>
-                                    <input class="form-control" id="description" name="description" type="text" placeholder="Sujet de la formation">
+                                    <input class="form-control" id="description" name="sujetFormation" type="text" placeholder="Sujet de la formation">
                                 </div>
                             </div>
                         </div>
@@ -128,7 +128,7 @@
                                 <!-- Champ Sujet du prêt ou location -->
                                 <div class="form-group mt-1 mb-1">
                                     <label class="label-form" for="description">Sujet de la Location</label>
-                                    <input class="form-control" id="description" name="description" type="text" placeholder="Sujet de la location">
+                                    <input class="form-control" id="description" name="sujetLocation" type="text" placeholder="Sujet de la location">
                                 </div>
                             </div>
                         </div>

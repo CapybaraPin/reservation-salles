@@ -6,18 +6,14 @@ const contentNavBar = document.querySelector(".collapse");
 
 const btnNext = document.getElementById('btn-next');
 const btnBack = document.getElementById('btn-back');
-const btnReserver = document.getElementById('btn-reserver'); // Bouton "Réserver"
+const btnReserver = document.getElementById('btn-reserver');
 const step1 = document.getElementById('step-1');
 const step2 = document.getElementById('step-2');
-const step3Sections = document.querySelectorAll('.step-3'); // Tous les blocs de l'étape 3
-const modal = document.getElementById('ajouterReservation'); // Le modal lui-même
-const typeReservation = document.getElementById('typeReservation'); // Sélecteur de type d'activité
+const step3Sections = document.querySelectorAll('.step-3');
+const modal = document.getElementById('ajouterReservation');
+const typeReservation = document.getElementById('typeReservation');
 
 let currentStep = 1;
-
-// Initialisation : le bouton est affiché avec le texte "Fermer"
-btnBack.textContent = 'Fermer';
-btnReserver.style.display = 'none'; // Cache le bouton "Réserver" par défaut
 
 // Fonction pour masquer toutes les sections de l'étape 3
 function hideAllStep3Sections() {
@@ -26,12 +22,10 @@ function hideAllStep3Sections() {
 
 // Fonction pour afficher la section de l'étape 3 appropriée
 function showStep3Section() {
-    const selectedType = typeReservation.value; // Valeur sélectionnée dans l'étape 2
+    const selectedType = typeReservation.value;
 
-    // Cacher toutes les étapes 3
     hideAllStep3Sections();
 
-    // Afficher la bonne étape 3 en fonction de la sélection
     if (selectedType === "2") {
         document.getElementById('step-3-1').style.display = 'block';
     } else if (selectedType === "4" || selectedType === "5") {
@@ -55,72 +49,67 @@ function updateButtons() {
         btnReserver.style.display = 'none';
     } else if (currentStep === 3) {
         btnBack.textContent = 'Précédent';
-        btnNext.style.display = 'none'; // Cache le bouton "Suivant"
-        btnReserver.style.display = 'block'; // Affiche le bouton "Réserver"
+        btnNext.style.display = 'none';
+        btnReserver.style.display = 'block';
     }
 }
 
 // Fonction pour passer à l'étape suivante
 btnNext.addEventListener('click', () => {
+    const dateDebut = document.getElementById('dateDebut');
+    const dateFin = document.getElementById('dateFin');
+    const salle = document.getElementById('salle');
+
+    if (!dateDebut.checkValidity()) {
+        dateDebut.reportValidity();
+        return;
+    }
+    if (!dateFin.checkValidity()) {
+        dateFin.reportValidity();
+        return;
+    }
+    if (!salle.checkValidity()) {
+        salle.reportValidity();
+        return;
+    }
+
     if (currentStep === 1) {
-        // Vérification des champs obligatoires dans l'étape 1
-        const dateDebut = document.getElementById('dateDebut');
-        const dateFin = document.getElementById('dateFin');
-        const salle = document.getElementById('salle');
-
-        if (!dateDebut.value || !dateFin.value || salle.value === "0") {
-            alert("Veuillez remplir tous les champs obligatoires avant de continuer.");
-            return; // Empêche de passer à l'étape suivante
-        }
-
-        // Étape 1 -> Étape 2
         step1.style.display = 'none';
         step2.style.display = 'block';
         currentStep++;
     } else if (currentStep === 2) {
-        // Vérification des champs obligatoires dans l'étape 2
         const typeReservation = document.getElementById('typeReservation');
-
         if (typeReservation.value === "0") {
             alert("Veuillez sélectionner un type de réservation.");
-            return; // Empêche de passer à l'étape suivante
+            return;
         }
 
-        // Étape 2 -> Étape 3
         step2.style.display = 'none';
-
-        // Afficher la bonne section de l'étape 3
         showStep3Section();
         currentStep++;
     }
 
-    // Mettre à jour les boutons dynamiquement
     updateButtons();
 });
 
 // Fonction pour revenir à l'étape précédente ou fermer le modal
 btnBack.addEventListener('click', () => {
     if (currentStep === 3) {
-        // Étape 3 -> Étape 2
-        hideAllStep3Sections(); // Cacher toutes les sections de l'étape 3
+        hideAllStep3Sections();
         step2.style.display = 'block';
         currentStep--;
     } else if (currentStep === 2) {
-        // Étape 2 -> Étape 1
         step2.style.display = 'none';
         step1.style.display = 'block';
         currentStep--;
     } else if (currentStep === 1) {
-        // Fermer le modal à l'étape 1
         const bootstrapModal = bootstrap.Modal.getInstance(modal);
-        bootstrapModal.hide(); // Ferme le modal
+        bootstrapModal.hide();
     }
 
-    // Mettre à jour les boutons dynamiquement
     updateButtons();
 });
 
-// Initialisation au chargement de la page
 updateButtons();
 
 

@@ -11,6 +11,7 @@ use services\Config;
  */
 class ReservationsController extends FiltresController
 {
+    private $success; // Pour gérer les messages de succès
     const FILTRES_DISPONIBLES = [
             'salle.nom' => ['label' => 'Salle', 'type' => PDO::PARAM_STR],
             'activite.type' => ['label' => 'Activité', 'type' => PDO::PARAM_STR],
@@ -134,27 +135,20 @@ class ReservationsController extends FiltresController
     public function ajouterReservation()
     {
         try {
-            if (!empty($_POST['nomIntervenant']) || !empty($_POST['prenomIntervenant']) || !empty($_POST['telIntervenant'])) {
-                $dateDebut = $_POST['dateDebut'];
-                $dateFin = $_POST['dateFin'];
-                $dateDebutAvecHeure = date('Y-m-d H:i:s', strtotime($dateDebut));
-                $dateFinAvecHeure = date('Y-m-d H:i:s', strtotime($dateFin));
-                $salle = $_POST['salle'];
-                $activite = $_POST['typeReservation'];
+            // Initialisation des variables communes
+            $dateDebut = $_POST['dateDebut'];
+            $dateFin = $_POST['dateFin'];
+            $dateDebutAvecHeure = date('Y-m-d H:i:s', strtotime($dateDebut));
+            $dateFinAvecHeure = date('Y-m-d H:i:s', strtotime($dateFin));
+            $salle = $_POST['salle'];
+            $activite = $_POST['typeReservation'];
 
-                // Vérification des champs du formateur
+            // Déterminer les champs du formateur
+            if (!empty($_POST['nomIntervenant']) || !empty($_POST['prenomIntervenant']) || !empty($_POST['telIntervenant'])) {
                 $nomFormateur = htmlspecialchars($_POST['nomIntervenant']);
                 $prenomFormateur = htmlspecialchars($_POST['prenomIntervenant']);
                 $telFormateur = htmlspecialchars($_POST['telIntervenant']);
             } else {
-                $dateDebut = $_POST['dateDebut'];
-                $dateFin = $_POST['dateFin'];
-                $dateDebutAvecHeure = date('Y-m-d H:i:s', strtotime($dateDebut));
-                $dateFinAvecHeure = date('Y-m-d H:i:s', strtotime($dateFin));
-                $salle = $_POST['salle'];
-                $activite = $_POST['typeReservation'];
-
-                // Vérification des champs du formateur
                 $nomFormateur = htmlspecialchars($_POST['nomIndividu']);
                 $prenomFormateur = htmlspecialchars($_POST['prenomIndividu']);
                 $telFormateur = htmlspecialchars($_POST['telIndividu']);
@@ -163,7 +157,14 @@ class ReservationsController extends FiltresController
             // Autres variables
             $employe = $_SESSION['userIndividuId'];
             $nomOrganisation = htmlspecialchars($_POST['nomOrganisation']);
-            $description = htmlspecialchars($_POST['description']);
+            if(!empty($_POST['sujetLocation'])){
+                $description = htmlspecialchars($_POST['sujetLocation']);
+            }elseif ($_POST['sujetFormation']){
+                $description = htmlspecialchars($_POST['sujetFormation']);
+            }else{
+                $description = htmlspecialchars($_POST['description']);
+            }
+
 
             // Ajout de la réservation
             $this->reservationModel->ajouterReservation(
@@ -192,6 +193,7 @@ class ReservationsController extends FiltresController
             $_SESSION['messageErreur'] = 'Une erreur est survenue, veuillez réessayer plus tard.';
         }
     }
+
 
 
 
