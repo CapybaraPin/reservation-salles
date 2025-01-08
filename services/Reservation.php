@@ -3,6 +3,7 @@
 namespace services;
 
 use PDO;
+use services\exceptions\FieldValidationException;
 use services\SQLHelper;
 
 class Reservation
@@ -305,7 +306,7 @@ class Reservation
         }
 
         if (!empty($erreurs)) {
-            throw new \Exception(json_encode($erreurs));
+            throw new FieldValidationException($erreurs);
         }
 
         // Insertion de la réservation

@@ -5,13 +5,15 @@ namespace controllers;
 use PDO;
 use services\Auth;
 use services\Config;
+use services\exceptions\FieldValidationException;
 
 /**
  * Contrôleur pour la page des réservations
  */
 class ReservationsController extends FiltresController
 {
-    private $success; // Pour gérer les messages de succès
+    public $erreurs; // Pour gérer les messages d'erreur
+    public $success; // Pour gérer les messages de succès
     const FILTRES_DISPONIBLES = [
             'salle.nom' => ['label' => 'Salle', 'type' => PDO::PARAM_STR],
             'activite.type' => ['label' => 'Activité', 'type' => PDO::PARAM_STR],
@@ -102,6 +104,9 @@ class ReservationsController extends FiltresController
         $activites= $this->activiteModel->getActivites();
         $salles = $this->salleModel->getSalles();
 
+        $erreurs = $this->erreurs;
+        $success = $this->success;
+
         require __DIR__ . '/../views/reservations.php';
     }
 
@@ -121,7 +126,10 @@ class ReservationsController extends FiltresController
         }
 
         $this->deconnexion();
-        $this->ajouterReservation();
+
+        if(isset($_POST['ajouterReservation'])){
+            $this->ajouterReservation();
+        }
 
         $erreurs = $this->erreurs;
         $success = $this->success ;
@@ -178,9 +186,7 @@ class ReservationsController extends FiltresController
             $this->success = 'La réservation a été ajoutée avec succès.';
         } catch (FieldValidationException $e) {
             $this->erreurs = $e->getErreurs();
-            error_log("Erreur de validation : " . implode(", ", $this->erreurs));
         } catch (\Exception $e) {
-            error_log("Erreur lors de l'ajout de la réservation : " . $e->getMessage());
             $_SESSION['messageErreur'] = 'Une erreur est survenue, veuillez réessayer plus tard.';
         }
     }
