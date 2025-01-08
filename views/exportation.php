@@ -9,7 +9,7 @@ require_once 'utils/tableau.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Activites</title>
+    <title>Exportation des données</title>
 
     <?php include 'elements/styles.php'; ?>
 </head>
