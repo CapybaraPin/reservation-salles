@@ -124,7 +124,7 @@ class ReservationsController extends FiltresController
         $this->ajouterReservation();
 
         $erreurs = $this->erreurs;
-        $success = $this->success;
+        $success = $this->success ;
 
         $this->get();
     }
@@ -157,14 +157,8 @@ class ReservationsController extends FiltresController
             // Autres variables
             $employe = $_SESSION['userIndividuId'];
             $nomOrganisation = htmlspecialchars($_POST['nomOrganisation']);
-            if(!empty($_POST['sujetLocation'])){
-                $description = htmlspecialchars($_POST['sujetLocation']);
-            }elseif ($_POST['sujetFormation']){
-                $description = htmlspecialchars($_POST['sujetFormation']);
-            }else{
-                $description = htmlspecialchars($_POST['description']);
-            }
-
+            $description = !empty($_POST['sujetLocation']) ? htmlspecialchars($_POST['sujetLocation']) :
+                (!empty($_POST['sujetFormation']) ? htmlspecialchars($_POST['sujetFormation']) : htmlspecialchars($_POST['description']));
 
             // Ajout de la réservation
             $this->reservationModel->ajouterReservation(
@@ -179,20 +173,18 @@ class ReservationsController extends FiltresController
                 $nomOrganisation,
                 $description
             );
+
+            // Définir le message de succès
+            $this->success = 'La réservation a été ajoutée avec succès.';
         } catch (FieldValidationException $e) {
-            // Gérer les erreurs de validation des champs sans afficher sur la page
             $this->erreurs = $e->getErreurs();
-            // Vous pouvez enregistrer l'erreur dans un fichier de log si nécessaire
             error_log("Erreur de validation : " . implode(", ", $this->erreurs));
         } catch (\Exception $e) {
-            // Gérer les erreurs générales sans afficher sur la page
-            // Optionnel: Enregistrer l'erreur dans un fichier de log
             error_log("Erreur lors de l'ajout de la réservation : " . $e->getMessage());
-
-            // Définir un message d'erreur générique
             $_SESSION['messageErreur'] = 'Une erreur est survenue, veuillez réessayer plus tard.';
         }
     }
+
 
 
 

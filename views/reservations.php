@@ -41,12 +41,7 @@ require_once 'utils/tableau.php';
                             <?= htmlspecialchars($success) ?>
                         </div>
                     <?php endif; ?>
-
-                    <?php if (isset($erreurs)) {
-                        var_dump($erreurs);
-                    }else {
-                        echo "Aucune erreur";
-                    } ?>
+                    
 
                     <?php if (!empty($erreurs)) { ?>
                         <div class="alert alert-danger">

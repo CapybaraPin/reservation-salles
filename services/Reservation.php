@@ -323,5 +323,5 @@ class Reservation
         $req->bindValue(':description', $description);
         $req->execute();
     }
-    
+
 }
