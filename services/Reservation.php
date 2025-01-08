@@ -105,16 +105,14 @@ class Reservation
     /**
      * Permet de récuperer une réservation dans la base de données.
      *
-     * @param $id int, L'identifiant de la réservation à récuperer
+     * @param $idReservation int, L'identifiant de la réservation à récuperer
      * @return mixed, Retourne la réservation obtenue
      */
     public function getReservation($idReservation) {
         global $pdo;
 
-        $req = $pdo->prepare("SELECT reservation.identifiant as IDENTIFIANT_RESERVATION, dateDebut, dateFin, description, organisme.nomOrganisme AS NOM_ORGANISME,activite.type AS ACTIVITE, salle.nom AS NOM_SALLE, individu.nom AS NOM_EMPLOYE, individu.prenom AS PRENOM_EMPLOYE, reservation.idFormateur AS FORMATEUR    
+        $req = $pdo->prepare("SELECT reservation.identifiant as IDENTIFIANT_RESERVATION, dateDebut, dateFin,reservation.idOrganisation AS ORGANISATION, description, activite.type AS ACTIVITE, salle.nom AS NOM_SALLE, individu.nom AS NOM_EMPLOYE, individu.prenom AS PRENOM_EMPLOYE, reservation.idFormateur AS FORMATEUR    
                                     FROM reservation 
-                                    LEFT JOIN organisme 
-                                    ON reservation.idOrganisation = organisme.identifiant 
                                     JOIN activite 
                                     ON reservation.idActivite = activite.identifiant 
                                     JOIN salle 
@@ -126,6 +124,25 @@ class Reservation
 
 
         $req->execute(['id' => $idReservation]);
+
+        return $req->fetch();
+    }
+
+    /**
+     * @param $idOrganisme int, L'identifiant de l'organisation à récuperer
+     * @return mixed, Retourne l'organisation obtenue
+     */
+    public function getOrganisation($idOrganisme)
+    {
+        global $pdo;
+
+        $req = $pdo->prepare(
+            "SELECT identifiant, nomOrganisme, idInterlocuteur
+                    FROM organisme
+                    WHERE identifiant = :id"
+        );
+
+        $req->execute(['id' => $idOrganisme]);
 
         return $req->fetch();
     }
@@ -156,6 +173,16 @@ class Reservation
             $erreurs["dates"] = "La date de début doit être antérieure à la date de fin.";
         } elseif (strtotime($dateDebut) < strtotime(date('Y-m-d'))) {
             $erreurs["dates"] = "La date de début ne peut pas être inférieure à aujourd'hui.";
+        } else {
+            // Validation des heures
+            $heureDebut = date('H:i:s', strtotime($dateDebut));
+            $heureFin = date('H:i:s', strtotime($dateFin));
+            $heureMin = '07:00:00';
+            $heureMax = '20:00:00';
+
+            if ($heureDebut < $heureMin || $heureDebut > $heureMax || $heureFin < $heureMin || $heureFin > $heureMax) {
+                $erreurs["heures"] = "Les heures doivent être comprises entre 07:00:00 et 20:00:00.";
+            }
         }
 
         if (empty($salle) || !is_numeric($salle) || $salle == 0) {
@@ -244,12 +271,13 @@ class Reservation
             if (!$organisationExiste) {
                 // Insérer un nouvel organisme
                 $reqInsertOrganisation = $pdo->prepare(
-                    "INSERT INTO organisme(nomOrganisme) 
-            VALUES (:nom)"
+                    "INSERT INTO organisme(nomOrganisme, idInterlocuteur) 
+            VALUES (:nom, :idInterlocuteur)"
                 );
 
                 $reqInsertOrganisation->execute([
-                    'nom' => $nomOrganisation
+                    'nom' => $nomOrganisation,
+                    'idInterlocuteur'=>$formateur
                 ]);
 
                 // Récupérer l'identifiant de l'organisation insérée

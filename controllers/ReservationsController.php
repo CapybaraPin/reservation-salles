@@ -42,7 +42,12 @@ class ReservationsController extends FiltresController
     {
         $reservation = $this->reservationModel->getReservation($reservationId);
         try {
-            $formateur = $this->employeModel->getindividu($reservation['FORMATEUR']);
+            if($reservation['ORGANISATION']!= NULL || !empty($reservation['ORGANISATION'])){
+                $organisation =$this->reservationModel->getOrganisation($reservation['ORGANISATION']);
+                $formateur = $this->employeModel->getindividu($organisation['idInterlocuteur']);
+            }else{
+                $formateur = $this->employeModel->getindividu($reservation['FORMATEUR']);
+            }
         }catch (\Exception $e){
             $formateur = null;
         }
@@ -116,6 +121,9 @@ class ReservationsController extends FiltresController
 
         $this->deconnexion();
         $this->ajouterReservation();
+
+        $erreurs = $this->erreurs;
+        $success = $this->success;
 
         $this->get();
     }

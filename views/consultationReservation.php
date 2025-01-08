@@ -54,8 +54,26 @@
                                             <td><?= $reservation["dateFin"] ?></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Déscription</th>
+                                            <?php if ($reservation["ACTIVITE"] == "formation") : ?>
+                                            <th scope="row">Sujet de la formation</th>
                                             <td><?= $reservation["description"] ?></td>
+                                            <?php endif; ?>
+                                            <?php if ($reservation["ACTIVITE"] == "prêt") : ?>
+                                                <th scope="row">Sujet du prêt</th>
+                                                <td><?= $reservation["description"] ?></td>
+                                            <?php endif; ?>
+                                            <?php if ($reservation["ACTIVITE"] == "location") : ?>
+                                                <th scope="row">Sujet de la location</th>
+                                                <td><?= $reservation["description"] ?></td>
+                                            <?php endif; ?>
+                                            <?php if ($reservation["ACTIVITE"] == "réunion") : ?>
+                                                <th scope="row">Sujet de la réunion</th>
+                                                <td><?= $reservation["description"] ?></td>
+                                            <?php endif; ?>
+                                            <?php if ($reservation["ACTIVITE"] == "entretien") : ?>
+                                                <th scope="row">Raison de l'entretien</th>
+                                                <td><?= $reservation["description"] ?></td>
+                                            <?php endif; ?>
                                         </tr>
                                         <tr>
                                             <th scope="row">Salle</th>
@@ -122,12 +140,16 @@
                                     <table class="table table-bordered">
                                         <tbody>
                                         <tr>
-                                            <th scope="row" width="300px">Organisme</th>
-                                            <td><?= $reservation["NOM_ORGANISME"] ?></td>
+                                            <th scope="row" width="300px"> Identifiant organisme</th>
+                                            <td><?= $organisation["identifiant"] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" width="300px"> Identifiant organisme</th>
+                                            <td><?= $organisation["nomOrganisme"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row" width="300px">Identifiant</th>
-                                            <td><?= $reservation["FORMATEUR"] ?></td>
+                                            <td><?= $organisation["idInterlocuteur"] ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Nom</th>
