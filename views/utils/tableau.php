@@ -30,9 +30,15 @@ function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [],
     $html .= genererEntete($colonnes, $actions);
     $html .= '<tbody>';
 
-    // Génération des lignes du tableau
-    foreach ($donnees as $ligne) {
-        $html .= genererLigne($ligne, $colonnes, $actions);
+    if($nbElements > 0) {
+        // Génération des lignes du tableau
+        foreach ($donnees as $ligne) {
+            $html .= genererLigne($ligne, $colonnes, $actions);
+        }
+    } else {
+        $formatTitre = strtolower(str_replace("Mes", "", $titre));
+        $html .= '<tr>
+                    <td class="text-center" colspan="'.(count($colonnes)+1).'">Aucun(e) '.$formatTitre .' trouvé(e)</td>';
     }
 
     // Fin du tableau
