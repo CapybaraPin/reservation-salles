@@ -44,6 +44,16 @@ class Exportation
     ];
 
     /**
+     * Entete du fichier d'exportation des employes
+     */
+    const ENTETE_EMPLOYE = [
+        'Ident',
+        'Nom',
+        'Prenom',
+        'Telephone',
+    ];
+
+    /**
      * Permet de récupérer la liste des réservations dans la base de données. Formatées pour l'exportation
      * Contient l'entête du fichier
      *
@@ -118,6 +128,30 @@ class Exportation
         }
 
         return $sallesExport;
+    }
+
+    /**
+     * Permet de récupérer la liste des employés dans la base de données. Formatées pour l'exportation
+     * Contient l'entête du fichier
+     * @return array, Retourne la liste des employés obtenue
+     */
+    public function getEmployes()
+    {
+        $employe = new Employe();
+        $employes = $employe->getEmployes(0, [], $employe->getNbEmployes());
+
+        $employesExport[] = self::ENTETE_EMPLOYE;
+        foreach ($employes as $employe) {
+            $ligne = $this->genererTableauVide(count(self::ENTETE_EMPLOYE));
+            $ligne[0] = "E" . $this->genererIdentifiant($employe['IDENTIFIANT_EMPLOYE'], 6);
+            $ligne[1] = $employe['NOM_EMPLOYE'];
+            $ligne[2] = $employe['PRENOM_EMPLOYE'];
+            $ligne[3] = $employe['TELEPHONE_EMPLOYE'];
+
+            $employesExport[] = $ligne;
+        }
+
+        return $employesExport;
     }
 
     /**
