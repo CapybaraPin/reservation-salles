@@ -50,7 +50,15 @@ class Exportation
         'Ident',
         'Nom',
         'Prenom',
-        'Telephone',
+        'Telephone'
+    ];
+
+    /**
+     * Entête du fichier d'exportation des activités
+     */
+    const ENTETE_ACTIVITE = [
+        'Ident',
+        'Activite'
     ];
 
     /**
@@ -152,6 +160,28 @@ class Exportation
         }
 
         return $employesExport;
+    }
+
+    /**
+     * Permet de récupérer la liste des activités dans la base de données. Formatées pour l'exportation
+     * Contient l'entête du fichier
+     * @return array, Retourne la liste des activités obtenue
+     */
+    public function getActivites()
+    {
+        $activite = new Activite();
+        $activites = $activite->getActivites();
+
+        $activitesExport[] = self::ENTETE_ACTIVITE;
+        foreach ($activites as $activite) {
+            $ligne = $this->genererTableauVide(count(self::ENTETE_ACTIVITE));
+            $ligne[0] = "A" . $this->genererIdentifiant($activite['IDENTIFIANT_ACTIVITE'], 7);
+            $ligne[1] = $activite['TYPE_ACTIVITE'];
+
+            $activitesExport[] = $ligne;
+        }
+
+        return $activitesExport;
     }
 
     /**
