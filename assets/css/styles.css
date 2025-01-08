@@ -32,6 +32,10 @@ p {
     text-align: center;
 }
 
+.centrer {
+    text-align: center;
+}
+
 /* Style des titres */
 .titre {
     color: var(--color-heading);
