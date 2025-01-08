@@ -29,7 +29,23 @@ class Exportation
     ];
 
     /**
+     * Entête du fichier d'exportation des salles
+     */
+    const ENTETE_SALLE = [
+        'Ident',
+        'Nom',
+        'Capacite',
+        'videoproj',
+        'ecranXXL',
+        'ordinateur',
+        'type',
+        'logiciels',
+        'imprimante'
+    ];
+
+    /**
      * Permet de récupérer la liste des réservations dans la base de données. Formatées pour l'exportation
+     * Contient l'entête du fichier
      *
      * @return array, Retourne la liste des réservations obtenue
      */
@@ -67,6 +83,41 @@ class Exportation
         }
 
         return $reservationsExport;
+    }
+
+    /**
+     * Permet de récupérer la liste des salles dans la base de données. Formatées pour l'exportation
+     * Contient l'entête du fichier
+     *
+     * @return array, Retourne la liste des salles obtenue
+     */
+    public function getSalles()
+    {
+        $salle = new Salle();
+        $salles = $salle->getSalles(0, [], $salle->getNbSalles());
+
+        $sallesExport[] = self::ENTETE_SALLE;
+        foreach ($salles as $salle) {
+            $ligne = $this->genererTableauVide(count(self::ENTETE_SALLE));
+            $ligne[0] = $this->genererIdentifiant($salle['ID_SALLE'], 8);
+            $ligne[1] = $salle['NOM_SALLE'];
+            $ligne[2] = $salle['CAPACITE'];
+            $ligne[3] = $salle['VIDEO_PROJECTEUR'] ? 'Oui' : 'Non';
+            $ligne[4] = $salle['ECRAN_XXL'] ? 'Oui' : 'Non';
+            $ordinateur = new Ordinateur();
+            if (!is_null($salle['ID_ORDINATEUR'])) {
+                $infoOrdinateur = $ordinateur->getOrdinateur($salle['ID_ORDINATEUR']);
+                $ligne[5] = $infoOrdinateur['nbOrdinateur'];
+                $ligne[6] = $infoOrdinateur['DesignationType'];
+                $logiciels = $ordinateur->getLogiciels($salle['ID_ORDINATEUR']);
+                $ligne[7] = implode(', ', array_column($logiciels, 'nom'));
+                $ligne[8] = $infoOrdinateur['imprimante'] ? 'Oui' : 'Non';
+            }
+
+            $sallesExport[] = $ligne;
+        }
+
+        return $sallesExport;
     }
 
     /**

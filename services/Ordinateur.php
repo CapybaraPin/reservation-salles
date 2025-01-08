@@ -15,11 +15,12 @@ class Ordinateur
 
         if (is_null($idOrdinateur)) {
             $req = $pdo->prepare("SELECT identifiant, nom FROM logiciel");
+            $req->execute();
         } else {
             $req = $pdo->prepare("SELECT logiciel.identifiant, nom FROM ordinateurLogiciel JOIN logiciel ON ordinateurLogiciel.idLogiciel = logiciel.identifiant WHERE ordinateurLogiciel.idOrdinateur = ?");
+            $req->execute([$idOrdinateur]);
         }
 
-        $req->execute();
         return $req->fetchAll();
     }
 
@@ -47,7 +48,7 @@ class Ordinateur
 
         $req = $pdo->prepare("SELECT groupeOrdinateur.identifiant, nbOrdinateur, imprimante, idType, type AS DesignationType FROM groupeOrdinateur JOIN typeOrdinateur ON idType = typeOrdinateur.identifiant WHERE groupeOrdinateur.identifiant = ?");
         $req->execute(array($idOrdinateur));
-        return $req->fetchAll();
+        return $req->fetch();
     }
 
     /**
