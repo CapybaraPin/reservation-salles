@@ -67,10 +67,9 @@ function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [],
 function genererEntete($colonnes, $actions)
 {
     $html = '<thead class="table-light">
-                    <tr>
-                        <th><input type="checkbox" class="ms-2 form-check-input"></th>';
+                    <tr>';
     foreach ($colonnes as $colonne) {
-        $html .= '<th>' . htmlspecialchars($colonne) . '</th>';
+        $html .= '<th class="centrer">' . htmlspecialchars($colonne) . '</th>';
     }
     if (!empty($actions)) {
         $html .= '<th>Action</th>';
@@ -89,10 +88,9 @@ function genererEntete($colonnes, $actions)
  */
 function genererLigne($ligne, $colonnes, $actions)
 {
-    $html = '<tr>
-                <td><input type="checkbox" class="ms-2 form-check-input"></td>';
+    $html = '<tr>';
     foreach ($colonnes as $key => $colonne) {
-        $html .= '<td>' . htmlspecialchars($ligne[$key] ?? '') . '</td>';
+        $html .= '<td class="centrer">' . htmlspecialchars($ligne[$key] ?? '') . '</td>';
     }
 
     if (!empty($actions)) {

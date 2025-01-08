@@ -65,7 +65,7 @@
                                                 <div class="form-group mb-3">
                                                     <label class="label-form" for="nom">Nom de l'employé</label>
                                                     <input class="form-control" id="nom" name="nom" type="text"
-                                                           placeholder="Entrez le nom de l'employé'"
+                                                           placeholder="Entrez le nom de l'employé"
                                                            value="<?= htmlspecialchars($employe['NOM_EMPLOYE']) ?>"
                                                            required>
                                                     <div class="invalid-feedback">
@@ -79,7 +79,7 @@
                                                 <div class="form-group mb-3">
                                                     <label class="label-form" for="prenom">Prénom de l'employé</label>
                                                     <input class="form-control" id="prenom" name="prenom" type="text"
-                                                           placeholder="Entrez le prénom de l'employé'"
+                                                           placeholder="Entrez le prénom de l'employé"
                                                            value="<?= htmlspecialchars($employe['PRENOM_EMPLOYE']) ?>"
                                                            required>
                                                     <div class="invalid-feedback">
