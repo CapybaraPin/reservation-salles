@@ -22,9 +22,14 @@ class ModifierEmployesController extends FiltresController {
      */
     public function get($employeID = null, $action = null) {
 
-        if ($action == 'edit')
-        {
+        if($_SESSION['userRole'] == '1') {
+            if ($action == 'edit')
+            {
                 $this->modifierEmploye($employeID);
+            }
+        } else {
+            header('HTTP/1.1 404 Not Found');
+            require_once __DIR__ . "/../views/errors/404.php";
         }
     }
 
@@ -53,6 +58,11 @@ class ModifierEmployesController extends FiltresController {
             $nom = htmlspecialchars($_POST['nom']);
             $prenom = htmlspecialchars($_POST['prenom']);
             $telephone = htmlspecialchars($_POST['telephone']);
+
+            if(isset($_POST['motdepasse'])) {
+                $motDePasseEmploye = password_hash($_POST["motdepasse"], PASSWORD_DEFAULT);
+                $this->employeModel->modifierMotDePasse($employeId, $motDePasseEmploye);
+            }
 
             try {
                 $this->employeModel->modifierEmploye($employeId, $nom, $prenom, $telephone);

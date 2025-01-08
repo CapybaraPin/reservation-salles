@@ -102,6 +102,19 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <!-- Mot de passe de l'employé -->
+                                            <div class="row">
+                                                <div class="form-group mb-3">
+                                                    <label class="label-form" for="nom">Mot de passe</label>
+                                                    <div class="input-group">
+                                                        <input class="form-control" id="motdepasse" name="motdepasse" type="password" placeholder="Entrez le mot de passe">
+                                                        <button type="button" class="btn btn-outline-secondary" id="togglePassword" aria-label="Afficher ou masquer le mot de passe">
+                                                            <i class="fa-solid fa-eye" id="passwordIcon"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

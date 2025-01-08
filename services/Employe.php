@@ -194,4 +194,15 @@ class Employe
             'idEmploye' => $idEmploye
         ]);
     }
+
+    public function modifierMotDePasse($idEmploye, $pass) {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("UPDATE utilisateur SET motDePasse = ? WHERE individu = ?");
+        $req->execute(array($pass, $idEmploye));
+
+        return $req;
+
+    }
+
 }

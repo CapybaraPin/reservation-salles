@@ -63,20 +63,32 @@ class EmployesController extends FiltresController
         foreach ($employes as &$employe) {
             $employe['ID'] = $employe['IDENTIFIANT_EMPLOYE'];
 
-            $actions[$employe['IDENTIFIANT_EMPLOYE']]['modifier'] = [
-                'attributs' => ['href' => '/employe/'.$employe["ID"].'/edit', 'class' => 'btn', 'title' => 'Modifier'],
-                'icone' => 'fa-solid fa-pen'
-            ];
+            if($_SESSION['userRole'] == '1') {
 
-            $actions[$employe['IDENTIFIANT_EMPLOYE']]['supprimer'] = [
-                'attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerEmploye',
-                    'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
-                    && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
-                    'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']
-                ],
-                'icone' => 'fa-solid fa-trash-can'
-            ];
+                $actions[$employe['IDENTIFIANT_EMPLOYE']]['modifier'] = [
+                    'attributs' => ['href' => '/employe/'.$employe["ID"].'/edit', 'class' => 'btn', 'title' => 'Modifier'],
+                    'icone' => 'fa-solid fa-pen'
+                ];
 
+                $actions[$employe['IDENTIFIANT_EMPLOYE']]['supprimer'] = [
+                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerEmploye',
+                        'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
+                        && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
+                        'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']
+                    ],
+                    'icone' => 'fa-solid fa-trash-can'
+                ];
+            }
+
+        }
+
+        if(isset($_SESSION['messageValidation'])) {
+            $this->success = $_SESSION['messageValidation'];
+            unset($_SESSION['messageValidation']);
+        }
+        if(isset($_SESSION['messageErreur'])) {
+            $this->erreurs = $_SESSION['messageErreur'];
+            unset($_SESSION['messageErreur']);
         }
 
         $erreur = $this->erreur;

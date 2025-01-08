@@ -191,6 +191,8 @@ class SallesController extends FiltresController
                 try {
                     $this->salleModel->supprimerSalle($salleId);
                     $_SESSION['messageValidation'] =  "La salle n°".$salleId." a bien été supprimée.";
+                    header("Location: " . $_SERVER['REQUEST_URI']);
+                    exit;
                 } catch (\Exception $e) {
                     $_SESSION['messageErreur'] =  "La salle n°".$salleId." n'existe plus.";
 
