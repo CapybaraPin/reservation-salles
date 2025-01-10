@@ -2,61 +2,58 @@
 
 namespace controllers;
 
+use PDO;
 use services\Auth;
 use services\Config;
+use services\Database;
 
 /**
  * Contrôleur pour la page des employés
  */
-class EmployesController extends Controller
+class EmployesController extends FiltresController
 {
-    /**
-     * Variables pour les messages d'erreur d'ajout
-     */
-    private $erreur;
+    private $success; // Pour gérer les messages de succès
+    private $erreur;  // Pour gérer les messages d'erreur
+    const FILTRES_DISPONIBLES = [
+        'nom' => ['label' => 'Nom', 'type' => PDO::PARAM_STR, 'champ' => 'nom'],
+        'prenom' => ['label' => 'Prénom', 'type' => PDO::PARAM_STR, 'champ' => 'prenom'],
+        'telephone' => ['label' => 'Téléphone', 'type' => PDO::PARAM_STR, 'champ' => 'telephone'],
+    ];
 
-    /**
-     * Variables pour les messages d'erreur de suppression
-     */
-    private $erreurSuppression;
+    const TITRE = 'Employés';
+    const COLONNES = [
+        "IDENTIFIANT_EMPLOYE" => 'Identifiant',
+        "NOM_EMPLOYE" => 'Nom',
+        "PRENOM_EMPLOYE" => 'Prénom',
+        "TELEPHONE_EMPLOYE" => 'Téléphone',
+    ];
 
-    /**
-     * Variables pour les messages de succès d'ajout
-     */
-    private $success;
-
-    /**
-     * Variables pour les messages de succès de suppression
-     */
-    private $suppression;
-
-
-    /**
-     * Fonction pour gérer les requêtes GET
-     */
     public function get()
     {
-        // Récupération de la liste des employés
-        global $db;
+        $filtresDisponibles = self::FILTRES_DISPONIBLES;
+        $this->setFiltresDisponibles($filtresDisponibles);
+        $filtres = $this->getFiltres();
 
-        $titre = 'Employés';
-        $colonnes = [
-            "IDENTIFIANT_EMPLOYE" => 'Identifiant',
-            "NOM_EMPLOYE" => 'Nom',
-            "PRENOM_EMPLOYE" => 'Prénom',
-            "TELEPHONE_EMPLOYE" => 'Téléphone',
-            ];
+        $titre = self::TITRE;
+        $colonnes = self::COLONNES;
 
-        $nbEmployes = $db->getNbEmployes();
-        list ($page, $pageMax) = $this->getPagination($nbEmployes);
+        $filtresRequete = $this->getFiltresRequete();
+        $nbEmployes = $this->employeModel->getNbEmployes($filtresRequete);
+
+        // Si aucun employé n'est trouvé
+        if ($nbEmployes === 0) {
+            $alerte = "Aucun employé trouvé pour les critères spécifiés.";
+        }
+
+        list($page, $pageMax) = $this->getPagination($nbEmployes);
         $nbLignesPage = Config::get('NB_LIGNES');
-        $employes = $db->getEmployes(($page - 1) * $nbLignesPage);
+        $employes = $this->employeModel->getEmployes(($page - 1) * $nbLignesPage, $filtresRequete);
 
 
         // ajout des employés ayant une réservation
         $reservations = [];
         foreach ($employes as $employe) {
-            $hasReservation = $db->verifReservationEmploye($employe['IDENTIFIANT_EMPLOYE']);
+            $hasReservation = $this->employeModel->verifReservationEmploye($employe['IDENTIFIANT_EMPLOYE']);
             $reservations[$employe['IDENTIFIANT_EMPLOYE']] = $hasReservation;
         }
 
@@ -66,43 +63,50 @@ class EmployesController extends Controller
         foreach ($employes as &$employe) {
             $employe['ID'] = $employe['IDENTIFIANT_EMPLOYE'];
 
-            $actions[$employe['IDENTIFIANT_EMPLOYE']]['info'] = [
-                'attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
-                'icone' => 'fa-solid fa-circle-info'
-            ];
+            if($_SESSION['userRole'] == '1') {
 
-            if ($_SESSION['userRole'] == '1') {
                 $actions[$employe['IDENTIFIANT_EMPLOYE']]['modifier'] = [
-                    'attributs' => ['class' => 'btn', 'title' => 'Modifier'],
+                    'attributs' => ['href' => '/employe/'.$employe["ID"].'/edit', 'class' => 'btn', 'title' => 'Modifier'],
                     'icone' => 'fa-solid fa-pen'
                 ];
 
                 $actions[$employe['IDENTIFIANT_EMPLOYE']]['supprimer'] = [
-                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer',
-                                    'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
-                                                          && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
-                                    'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']
-                                    ],
+                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerEmploye',
+                        'data-reservation' => isset($reservations[$employe["IDENTIFIANT_EMPLOYE"]])
+                        && $reservations[$employe["IDENTIFIANT_EMPLOYE"]] ? 'true' : 'false',
+                        'href' => '#' . $employe['IDENTIFIANT_EMPLOYE']
+                    ],
                     'icone' => 'fa-solid fa-trash-can'
                 ];
             }
+
+        }
+
+        if(isset($_SESSION['messageValidation'])) {
+            $this->success = $_SESSION['messageValidation'];
+            unset($_SESSION['messageValidation']);
+        }
+        if(isset($_SESSION['messageErreur'])) {
+            $this->erreurs = $_SESSION['messageErreur'];
+            unset($_SESSION['messageErreur']);
         }
 
         $erreur = $this->erreur;
-        $erreurSuppression = $this->erreurSuppression;
         $success = $this->success;
-        $suppression = $this->suppression;
 
         require __DIR__ . '/../views/employes.php';
     }
 
-    /**
-     * Fonction pour gérer les requêtes POST
-     */
     public function post()
     {
-        global $db;
-
+        $this->setFiltres($_POST['filtres'] ?? []);
+        $filtresDisponibles = self::FILTRES_DISPONIBLES;
+        $this->setFiltresDisponibles($filtresDisponibles);
+        if (isset($_POST['ajouter_filtre'])) {
+            $this->ajouterFiltre($_POST['nouveau_filtre']);
+        } elseif (isset($_POST['supprimer_filtre'])) {
+            $this->supprimerFiltre($_POST['supprimer_filtre']);
+        }
         try {
             $this->success = $this->ajouterEmploye();
         } catch (\Exception $e) {
@@ -112,9 +116,9 @@ class EmployesController extends Controller
         // Vérifier si une demande de suppression est effectuée
         if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId'])) {
             try {
-                $this->suppression = $this->supprimerEmploye();
+                $this->success = $this->supprimerEmploye();
             } catch (\Exception $e) {
-                $this->erreurSuppression = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
+                $this->erreur = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
             }
         }
 
@@ -123,13 +127,12 @@ class EmployesController extends Controller
         $this->get();
     }
 
+
     /**
      * Fonction qui gère l'ajout d'un employé
      */
     public function ajouterEmploye()
     {
-        global $db;
-
         if (isset($_POST["nom"])
             && isset($_POST["prenom"])
             && isset($_POST["telephone"])
@@ -151,7 +154,7 @@ class EmployesController extends Controller
 
             // Vérification que les champs ne soient pas vides
             if (!empty($nomEmploye) && !empty($prenomEmploye) && !empty($telephoneEmploye) && !empty($identifiantEmploye) && !empty($motDePasseEmploye)) {
-                $db->ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye);
+                $this->employeModel->ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye);
             } else {
                 throw new \Exception("Veuillez remplir tous les champs");
             }
@@ -160,16 +163,19 @@ class EmployesController extends Controller
         }
     }
 
+    /**
+     * Suppresion d'un employé lors du click sur le bouton de suppresion situé sur la page des employés
+     * @return string
+     * @throws \Exception
+     */
     public function supprimerEmploye()
     {
-        global $db;
-
         if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId']) && is_numeric($_POST['employeId'])) {
             $idEmploye = intval($_POST['employeId']); // Conversion sécurisée en entier
 
             try {
                 // Appelle la méthode pour supprimer l'employé
-                $result = $db->suppressionEmploye($idEmploye);
+                $result = $this->employeModel->suppressionEmploye($idEmploye);
 
                 if ($result) {
                     return "L'employé avec l'ID $idEmploye a été supprimé avec succès.";

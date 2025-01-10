@@ -9,12 +9,13 @@
  * @param array $actions Actions à afficher
  * @param int $page Page courante
  * @param int $pageMax Nombre de pages
+ * @param array $filtres Filtres de recherche à passer dans les formulaires de pagination
  * @return string HTML du tableau
  */
-function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [], $page = null, $pageMax = null)
+function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [], $page = null, $pageMax = null, $filtres = [])
 {
     // Début du tableau HTML
-    $html = '<div class="row">
+    $html = '<div class="row mb-5">
                <div class="col-12">
                    <div class="border border-1 rounded rounded-4 shadow-sm">
                        <p class="p-3 pb-0 fw-bold">' . htmlspecialchars($titre) . '
@@ -29,9 +30,15 @@ function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [],
     $html .= genererEntete($colonnes, $actions);
     $html .= '<tbody>';
 
-    // Génération des lignes du tableau
-    foreach ($donnees as $ligne) {
-        $html .= genererLigne($ligne, $colonnes, $actions);
+    if($nbElements > 0) {
+        // Génération des lignes du tableau
+        foreach ($donnees as $ligne) {
+            $html .= genererLigne($ligne, $colonnes, $actions);
+        }
+    } else {
+        $formatTitre = strtolower(str_replace("Mes", "", $titre));
+        $html .= '<tr>
+                    <td class="text-center" colspan="'.(count($colonnes)+1).'">Aucun(e) '.$formatTitre .' trouvé(e)</td>';
     }
 
     // Fin du tableau
@@ -41,7 +48,7 @@ function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [],
 
     // Ajout de la pagination si applicable
     if ($page !== null && $pageMax !== null) {
-        $html .= genererPagination($page, $pageMax);
+        $html .= genererPagination($page, $pageMax, $filtres);
     }
 
     $html .= '</div>
@@ -60,10 +67,9 @@ function genererTableau($donnees, $colonnes, $titre, $nbElements, $actions = [],
 function genererEntete($colonnes, $actions)
 {
     $html = '<thead class="table-light">
-                    <tr>
-                        <th><input type="checkbox" class="ms-2 form-check-input"></th>';
+                    <tr>';
     foreach ($colonnes as $colonne) {
-        $html .= '<th>' . htmlspecialchars($colonne) . '</th>';
+        $html .= '<th class="centrer">' . htmlspecialchars($colonne) . '</th>';
     }
     if (!empty($actions)) {
         $html .= '<th>Action</th>';
@@ -82,10 +88,9 @@ function genererEntete($colonnes, $actions)
  */
 function genererLigne($ligne, $colonnes, $actions)
 {
-    $html = '<tr>
-                <td><input type="checkbox" class="ms-2 form-check-input"></td>';
+    $html = '<tr>';
     foreach ($colonnes as $key => $colonne) {
-        $html .= '<td>' . htmlspecialchars($ligne[$key] ?? '') . '</td>';
+        $html .= '<td class="centrer">' . htmlspecialchars($ligne[$key] ?? '') . '</td>';
     }
 
     if (!empty($actions)) {
@@ -108,65 +113,110 @@ function genererLigne($ligne, $colonnes, $actions)
 
 /**
  * Génère la pagination avec les boutons "Précédent" et "Suivant"
- * et les numéros de page
+ * et les numéros de page et permet la transmition des filtres de recherche
+ * de manière POST page par page
  * @param int $page actuelle
  * @param int $pageMax nombre de pages
+ * @param array $filtres Filtres de recherche
  * @return string HTML de la pagination
  */
-function genererPagination(int $page, int $pageMax)
+function genererPagination($page, $pageMax, $filtres = [])
 {
-// Précédent mobile et desktop
+    // Précédent mobile et desktop
     $html = '
 <div class="container-fluid">
     <div class="row">
-        <!-- Bouton "Précédent" pour mobile -->
-        <div class="col-3 d-lg-none d-block">
-            <a href="?page=' . ($page - 1) . '" class="btn btn-outline-dark d-lg-none">
+        <!-- Formulaire pour "Précédent" -->
+        <form method="POST" action="?page=' . ($page - 1) . '" class="col-3">';
+
+    // Ajout des filtres sous forme d'inputs cachés
+    foreach ($filtres as $champ => $filtresParChamp) {
+        foreach ($filtresParChamp as $indice => $valeur) {
+            $html .= genererChampsCaches($champ, $valeur, $indice);
+        }
+    }
+
+    $html .= '
+            <button type="submit" class="btn btn-outline-dark d-lg-none">
                 <i class="fa-solid fa-arrow-left"></i>
-            </a>
-        </div>
-        <!-- Bouton "Précédent" pour desktop -->
-        <div class="col-3 d-lg-block d-none">
-            <a href="?page=' . ($page - 1) . '" class="btn btn-outline-dark">
+            </button>
+            <button type="submit" class="btn btn-outline-dark d-lg-block d-none">
                 <i class="fa-solid fa-arrow-left"></i> Précédent
-            </a>
-        </div>
+            </button>
+        </form>
+        
         <!-- Pages centrales -->
         <div class="col-6 d-flex justify-content-center">
             <nav class="text-center">
                 <ul class="pagination-page">
-';
+    ';
 
-// Génération des numéros de page
+    // Génération des numéros de page
     for ($i = 1; $i <= $pageMax; $i++) {
         $active = $i == $page ? 'active' : '';
         $html .= '
                     <li class="pagination-item ' . $active . '">
-                        <a class="page-link" href="?page=' . $i . '">' . $i . '</a>
+                        <form method="POST" action="?page=' . $i . '">';
+
+        // Ajout des filtres pour chaque formulaire de numéro de page
+        foreach ($filtres as $champ => $filtresParChamp) {
+            foreach ($filtresParChamp as $indice => $filtre) {
+                $html .= genererChampsCaches($champ, $filtre, $indice);
+            }
+        }
+
+        $html .= '
+                            <button type="submit" class="page-link">' . $i . '</button>
+                        </form>
                     </li>
-    ';
+        ';
     }
 
-// Suivant mobile et desktop
+    // Formulaire pour "Suivant"
     $html .= '
                 </ul>
             </nav>
         </div>
-        <!-- Bouton "Suivant" pour desktop -->
-        <div class="col-3 text-end d-lg-block d-none">
-            <a href="?page=' . $page + 1 . '" class="btn btn-outline-dark">Suivant
+        <div class="col-3 text-end">
+        <form class="d-inline-block" method="POST" action="?page=' . ($page + 1) . '" >';
+
+    // Ajout des filtres dans le formulaire "Suivant"
+    foreach ($filtres as $champ => $filtresParChamp) {
+        foreach ($filtresParChamp as $indice => $filtre) {
+            $html .= genererChampsCaches($champ, $filtre, $indice);
+        }
+    }
+
+    $html .= '
+            <button type="submit" class="btn btn-outline-dark d-lg-none">
                 <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
-        <!-- Bouton "Suivant" pour mobile -->
-        <div class="col-3 text-end d-lg-none d-block">
-            <a href="?page=' . $page + 1 . '" class="btn btn-outline-dark d-lg-none">
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
+            </button>
+            <button type="submit" class="btn btn-outline-dark d-lg-block d-none">
+                Suivant <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
         </div>
     </div>
-</div>
-';
+</div>';
 
+    return $html;
+}
+
+/**
+* Génère des champs cachés pour les filtres
+* @param string $champ Nom du champ
+* @param array|string $filtresParChamp Valeurs des filtres
+* @param int $indice Indice du filtre
+* @return string HTML des champs cachés
+*/
+function genererChampsCaches($champ, $filtresParChamp, $indice)
+{
+    $html = '';
+
+    if (is_array($filtresParChamp)) {
+        $html .= '<input type="hidden" name="filtres[' . htmlspecialchars($champ) . '][' . htmlspecialchars($indice) . ']" value="' . htmlspecialchars(json_encode($filtresParChamp)) . '">';
+    } else {
+        $html .= '<input type="hidden" name="filtres[' . htmlspecialchars($champ) . '][' . htmlspecialchars($indice) . ']" value="' . htmlspecialchars($filtresParChamp) . '">';
+    }
     return $html;
 }

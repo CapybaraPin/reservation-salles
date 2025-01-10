@@ -12,8 +12,6 @@ class ActivitesController extends Controller
      */
     public function get()
     {
-        // Récupération de la liste des activités
-        global $db;
 
         $titre = "Activités";
 
@@ -22,8 +20,8 @@ class ActivitesController extends Controller
             "TYPE_ACTIVITE" => "Type",
         ];
 
-        $activites = $db->getActivites();
-        $nbActivites = $db->getNbActivites();
+        $activites = $this->activiteModel->getActivites();
+        $nbActivites = $this->activiteModel->getNbActivites();
 
         foreach ($activites as &$activite) {
             $activite['ID'] = $activite['IDENTIFIANT_ACTIVITE'];

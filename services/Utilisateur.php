@@ -41,7 +41,8 @@ class Utilisateur
      */
     public function getNom()
     {
-        global $pdo;
+        $pdo = Database::getPDO();
+
         $req = $pdo->prepare("SELECT nom 
                 FROM individu i
                 JOIN utilisateur u
@@ -59,7 +60,8 @@ class Utilisateur
      */
     public function getPrenom()
     {
-        global $pdo;
+        $pdo = Database::getPDO();
+
         $req = $pdo->prepare("SELECT prenom 
                 FROM individu i
                 JOIN utilisateur u

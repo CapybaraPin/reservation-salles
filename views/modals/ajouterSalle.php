@@ -17,23 +17,33 @@
                             <div class="form-group mb-1">
                                 <label class="label-form" for="nom">Nom de la salle</label>
                                 <input class="form-control" id="nom" name="nom" type="text" placeholder="Entrez le nom"
-                                       required
+
                                        value="<?= isset($_POST['nom']) ? htmlspecialchars($_POST['nom']) : '' ?>">
                             </div>
                             <!-- Champ Capacite -->
                             <div class="form-group mt-1 mb-1">
                                 <label class="label-form" for="capacite">Capacité de la salle</label>
                                 <input class="form-control" id="capacite" name="capacite" type="number"
-                                       placeholder="Entrez la capicité de la salle" required
+                                       placeholder="Entrez la capacité de la salle" required
                                        value="<?= isset($_POST['capacite']) ? htmlspecialchars($_POST['capacite']) : '' ?>">
                             </div>
 
                             <!-- Champ du vidéo Projecteur -->
                             <div class="form-group mt-2 mb-2">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="capacite">
-                                    <label class="form-check-label label-form" for="capacite">
+                                    <input name="videoProjecteur" class="form-check-input" type="checkbox" value="" id="videoProjecteur">
+                                    <label class="form-check-label label-form" for="videoProjecteur">
                                         Possède un vidéo projecteur ?
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Champ de l'écran XXL -->
+                            <div class="form-group mt-2 mb-2">
+                                <div class="form-check">
+                                    <input name="ecranXXL" class="form-check-input" type="checkbox" value="" id="ecranXXL">
+                                    <label class="form-check-label label-form" for="ecranXXL">
+                                        Possède un écran XXL ?
                                     </label>
                                 </div>
                             </div>
@@ -46,7 +56,7 @@
                                 </button>
                             </div>
                             <div class="col-6">
-                                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#ajouterOrdinateur">Suivant </button>
+                                <button id="boutonSuivantSalle" class="btn btn-primary w-100">Suivant</button>
                             </div>
                         </div>
                     </div>
@@ -82,8 +92,8 @@
                             <!-- Champ Capacite -->
                             <div class="form-group mt-1 mb-1">
                                 <label class="label-form" for="logiciels">Logiciels présents sur les ordinateurs</label>
-                                <select class="form-select" id="logiciels" name="logiciels" multiple aria-label="multiple select example">
-                                    <option selected>Sélectionnez le(s) logiciel(s)</option>
+                                <select class="form-select" id="logiciels" name="logiciels[]" multiple aria-label="multiple select example">
+                                    <option value="-1" selected>Sélectionnez le(s) logiciel(s)</option>
                                     <?php foreach ($logiciels as $logiciel) : ?>
                                         <option value="<?= $logiciel['identifiant'] ?>"><?= $logiciel['nom'] ?></option>
                                     <?php endforeach; ?>
@@ -93,16 +103,16 @@
                             <!-- Champ du vidéo Projecteur -->
                             <div class="form-group mt-2 mb-2">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="capacite">
-                                    <label class="form-check-label label-form" for="capacite">
+                                    <input name="imprimante" class="form-check-input" type="checkbox" value="" id="imprimante">
+                                    <label class="form-check-label label-form" for="imprimante">
                                         Possède une imprimante ?
                                     </label>
                                 </div>
                             </div>
 
                             <div class="form-group mt-1 mb-1">
-                                <label class="label-form" for="logiciels">Type d'ordinateur</label>
-                                <select class="form-select" aria-label="Default select example">
+                                <label class="label-form" for="typeOrdinateur">Type d'ordinateur</label>
+                                <select class="form-select" id="typeOrdinateur" name="typeOrdinateur">
                                     <option selected>Sélectionnez un type d'ordinateur</option>
                                     <?php foreach ($typesOrdinateur as $type) : ?>
                                         <option value="<?= $type['identifiant'] ?>"><?= $type['type'] ?></option>
@@ -113,7 +123,7 @@
                         </div>
                         <div class="row mt-3 mb-2">
                             <div class="col-6">
-                                <button type="button" class="btn btn-outline-dark w-100" data-bs-dismiss="modal">
+                                <button type="button" class="btn btn-outline-dark w-100" data-bs-toggle="modal" data-bs-target="#ajouterSalle">
                                     Précédent
                                 </button>
                             </div>
@@ -127,5 +137,4 @@
         </div>
     </div>
 </form>
-
 <!-- Fin de la modal d'ajout d'employé -->

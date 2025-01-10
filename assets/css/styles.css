@@ -32,6 +32,10 @@ p {
     text-align: center;
 }
 
+.centrer {
+    text-align: center;
+}
+
 /* Style des titres */
 .titre {
     color: var(--color-heading);
@@ -58,11 +62,36 @@ p {
     font-family: monospace;
 }
 
+/* typographie */
+h2 {
+    font-family: "Inter" !important;
+    font-weight: 580 !important;
+    color: var(--color-heading) !important;
+}
+
+.sous-titre {
+    font-family: "Inter" !important;
+    font-weight: 300 !important;
+    color: var(--color-text-dark) !important;
+    font-size: 16px !important;
+}
 
 /* Navigation */
 .nav {
     display: inline-block;
     border-bottom: var(--color-border-light) 1px solid;
+}
+
+.btn{
+    font-weight: 500 !important;
+    font-family: "Inter" !important;
+    border: 1px #D5D7DA solid !important;
+    border-radius: 8px !important;
+    color: var(--color-label-text) !important;
+}
+
+.btn:hover{
+    background-color: #EEEEEE    !important;
 }
 
 /* Boutons de navigation */
@@ -78,6 +107,11 @@ p {
     font-size: 16px;
     text-decoration: none;
     color: var(--color-label-text);
+}
+
+.disabled {
+    border: none !important;
+    color: var(--color-text-dark) !important;
 }
 
 /* État actif et survol des boutons de navigation */
@@ -198,4 +232,54 @@ th{
 
 thead{
     background-color: var(--color-border-light);
+}
+
+/* Menu fixe */
+.menu-deroulant {
+    position: absolute;
+    display: none; /* Caché par défaut */
+    z-index: 10;
+    background-color: white;
+}
+
+.content {
+    padding: 2rem;
+}
+
+.stat-card {
+    background-color: rgba(53, 116, 240, 0.08);
+    opacity: 0.9;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.stat-card i {
+    background-color: var(--color-primary);
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.4rem;
+}
+
+.stat-card h5 {
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: black;
+}
+
+.stat-card p {
+    color: var(--color-primary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card h3 {
+    font-size: 1.8rem;
+    color: var(--color-primary);
+    margin-top: 0.5rem;
 }

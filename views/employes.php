@@ -15,6 +15,8 @@ require_once 'utils/tableau.php';
 <div class="container-fluid">
     <?php include 'elements/header.php'; ?>
 
+
+
     <!-- Section principale -->
 
     <div class="content">
@@ -29,11 +31,13 @@ require_once 'utils/tableau.php';
                             <p>Créer et gérer vos employés depuis le tableau ci-dessous.</p>
                         </div>
                         <!-- Bouton pour ajouter une salle -->
+                        <?php if ($_SESSION['userRole'] == '1') { ?>
                         <div class="col-12 col-lg-2 text-lg-end">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajouterEmployee">
                                 <i class="fa-solid fa-plus"></i> Ajouter un employé
                             </button>
                         </div>
+                        <?php } ?>
                     </div>
                     <div class="row">
                         <?php if (isset($erreur)) { ?>
@@ -41,49 +45,28 @@ require_once 'utils/tableau.php';
                                 <?= $erreur ?>
                             </div>
                         <?php }
-                        if (isset($erreurSuppression)) { ?>
-                            <div class="alert alert-danger mt-3" role="alert">
-                                <?= $erreurSuppression ?>
-                            </div>
+                            if (isset($success)) { ?>
+                                <div class="alert alert-success mt-3" role="alert">
+                                    <?= $success ?>
+                                </div>
                         <?php } ?>
-
-
-                        <?php if (isset($success)) { ?>
-                            <div class="alert alert-success mt-3" role="alert">
-                                <?= $success ?>
-                            </div>
-                        <?php }
-                        if (isset($suppression)) { ?>
-                            <div class="alert alert-success mt-3" role="alert">
-                                <?= $suppression ?>
+                        <?php if (isset($alerte)) { ?>
+                            <div class="alert alert-warning mt-3" role="alert">
+                                <?= $alerte ?>
                             </div>
                         <?php } ?>
                     </div>
 
                     <!-- Section filtres et recherche -->
-                    <div class="row mt-4 mb-4">
-                        <div class="col-12 col-lg-9">
-                            <!-- Filtres pour les salles -->
-                            <div class="btn border border-1 shadow-sm me-2">
-                                salle : "picasso" <i class="fa-solid fa-xmark text-primary ps-2"></i>
-                            </div>
-                            <div class="btn border border-1 shadow-sm me-2">
-                                <i class="fa-solid fa-filter"></i> Plus de filtres
-                            </div>
-                        </div>
-                        <!-- Champ de recherche -->
-                        <div class="col-12 col-lg-3 mt-lg-0 mt-2">
-                            <div class="input-group">
-                                <i class="fa-solid input-group-text d-flex">&#xf002;</i>
-                                <input class="form-control" type="text" name="recherche" placeholder="Recherche">
-                            </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <?php include 'elements/filtres.php'; ?>
                         </div>
                     </div>
 
+
                     <!-- Tableau des employés -->
-                    <?php
-                    echo genererTableau($employes, $colonnes, $titre, $nbEmployes, $actions, $page, $pageMax);
-                    ?>
+                    <?= genererTableau($employes, $colonnes, $titre, $nbEmployes, $actions, $page, $pageMax, $filtres); ?>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use Exception;
 use services\Auth;
 use services\Config;
 
@@ -14,26 +15,17 @@ use services\Config;
  *
  * @package controllers
  */
-class AuthController
+class AuthController extends Controller
 {
 
-    protected $auth;
-
-    /**
-     * AuthController constructeur
-     *
-     * Créer une instance de la classe permettant la gestion de l'authentification.
-     */
-    public function __construct()
-    {
-        $this->auth = new Auth();
-    }
+    private $message; // Message d'erreur
 
     /**
      * Fonction pour gérer les requêtes GET
      */
     public function get()
     {
+        $message = $this->message;
         require __DIR__ . '/../views/auth.php';
     }
 
@@ -46,16 +38,35 @@ class AuthController
 
             $identifiant = htmlspecialchars($_POST['identifiant']);
             $motDePasse = htmlspecialchars($_POST['motdepasse']);
+            $memoriser = isset($_POST['memoriser']) ? true : false;
 
             try {
-                $this->auth->connexion($identifiant, $motDePasse);
+                $this->authModel->connexion($identifiant, $motDePasse, $memoriser);
                 header("Location: ".Config::get('APP_URL')."/");
 
-            } catch (\Exception $e) {
-                $message = $e->getMessage();
+            } catch (Exception $e) {
+                $this->message = $e->getMessage();
             }
 
-            require __DIR__ . '/../views/auth.php';
+            $this->get();
+        }
+    }
+
+    /**
+     * Fonction pour gérer la connexion automatique par token
+     */
+    public function connexionToken() {
+        if (isset($_COOKIE['authToken'])) {
+            try {
+                $token = htmlspecialchars($_COOKIE['authToken']);
+                $this->authModel->connexionToken($token);
+                header("Location: ".Config::get('APP_URL')."/");
+            } catch (Exception $e) {
+                $this->authModel->deconnexion();
+                $this->message = $e->getMessage();
+            }
+
+            $this->get();
         }
     }
 }

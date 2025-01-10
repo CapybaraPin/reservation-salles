@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use Exception;
 use PDO;
 use services\Config;
 
@@ -12,12 +13,11 @@ use services\Config;
  *
  * @package controllers
  */
-class AccueilController extends Controller
+class AccueilController extends ReservationsController
 {
+
     public function get()
     {
-        global $db;
-
         $titre = 'Mes Réservations';
         $colonnes = [
             "IDENTIFIANT_RESERVATION" => 'Identifiant',
@@ -26,21 +26,20 @@ class AccueilController extends Controller
             "DESCRIPTION" => 'Description',
             "NOM_SALLE" => 'Salle',
             "TYPE_ACTIVITE" => 'Activité',
-            "EMPLOYE" => 'Employé',
         ];
 
-        $nbReservations = $db->getNbReservations($_SESSION['userIndividuId']);
+        $filtre["employe"][] = ['valeur' => $_SESSION['userIndividuId'], "type" => PDO::PARAM_INT, 'operateur' => "=", 'champ' => 'reservation.idEmploye'];
+        $nbReservations = $this->reservationModel->getNbReservations($filtre);
         list($page, $pageMax) = $this->getPagination($nbReservations);
         $nbLignesPage = Config::get('NB_LIGNES');
-        $filre = ["reservation.idEmploye" => [$_SESSION['userIndividuId'], PDO::PARAM_INT]];
-        $reservations = $db->getReservations(($page - 1) * $nbLignesPage, $filre);
+
+        $reservations = $this->reservationModel->getReservations(($page - 1) * $nbLignesPage, $filtre);
 
         // Création des actions pour chaque réservation
         // et ajout des informations demandées par les colonnes
         $actions = [];
         foreach ($reservations as &$reservation) {
             $reservation['ID'] = $reservation['IDENTIFIANT_RESERVATION'];
-            $reservation['EMPLOYE'] = $reservation['PRENOM_EMPLOYE'] . ' ' . $reservation['NOM_EMPLOYE'];
             $dateDebut = date_create($reservation["DATE_DEBUT"]);
             $dateFin = date_create($reservation["DATE_FIN"]);
             $reservation["DATE_FIN"] = date_format($dateFin, "d/m/Y H\hi");
@@ -48,16 +47,31 @@ class AccueilController extends Controller
             $actions[$reservation['IDENTIFIANT_RESERVATION']] = [
                 'info' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'], 'icone' => 'fa-solid fa-circle-info'],
                 'modifier' => ['attributs' => ['class' => 'btn', 'title' => 'Modifier'], 'icone' => 'fa-solid fa-pen'],
-                'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Supprimer'], 'icone' => 'fa-solid fa-trash-can'],
+                'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerReservation', 'href' => '#'.$reservation['ID']], 'icone' => 'fa-solid fa-trash-can'],
             ];
         }
+
+        $erreur = $this->erreur;
+        $success = $this->success;
 
         require __DIR__ . '/../views/accueil.php';
     }
 
     public function post()
     {
+        // Vérifier si une demande de suppression est effectuée
+        if (isset($_POST['supprimerReservation']) && isset($_POST['idReservation'])) {
+            try {
+                $this->supprimerReservation();
+            } catch (Exception $e) {
+                $this->erreur = "Erreur lors de la suppression de la reservation : " . $e->getMessage();
+            }
+        }
+
         $this->deconnexion();
-        require __DIR__ . '/../views/accueil.php';
+
+        $this->get();
     }
+
+
 }

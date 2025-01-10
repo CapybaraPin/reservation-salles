@@ -35,36 +35,36 @@ require_once 'utils/tableau.php';
                         </div>
                     </div>
 
-                    <!-- Section filtres et recherche -->
-                    <div class="row mt-4 mb-4">
-                        <div class="col-12 col-lg-9">
-                            <!-- Filtres pour les salles -->
-                            <div class="btn border border-1 shadow-sm me-2">
-                                salle : "picasso" <i class="fa-solid fa-xmark text-primary ps-2"></i>
+                    <div class="row">
+                        <?php if (isset($erreurs)) { ?>
+                            <div class="alert alert-danger mt-3" role="alert">
+                                <?= $erreurs ?>
                             </div>
-                            <div class="btn border border-1 shadow-sm me-2">
-                                <i class="fa-solid fa-filter"></i> Plus de filtres
+                        <?php }
+                        if (isset($success)) { ?>
+                            <div class="alert alert-success mt-3" role="alert">
+                                <?= $success ?>
                             </div>
-                        </div>
-                        <!-- Champ de recherche -->
-                        <div class="col-12 col-lg-3 mt-lg-0 mt-2">
-                            <div class="input-group">
-                                <i class="fa-solid input-group-text d-flex">&#xf002;</i>
-                                <input class="form-control" type="text" name="recherche" placeholder="Recherche">
+                        <?php } ?>
+                        <?php if (isset($alerte)) { ?>
+                            <div class="alert alert-warning mt-3" role="alert">
+                                <?= $alerte ?>
                             </div>
-                        </div>
+                        <?php } ?>
                     </div>
 
+                    <!-- Section filtres et recherche -->
+                    <?php include 'elements/filtres.php'; ?>
+
                     <!-- Tableau des salles -->
-                    <?php
-                        echo genererTableau($salles, $colonnes, $titre, $nbSalles, $actions, $page, $pageMax);
-                    ?>
+                    <?= genererTableau($salles, $colonnes, $titre, $nbSalles, $actions, $page, $pageMax, $filtres); ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<?php include 'modals/supprimerSalle.php'; ?>
 <?php include 'modals/ajouterSalle.php'; ?>
 
 </body>
