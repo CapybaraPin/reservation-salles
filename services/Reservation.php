@@ -246,11 +246,11 @@ class Reservation
             // Validation des heures
             $heureDebut = date('H:i:s', strtotime($dateDebut));
             $heureFin = date('H:i:s', strtotime($dateFin));
-            $heureMin = '07:00:00';
-            $heureMax = '20:00:00';
+            $heureMin = Config::get('HEURE_OUVERTURE');
+            $heureMax = Config::get('HEURE_FERMETURE');
 
             if ($heureDebut < $heureMin || $heureDebut > $heureMax || $heureFin < $heureMin || $heureFin > $heureMax) {
-                $erreurs["heures"] = "Les heures doivent être comprises entre 07:00:00 et 20:00:00.";
+                $erreurs["heures"] = "Les heures doivent être comprises entre ".$heureMin." et ".$heureMax.".";
             }
         }
 

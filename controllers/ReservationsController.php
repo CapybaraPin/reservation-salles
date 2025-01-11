@@ -158,12 +158,12 @@ class ReservationsController extends FiltresController
     {
         try {
             // Initialisation des variables communes
-            $dateDebut = $_POST['dateDebut'];
-            $dateFin = $_POST['dateFin'];
+            $dateDebut = htmlspecialchars($_POST['dateDebut']);
+            $dateFin = htmlspecialchars($_POST['dateFin']);
             $dateDebutAvecHeure = date('Y-m-d H:i:s', strtotime($dateDebut));
             $dateFinAvecHeure = date('Y-m-d H:i:s', strtotime($dateFin));
-            $salle = $_POST['salle'];
-            $activite = $_POST['typeReservation'];
+            $salle = htmlspecialchars($_POST['salle']);
+            $activite = htmlspecialchars($_POST['typeReservation']);
 
             // Déterminer les champs du formateur
             if (!empty($_POST['nomIntervenant']) || !empty($_POST['prenomIntervenant']) || !empty($_POST['telIntervenant'])) {
@@ -178,9 +178,10 @@ class ReservationsController extends FiltresController
 
             // Autres variables
             $employe = $_SESSION['userIndividuId'];
+
             $nomOrganisation = htmlspecialchars($_POST['nomOrganisation']);
             $description = !empty($_POST['sujetLocation']) ? htmlspecialchars($_POST['sujetLocation']) :
-                (!empty($_POST['sujetFormation']) ? htmlspecialchars($_POST['sujetFormation']) : htmlspecialchars($_POST['description']));
+                           (!empty($_POST['sujetFormation']) ? htmlspecialchars($_POST['sujetFormation']) : htmlspecialchars($_POST['description']));
 
             // Ajout de la réservation
             $this->reservationModel->ajouterReservation(
@@ -201,7 +202,7 @@ class ReservationsController extends FiltresController
         } catch (FieldValidationException $e) {
             $this->erreurs = $e->getErreurs();
         } catch (\Exception $e) {
-            $_SESSION['messageErreur'] = 'Une erreur est survenue, veuillez réessayer plus tard.';
+            $this->erreur = 'Une erreur est survenue, veuillez réessayer plus tard.';
         }
     }
 
