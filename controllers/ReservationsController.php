@@ -40,27 +40,6 @@ class ReservationsController extends FiltresController
     ];
 
     /**
-     * Fonction qui gère la consultation d'une salle
-     * @param $salleId int Identifiant de la salle
-     * @return void Affiche la page de consultation d'une
-     */
-    public function consultationReservation($reservationId)
-    {
-        $reservation = $this->reservationModel->getReservation($reservationId);
-        try {
-            if($reservation['IDENTIFIANT_ORGANISATION']!= NULL || !empty($reservation['IDENTIFIANT_ORGANISATION'])){
-                $organisation =$this->reservationModel->getOrganisation($reservation['IDENTIFIANT_ORGANISATION']);
-                $formateur = $this->employeModel->getindividu($organisation['idInterlocuteur']);
-            }else{
-                $formateur = $this->employeModel->getindividu($reservation['IDENTIFIANT_FORMATEUR']);
-            }
-        }catch (\Exception $e){
-            $formateur = null;
-        }
-        require __DIR__ . '/../views/consultationReservation.php';
-    }
-
-    /**
      * Fonction pour gérer les requêtes GET
      */
     public function get()
@@ -152,9 +131,30 @@ class ReservationsController extends FiltresController
     }
 
     /**
+     * Fonction qui gère la consultation d'une salle
+     * @param $salleId int Identifiant de la salle
+     * @return void Affiche la page de consultation d'une
+     */
+    public function consultationReservation($reservationId)
+    {
+        $reservation = $this->reservationModel->getReservation($reservationId);
+        try {
+            if($reservation['IDENTIFIANT_ORGANISATION']!= NULL || !empty($reservation['IDENTIFIANT_ORGANISATION'])){
+                $organisation =$this->reservationModel->getOrganisation($reservation['IDENTIFIANT_ORGANISATION']);
+                $formateur = $this->employeModel->getindividu($organisation['idInterlocuteur']);
+            }else{
+                $formateur = $this->employeModel->getindividu($reservation['IDENTIFIANT_FORMATEUR']);
+            }
+        }catch (\Exception $e){
+            $formateur = null;
+        }
+        require __DIR__ . '/../views/consultationReservation.php';
+    }
+
+    /**
      * Fonction qui gère l'ajout d'une réservation
      */
-    public function ajouterReservation()
+    protected function ajouterReservation()
     {
         try {
             // Initialisation des variables communes

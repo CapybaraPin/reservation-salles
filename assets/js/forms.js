@@ -42,58 +42,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Gestion du clic sur le bouton "Suivant"
     const boutonSuivantSalle = document.querySelector('#boutonSuivantSalle');
-    boutonSuivantSalle.addEventListener('click', (event) => {
-        const champsSalle = [
-            {
-                element: document.getElementById('nom'),
-                condition: (champ) => champ.value.trim() !== '',
-                messageErreur: 'Veuillez entrer un nom valide.'
-            },
-            {
-                element: document.getElementById('capacite'),
-                condition: (champ) => champ.value.trim() !== '' && !isNaN(champ.value) && parseInt(champ.value) > 0,
-                messageErreur: 'Veuillez entrer une capacité valide.'
+    if (boutonSuivantSalle) {
+        boutonSuivantSalle.addEventListener('click', (event) => {
+            const champsSalle = [
+                {
+                    element: document.getElementById('nom'),
+                    condition: (champ) => champ.value.trim() !== '',
+                    messageErreur: 'Veuillez entrer un nom valide.'
+                },
+                {
+                    element: document.getElementById('capacite'),
+                    condition: (champ) => champ.value.trim() !== '' && !isNaN(champ.value) && parseInt(champ.value) > 0,
+                    messageErreur: 'Veuillez entrer une capacité valide.'
+                }
+            ];
+
+            if (!validerFormulaire(champsSalle, true)) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                // Transition vers la deuxième modal après validation
+                const modalSalle = bootstrap.Modal.getInstance(document.getElementById('ajouterSalle'));
+                if (modalSalle) modalSalle.hide();
+
+                const modalOrdinateur = new bootstrap.Modal(document.getElementById('ajouterOrdinateur'));
+                modalOrdinateur.show();
             }
-        ];
-
-        if (!validerFormulaire(champsSalle, true)) {
-            event.preventDefault();
-            event.stopPropagation();
-        } else {
-            // Transition vers la deuxième modal après validation
-            const modalSalle = bootstrap.Modal.getInstance(document.getElementById('ajouterSalle'));
-            if (modalSalle) modalSalle.hide();
-
-            const modalOrdinateur = new bootstrap.Modal(document.getElementById('ajouterOrdinateur'));
-            modalOrdinateur.show();
-        }
-    });
+        });
+    }
 
     // Gestion du clic sur le bouton "Envoyer"
     const boutonEnvoyerOrdinateur = document.querySelector('#ajouterOrdinateur button[type="submit"]');
-    boutonEnvoyerOrdinateur.addEventListener('click', (event) => {
-        const champsOrdinateur = [
-            {
-                element: document.getElementById('nbOrdinateurs'),
-                condition: (champ) => champ.value.trim() !== '' && !isNaN(champ.value) && parseInt(champ.value) >= 0,
-                messageErreur: 'Veuillez entrer un nombre d’ordinateurs valide.'
-            },
-            {
-                element: document.getElementById('logiciels'),
-                condition: (champ) => true, // Aucun logiciel n'est obligatoire
-                messageErreur: '' // Pas d'erreur nécessaire
-            },
-            {
-                element: document.getElementById('typeOrdinateur'),
-                condition: (champ) => champ.value !== 'Sélectionnez un type d\'ordinateur',
-                messageErreur: 'Veuillez sélectionner un type d’ordinateur.'
-            }
-        ];
+    if (boutonEnvoyerOrdinateur) {
+        boutonEnvoyerOrdinateur.addEventListener('click', (event) => {
+            const champsOrdinateur = [
+                {
+                    element: document.getElementById('nbOrdinateurs'),
+                    condition: (champ) => champ.value.trim() !== '' && !isNaN(champ.value) && parseInt(champ.value) >= 0,
+                    messageErreur: 'Veuillez entrer un nombre d’ordinateurs valide.'
+                },
+                {
+                    element: document.getElementById('logiciels'),
+                    condition: () => true, // Aucun logiciel n'est obligatoire
+                    messageErreur: '' // Pas d'erreur nécessaire
+                },
+                {
+                    element: document.getElementById('typeOrdinateur'),
+                    condition: (champ) => champ.value !== 'Sélectionnez un type d\'ordinateur',
+                    messageErreur: 'Veuillez sélectionner un type d’ordinateur.'
+                }
+            ];
 
-        if (!validerFormulaire(champsOrdinateur, true)) {
-            event.preventDefault();
-        }
-    });
+            if (!validerFormulaire(champsOrdinateur, true)) {
+                event.preventDefault();
+            }
+        });
+    }
 });
 
 // Validation du formulaire (Bootstrap)

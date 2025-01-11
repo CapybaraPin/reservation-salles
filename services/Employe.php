@@ -3,6 +3,7 @@
 namespace services;
 
 use PDO;
+use services\exceptions\FieldValidationException;
 
 class Employe
 {
