@@ -149,7 +149,7 @@ class EmployesController extends FiltresController
 
             // Vérification du format du numéro de téléphone
             if (!preg_match('/^(?:\+33|0)[1-9](?:[\d]{2}){4}$/', $telephoneEmploye)) {
-                throw new \Exception("Le numéro de téléphone n'est pas valide. Veuillez entrer un numéro de téléphone français correct.");
+                throw new \Exception("Le numéro de téléphone n'est pas valide. Veuillez entrer un numéro de téléphone correct.");
             }
 
             // Vérification que les champs ne soient pas vides
