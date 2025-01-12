@@ -167,13 +167,13 @@ class ReservationsController extends FiltresController
 
             // Déterminer les champs du formateur
             if (!empty($_POST['nomIntervenant']) || !empty($_POST['prenomIntervenant']) || !empty($_POST['telIntervenant'])) {
-                $nomFormateur = htmlspecialchars($_POST['nomIntervenant']);
-                $prenomFormateur = htmlspecialchars($_POST['prenomIntervenant']);
-                $telFormateur = htmlspecialchars($_POST['telIntervenant']);
+                $nomIntervenant = htmlspecialchars($_POST['nomIntervenant']);
+                $prenomIntervenant = htmlspecialchars($_POST['prenomIntervenant']);
+                $telIntervenant = htmlspecialchars($_POST['telIntervenant']);
             } else {
-                $nomFormateur = htmlspecialchars($_POST['nomIndividu']);
-                $prenomFormateur = htmlspecialchars($_POST['prenomIndividu']);
-                $telFormateur = htmlspecialchars($_POST['telIndividu']);
+                $nomIntervenant = htmlspecialchars($_POST['nomIndividu']);
+                $prenomIntervenant = htmlspecialchars($_POST['prenomIndividu']);
+                $telIntervenant = htmlspecialchars($_POST['telIndividu']);
             }
 
             // Autres variables
@@ -189,9 +189,9 @@ class ReservationsController extends FiltresController
                 $dateFinAvecHeure,
                 $salle,
                 $activite,
-                $nomFormateur,
-                $prenomFormateur,
-                $telFormateur,
+                $nomIntervenant,
+                $prenomIntervenant,
+                $telIntervenant,
                 $employe,
                 $nomOrganisation,
                 $description

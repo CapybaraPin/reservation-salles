@@ -214,122 +214,68 @@ class Reservation
      * @param $dateFin date date de fin de réservation
      * @param $salle int identifiant de la salle concernée par la réservation
      * @param $activite int identifiant de l'activité de la réservation
-     * @param $nomFormateur string nom du formateur s'il y en a un
-     * @param $prenomnomFormateur string prenom du formateur s'il y en a un
-     * @param $telFormateur int telephone du formateur s'il y en a un
+     * @param $nomIntervenant string nom du formateur s'il y en a un
+     * @param $prenomIntervenant string prenom du formateur s'il y en a un
+     * @param $telIntervenant int telephone du formateur s'il y en a un
      * @param $employe int identifiant de l'employé qui a effectué cette réservation
      * @param $nomOrganisation string nom de l'organisation s'il y en a un
      * @param $description string description de l'activité effectuée lors de la réservation
      */
-    public function ajouterReservation($dateDebut, $dateFin, $salle, $activite, $nomFormateur, $prenomFormateur, $telFormateur, $employe, $nomOrganisation, $description)
+    public function ajouterReservation($dateDebut, $dateFin, $salle, $activite, $nomIntervenant, $prenomIntervenant, $telIntervenant, $employe, $nomOrganisation, $description)
     {
         $pdo = Database::getPDO();
 
-        // Validation des paramètres
         $erreurs = [];
 
         // Validation des dates
-        if (empty($dateDebut) || empty($dateFin)) {
-            $erreurs["dates"] = "Les dates de début et de fin sont requises.";
-        } elseif (strtotime($dateDebut) >= strtotime($dateFin)) {
-            $erreurs["dates"] = "La date de début doit être antérieure à la date de fin.";
-        } elseif (strtotime($dateDebut) < strtotime(date('Y-m-d'))) {
-            $erreurs["dates"] = "La date de début ne peut pas être inférieure à aujourd'hui.";
-        } else {
-            // Validation pour s'assurer que les dates sont sur le même jour
-            $jourDebut = date('Y-m-d', strtotime($dateDebut));
-            $jourFin = date('Y-m-d', strtotime($dateFin));
-            if ($jourDebut !== $jourFin) {
-                $erreurs["dates"] = "Les réservations doivent être sur une seule journée.";
-            }
-
-            // Validation des heures
-            $heureDebut = date('H:i:s', strtotime($dateDebut));
-            $heureFin = date('H:i:s', strtotime($dateFin));
-            $heureMin = Config::get('HEURE_OUVERTURE');
-            $heureMax = Config::get('HEURE_FERMETURE');
-
-            if ($heureDebut < $heureMin || $heureDebut > $heureMax || $heureFin < $heureMin || $heureFin > $heureMax) {
-                $erreurs["heures"] = "Les heures doivent être comprises entre ".$heureMin." et ".$heureMax.".";
-            }
+        $timestampDateDebut = strtotime($dateDebut);
+        $timestampDateFin = strtotime($dateFin);
+        $datesValides = $this->validerDates($timestampDateDebut, $timestampDateFin);
+        if (!$datesValides) {
+            array_merge($erreurs, $datesValides);
         }
 
         // Validation des autres champs obligatoires
         if (empty($salle) || !is_numeric($salle) || $salle == 0) {
-            $erreurs["salle"] = "Un identifiant de salle valide est requis.";
+            $erreurs["Salle"] = "Veillez choisir une salle.";
         }
 
         if (empty($activite) || !is_numeric($activite) || $activite == 0) {
-            $erreurs["activite"] = "Un identifiant d'activité valide est requis.";
+            $erreurs["Activite"] = "Un identifiant d'activité valide est requis.";
         }
 
         if (empty($employe) || !is_numeric($employe)) {
-            $erreurs["employe"] = "Un identifiant d'employé valide est requis.";
+            $erreurs["Employe"] = "Un identifiant d'employé valide est requis.";
         }
 
         // Gestion de l'organisation ou du formateur
-        $organisation = null;
+        $organisationId = null;
         $formateur = null;
 
+        // si ajout d'une organisation sinon ajout d'un formateur
         if (!empty(trim($nomOrganisation))) {
-            // Gestion de l'organisation
-            $reqVerifOrganisation = $pdo->prepare(
-                "SELECT identifiant FROM organisme WHERE nomOrganisme = :nom"
-            );
-            $reqVerifOrganisation->execute(['nom' => $nomOrganisation]);
-            $organisationExiste = $reqVerifOrganisation->fetchColumn();
-
-            if (!$organisationExiste) {
+            $organisationID = Organisme::getIdOrganisation($nomOrganisation);
+            if (!$organisationID) {
                 // Gestion de l'interlocuteur (individu) pour l'organisation
                 $interlocuteur = null;
-                if (!empty(trim($nomFormateur)) && !empty(trim($prenomFormateur)) && !empty(trim($telFormateur))) {
-                    $reqVerifIndividu = $pdo->prepare(
-                        "SELECT identifiant FROM individu WHERE nom = :nom AND prenom = :prenom AND telephone = :telephone"
-                    );
-                    $reqVerifIndividu->execute([
-                        'nom' => trim($nomFormateur),
-                        'prenom' => trim($prenomFormateur),
-                        'telephone' => trim($telFormateur)
-                    ]);
-                    $interlocuteurExiste = $reqVerifIndividu->fetchColumn();
-
-                    if (!$interlocuteurExiste) {
-                        // Insérer un nouvel individu
-                        $reqInsertIndividu = $pdo->prepare(
-                            "INSERT INTO individu (nom, prenom, telephone) VALUES (:nom, :prenom, :telephone)"
-                        );
-                        $reqInsertIndividu->execute([
-                            'nom' => trim($nomFormateur),
-                            'prenom' => trim($prenomFormateur),
-                            'telephone' => trim($telFormateur)
-                        ]);
-                        $interlocuteur = $pdo->lastInsertId();
-                    } else {
-                        $interlocuteur = $interlocuteurExiste;
+                if (!empty(trim($nomIntervenant)) && !empty(trim($prenomIntervenant)) && !empty(trim($telIntervenant))) {
+                    $interlocuteurId = Organisme::getIdInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
+                    if (!$interlocuteurId) {
+                        $interlocuteurId = Organisme::ajouterInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
                     }
                 }
 
-                // Insérer un nouvel organisme
-                $reqInsertOrganisation = $pdo->prepare(
-                    "INSERT INTO organisme (nomOrganisme, idInterlocuteur) VALUES (:nom, :interlocuteur)"
-                );
-                $reqInsertOrganisation->execute([
-                    'nom' => $nomOrganisation,
-                    'interlocuteur' => $interlocuteur
-                ]);
-                $organisation = $pdo->lastInsertId();
-            } else {
-                $organisation = $organisationExiste;
+                $organisationId = Organisme::ajouterOrganisation($nomOrganisation, $interlocuteurId);
             }
-        } elseif (!empty(trim($nomFormateur)) && !empty(trim($prenomFormateur)) && !empty(trim($telFormateur))) {
+        } elseif (!empty(trim($nomIntervenant)) && !empty(trim($prenomIntervenant)) && !empty(trim($telIntervenant))) {
             // Gestion du formateur
             $reqVerifIndividu = $pdo->prepare(
                 "SELECT identifiant FROM individu WHERE nom = :nom AND prenom = :prenom AND telephone = :telephone"
             );
             $reqVerifIndividu->execute([
-                'nom' => trim($nomFormateur),
-                'prenom' => trim($prenomFormateur),
-                'telephone' => trim($telFormateur)
+                'nom' => trim($nomIntervenant),
+                'prenom' => trim($prenomIntervenant),
+                'telephone' => trim($telIntervenant)
             ]);
             $formateurExiste = $reqVerifIndividu->fetchColumn();
 
@@ -339,9 +285,9 @@ class Reservation
                     "INSERT INTO individu (nom, prenom, telephone) VALUES (:nom, :prenom, :telephone)"
                 );
                 $reqInsertIndividu->execute([
-                    'nom' => trim($nomFormateur),
-                    'prenom' => trim($prenomFormateur),
-                    'telephone' => trim($telFormateur)
+                    'nom' => trim($nomIntervenant),
+                    'prenom' => trim($prenomIntervenant),
+                    'telephone' => trim($telIntervenant)
                 ]);
                 $formateur = $pdo->lastInsertId();
             } else {
@@ -380,9 +326,39 @@ class Reservation
         $req->bindValue(':activite', $activite, PDO::PARAM_INT);
         $req->bindValue(':formateur', $formateur, $formateur === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
         $req->bindValue(':employe', $employe, PDO::PARAM_INT);
-        $req->bindValue(':organisation', $organisation, $organisation === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $req->bindValue(':organisation', $organisationId, $organisationId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
         $req->bindValue(':description', $description);
         $req->execute();
     }
 
+    /**
+     * Permet de valider les dates de début et de fin d'une réservation
+     * @param $timestampDateDebut int, Le timestamp de la date de début
+     * @param $timestampDateFin int, Le timestamp de la date de fin
+     * @return bool|array, Retourne true si les dates sont valides, sinon un tableau d'erreurs
+     */
+    private function validerDates($timestampDateDebut, $timestampDateFin)
+    {
+        $heureMin = Config::get('HEURE_OUVERTURE');
+        $heureMax = Config::get('HEURE_FERMETURE');
+        $jourDebut = date('Y-m-d', $timestampDateDebut);
+        $jourFin = date('Y-m-d', $timestampDateFin);
+        $heureDebut = date('H:i:s', $timestampDateDebut);
+        $heureFin = date('H:i:s', $timestampDateFin);
+
+        $erreur = [];
+        if (empty($dateDebut) || empty($dateFin)) {
+            $erreur["Dates"] = "Les dates de début et de fin sont requises.";
+        } elseif ($timestampDateDebut >= $timestampDateFin) {
+            $erreur["Dates"] = "La date de début doit être antérieure à la date de fin.";
+        } elseif ($timestampDateDebut < strtotime(date('Y-m-d'))) {
+            $erreur["Dates"] = "La date de début ne peut pas être inférieure à aujourd'hui.";
+        } elseif ($jourDebut !== $jourFin) {
+            $erreur["Dates"] = "Les réservations doivent être sur une seule journée.";
+        } elseif ($heureDebut < $heureMin || $heureDebut > $heureMax || $heureFin < $heureMin || $heureFin > $heureMax) {
+            $erreur["Horaire"] = "Les heures doivent être comprises entre " . $heureMin . " et " . $heureMax . ".";
+        }
+
+        return $erreur ? true : $erreur;
+    }
 }
