@@ -137,13 +137,10 @@ class InformationSalleController extends FiltresController {
                 // Modifier les informations du groupe d'ordinateurs
                 $this->ordinateurModel->modifierGroupeOrdinateur($salle['ID_ORDINATEUR'], $nbOrdinateurs, $imprimante, $typeOrdinateur);
 
-                $success = "Modification de la salle avec succès.";
+                $_SESSION['messageValidation'] = "Modification de la salle avec succès.";
 
-                $salle = $this->salleModel->getSalle($salleId);
-                $ordinateurs = $this->ordinateurModel->getOrdinateursSalle($salleId);
-                $logicielsInstalles = $this->ordinateurModel->getLogicielsOrdinateur($salle['ID_ORDINATEUR']);
-                $logiciels = $this->ordinateurModel->getLogiciels();
-                $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
+                header("Location: " . $_SERVER['REQUEST_URI']);
+                exit;
             } catch (\Exception $e) {
                 $this->erreurs = $e->getMessage();
             }
