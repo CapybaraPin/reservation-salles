@@ -57,6 +57,9 @@ class AccueilController extends ReservationsController
 
         }
 
+        $activites= $this->activiteModel->getActivites();
+        $salles = $this->salleModel->getSalles();
+
         $erreur = $this->erreur;
         $success = $this->success;
 
