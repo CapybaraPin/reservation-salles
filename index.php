@@ -144,6 +144,11 @@ $router->get('/reservations/{reservationId}/view', function($reservationId) {
     $reservationsController->consultationReservation($reservationId);
 });
 
+// Modification d'une réservation
+$router->get('/reservations/{reservationId}/edit', function($reservationId) {
+    $reservationsController = new ReservationsController();
+    $reservationsController->modificationReservation($reservationId);
+});
 
 // Définition des routes pour les employés
 $router->get('/employes', [new EmployesController(), 'get']);
