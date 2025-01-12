@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="container">
-                    <form method="POST" action="" class="needs-validation" novalidate>
+                    <form method="POST" action="" class="needs-validation" novalidate id="modifierSalleForm">
                         <!-- Section de bienvenue et actions -->
                         <div class="row mt-5 mb-4">
                             <div class="col-12 col-lg-8">
@@ -28,7 +28,8 @@
                                     <i class="fa-solid fa-info-circle"></i> Informations
                                 </a>
 
-                                <button type="submit" class="btn btn-primary" name="modifierSalleOrdinateurs">
+                                <button <?php if ($nbReservation > 0) { ?> type="button"<?php } else { ?> type="submit" <?php } ?> class="btn btn-primary" name="modifierSalleOrdinateurs"
+                                                 <?php if ($nbReservation > 0) { ?>data-bs-toggle="modal" data-bs-target="#modal_modifier_salle"<?php } ?>>
                                     <i class="fa-solid fa-save"></i> Sauvegarder
                                 </button>
                             </div>
@@ -159,7 +160,7 @@
                                                 </div>
                                             </div>
 
-                                        </form>
+
 
                                             <hr>
 
@@ -180,7 +181,7 @@
                                                     <!-- Ajouter un logiciel -->
                                                     <div class="">
                                                         <button type="button" class="btn btn-sm btn-danger w-100" data-bs-toggle="modal" data-bs-target="#supprimerlogiciel">
-                                                            <i class="fa-solid fa-plus"></i> Supprimer un logiciel
+                                                            <i class="fa-solid fa-trash-can"></i> Supprimer un logiciel
                                                         </button>
                                                     </div>
                                                 </div>
@@ -237,6 +238,7 @@
                                 </div>
                             </div>
                         </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -244,6 +246,7 @@
 </div>
 
 <?php include 'modals/ajouterLogiciel.php'; ?>
+<?php include 'modals/confirmerModificationSalle.php'?>
 <?php include 'elements/scripts.php'; ?>
 </body>
 </html>

@@ -138,6 +138,16 @@ class ReservationsController extends FiltresController
     public function consultationReservation($reservationId)
     {
         $reservation = $this->reservationModel->getReservation($reservationId);
+        $dateDebut = date_create($reservation["DATE_DEBUT"]);
+        $dateFin = date_create($reservation["DATE_FIN"]);
+        $date = date_format($dateDebut, "d/m/Y");
+        $formatDate = date_format($dateDebut, "l, j F Y");
+        $heureDebut = date_format($dateDebut, "H\hi");
+        $heureFin = date_format($dateFin, "H\hi");
+        $search = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        $replace = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+        $formatDate = str_replace($search, $replace, $formatDate);
         try {
             if($reservation['IDENTIFIANT_ORGANISATION']!= NULL || !empty($reservation['IDENTIFIANT_ORGANISATION'])){
                 $organisation =$this->reservationModel->getOrganisation($reservation['IDENTIFIANT_ORGANISATION']);

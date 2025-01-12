@@ -17,7 +17,7 @@
                     <div class="row mt-5 mb-4">
                         <div class="col-12 col-lg-8">
                             <h2 class="">Consultation de la réservation</h2>
-                            <p class="">Visualisez les informations de la réservation <?= $reservation["IDENTIFIANT_RESERVATION"] ?> du <b><?= $reservation["DATE_DEBUT"] ?></b> au <b><?= $reservation["DATE_FIN"] ?></b></p>
+                            <p class="">Visualisez les informations de la réservation du <b><?= $formatDate ?></b> de <b><?= $heureDebut ?></b> à <b><?= $heureFin ?></b>.</p>
                         </div>
 
                         <!-- Boutons pour supprimer et modifier -->
@@ -46,12 +46,8 @@
                                             <td><?= $reservation["IDENTIFIANT_RESERVATION"] ?></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Date de début </th>
-                                            <td><?= $reservation["DATE_DEBUT"] ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">Date de fin </th>
-                                            <td><?= $reservation["DATE_FIN"] ?></td>
+                                            <th scope="row">Date </th>
+                                            <td><?= $date ?> de <?= $heureDebut ?> à <?= $heureFin ?></td>
                                         </tr>
                                         <tr>
                                         <tr>
@@ -139,7 +135,7 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header bg-secondary text-white">
-                                    <h3 class="card-title">Informations de l'organisme et l'interlocuteur </h3>
+                                    <h3 class="card-title">Informations de l'organisme et de l'interlocuteur </h3>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">
@@ -149,23 +145,23 @@
                                             <td><?= $organisation["identifiant"] ?></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row" width="300px"> Identifiant organisme</th>
+                                            <th scope="row" width="300px"> Nom de l'organisme</th>
                                             <td><?= $organisation["nomOrganisme"] ?></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row" width="300px">Identifiant</th>
+                                            <th scope="row" width="300px">Identifiant de l'interlocuteur</th>
                                             <td><?= $organisation["idInterlocuteur"] ?></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Nom</th>
+                                            <th scope="row">Nom de l'interlocuteur</th>
                                             <td><?= $formateur["nom"] ?></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Prenom</th>
+                                            <th scope="row">Prenom de l'interlocuteur</th>
                                             <td><?= $formateur["prenom"] ?></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Numéro de téléphone</th>
+                                            <th scope="row">Numéro de téléphone de l'interlocuteur</th>
                                             <td><?= $formateur["telephone"] ?></td>
                                         </tr>
                                         </tbody>

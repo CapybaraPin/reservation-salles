@@ -55,10 +55,10 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
-                            <h1 class="modal-title fs-5 mt-2 titre text-start" id="ModalAjouterSalle">Supression d'un logiciel</h1>
+                            <h1 class="modal-title fs-5 mt-2 titre text-start" id="ModalAjouterSalle">Supression d'un logiciel inutilisé</h1>
                         </div>
                         <div class="row">
-                            <p class="mt-3">Pour supprimer un logiciel, merci de remplir les champs ci-dessous.</p>
+                            <p class="mt-3">Pour supprimer un logiciel inutilisé de la liste des logiciels disponibles, veuillez remplir les champs ci-dessous.</p>
                         </div>
 
                         <!-- Sélectionner un logiciel -->
@@ -66,12 +66,16 @@
                             <label for="selectLogiciel">Choisir un logiciel :</label>
 
                             <select id="selectLogiciel" name="logicielId" class="form-select" required>
-                                <option value="" disabled selected>Sélectionnez un logiciel</option>
+                                <?php if(count($SuprLogiciels) > 0) { ?>
+                                <option value="" disabled selected>Sélectionnez un logiciel à supprimer</option>
                                 <?php foreach ($SuprLogiciels as $logiciel) : ?>
                                     <option value="<?= $logiciel['identifiant']; ?>">
                                         <?= $logiciel['nom']; ?>
                                     </option>
                                 <?php endforeach; ?>
+                                <?php } else { ?>
+                                <option value="" disabled selected>Aucun logiciel à supprimer</option>
+                                <?php } ?>
                             </select>
                             <div class="invalid-feedback">
                                 Veuillez sélectionner un logiciel.
@@ -83,7 +87,7 @@
                 </div>
                 <div class="modal-footer border-top-0">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" name="suprLogiciel" class="btn btn-danger">Supprimer</button>
+                    <button type="submit" name="suprLogiciel" class="btn btn-danger <?php if(count($SuprLogiciels) == 0) { ?> disabled <?php } ?>">Supprimer</button>
                 </div>
             </div>
         </div>

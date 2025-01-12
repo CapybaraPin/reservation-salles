@@ -369,5 +369,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // # Fin Gestion des filtres
 
+//Confirmation modification d'une salle
+const btnConfirmerModificationSalle = document.getElementById('btnConfirmerModificationSalle');
+const formModificationSalle = document.getElementById('modifierSalleForm');
 
+
+if(btnConfirmerModificationSalle != null && formModificationSalle != null) {
+    btnConfirmerModificationSalle.addEventListener('click', function () {
+        formModificationSalle.submit();
+    });
+}
 
