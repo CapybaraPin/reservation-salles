@@ -252,20 +252,21 @@ class Reservation
         $organisationId = null;
         $formateur = null;
 
+        $organisme = new Organisme();
         // si ajout d'une organisation sinon ajout d'un formateur
         if (!empty(trim($nomOrganisation))) {
-            $organisationID = Organisme::getIdOrganisation($nomOrganisation);
+            $organisationID = $organisme->getIdOrganisation($nomOrganisation);
             if (!$organisationID) {
                 // Gestion de l'interlocuteur (individu) pour l'organisation
                 $interlocuteur = null;
                 if (!empty(trim($nomIntervenant)) && !empty(trim($prenomIntervenant)) && !empty(trim($telIntervenant))) {
-                    $interlocuteurId = Organisme::getIdInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
+                    $interlocuteurId = $organisme->getIdInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
                     if (!$interlocuteurId) {
-                        $interlocuteurId = Organisme::ajouterInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
+                        $interlocuteurId = $organisme->ajouterInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
                     }
                 }
 
-                $organisationId = Organisme::ajouterOrganisation($nomOrganisation, $interlocuteurId);
+                $organisationId = $organisme->ajouterOrganisation($nomOrganisation, $interlocuteurId);
             }
         } elseif (!empty(trim($nomIntervenant)) && !empty(trim($prenomIntervenant)) && !empty(trim($telIntervenant))) {
             // Gestion du formateur

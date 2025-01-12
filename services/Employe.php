@@ -39,7 +39,6 @@ class Employe
             throw new \Exception($e->getMessage());
         }
     }
-
     /**
      * Permet de supprimer un employé de la base de données
      * @param $idEmploye int l'identifiant de l'employé
@@ -226,9 +225,9 @@ class Employe
     }
   
     /**
-     *Permet de récupérer les information d'un individu
-     * @param $idIndividu int identifiant de l'individu rechercher
-     * @return mixed, Retourne l'individu obtenue
+     * Permet de récupérer les informations d'un individu
+     * @param $idIndividu int identifiant de l'individu recherché
+     * @return mixed, Retourne l'individu obtenu
      */
     public function getindividu($idIndividu){
         $pdo = Database::getPDO();
