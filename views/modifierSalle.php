@@ -180,7 +180,7 @@
                                                     <!-- Ajouter un logiciel -->
                                                     <div class="">
                                                         <button type="button" class="btn btn-sm btn-danger w-100" data-bs-toggle="modal" data-bs-target="#supprimerlogiciel">
-                                                            <i class="fa-solid fa-plus"></i> Supprimer un logiciel
+                                                            <i class="fa-solid fa-trash-can"></i> Supprimer un logiciel
                                                         </button>
                                                     </div>
                                                 </div>

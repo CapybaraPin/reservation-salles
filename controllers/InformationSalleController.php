@@ -27,7 +27,6 @@ class InformationSalleController extends FiltresController {
                 $this->consultationSalle($salleID);
                 break;
             case 'edit':
-                $this->ajouterLogiciel($salleID);
                 $this->modifierSalle($salleID);
                 break;
         }
@@ -108,6 +107,7 @@ class InformationSalleController extends FiltresController {
             $logiciels = $this->ordinateurModel->getLogiciels();
             $SuprLogiciels = $this->ordinateurModel->getLogicielsNonUtilise();
             $typesOrdinateur = $this->ordinateurModel->getTypesOrdinateur();
+            $nbReservation = $this->salleModel->getNbReservation($salleId);
         } catch (\Exception $e) {
             $ordinateurs = null;
             $logiciels = null;
@@ -221,9 +221,10 @@ class InformationSalleController extends FiltresController {
         }
     }
 
-    private function supprimerLogiciel() {
+    private function supprimerLogiciel()
+    {
 
-        if(isset($_POST['suprLogiciel']) && isset($_POST["logicielId"])) {
+        if (isset($_POST['suprLogiciel']) && isset($_POST["logicielId"])) {
             $logicielId = htmlspecialchars($_POST["logicielId"]);
 
             try {

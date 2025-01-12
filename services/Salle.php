@@ -33,6 +33,7 @@ class Salle
             throw new \Exception("Salle non trouver");
         }
     }
+
     /**
      * Permet de récuperer la liste des salles dans la base de données.
      *
@@ -68,6 +69,15 @@ class Salle
         $req->execute();
 
         return $req->fetchAll();
+    }
+
+    public function getNbReservation($salleID) {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("SELECT COUNT(*) FROM reservation WHERE idSalle = ?");
+        $req->execute(array($salleID));
+
+        return $req->fetchColumn();
     }
 
     /**
