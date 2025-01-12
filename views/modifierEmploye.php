@@ -32,13 +32,15 @@
                             </div>
                         </div>
 
+
+
                         <div class="row">
                             <?php if (isset($erreurs)) { ?>
                                 <div class="alert alert-danger mt-3" role="alert">
                                     <?= $erreurs ?>
                                 </div>
-                            <?php }
-                            if (isset($success)) { ?>
+                            <?php } ?>
+                            <?php if (isset($success)) { ?>
                                 <div class="alert alert-success mt-3" role="alert">
                                     <?= $success ?>
                                 </div>
@@ -95,20 +97,42 @@
                                                         l'employé</label>
                                                     <input class="form-control" id="telephone" name="telephone" type="text"
                                                            placeholder="Entrez le numéro de téléphone de l'employé"
-                                                           value="<?= htmlspecialchars($employe['TELEPHONE_EMPLOYE']) ?>"
-                                                           required>
+                                                           value="<?= htmlspecialchars($employe['TELEPHONE_EMPLOYE']) ?>">
                                                     <div class="invalid-feedback">
                                                         Veuillez entrer un numéro de téléphone pour l'employé.
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <?php if($hasAccount) { ?>
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header bg-secondary text-white">
+                                        <h3 class="card-title">Identifiant de l'employé</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="form-group mb-3">
+                                                    <label class="label-form" for="identifiant">Identifiant</label>
+                                                    <div class="input-group">
+                                                        <input class="form-control" id="identifiant" name="identifiant" type="text"
+                                                               placeholder="Entrez l'identifiant de l'employé" value="<?= $id['identifiant'] ?>">
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <!-- Mot de passe de l'employé -->
                                             <div class="row">
                                                 <div class="form-group mb-3">
                                                     <label class="label-form" for="nom">Mot de passe</label>
                                                     <div class="input-group">
-                                                        <input class="form-control" id="motdepasse" name="motdepasse" type="password" placeholder="Entrez le mot de passe">
+                                                        <input class="form-control" id="motdepasse" name="motdepasse" type="password" placeholder="Entrez le nouveau mot de passe">
                                                         <button type="button" class="btn btn-outline-secondary" id="togglePassword" aria-label="Afficher ou masquer le mot de passe">
                                                             <i class="fa-solid fa-eye" id="passwordIcon"></i>
                                                         </button>
@@ -120,6 +144,7 @@
                                 </div>
                             </div>
                         </div>
+                        <?php } ?>
                     </form>
                 </div>
             </div>

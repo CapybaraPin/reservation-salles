@@ -172,8 +172,10 @@ class Employe
         if (empty($prenom)) {
             $erreurs['prenom'] = "Le champ prénom est requis.";
         }
-        if (!preg_match('/^(?:\+33|0)[1-9](?:[\d]{2}){4}$/', $telephone)) {
-            $erreurs['telephone'] = "Le numéro de téléphone est invalide.";
+        if($telephone != null) {
+            if (!preg_match('/^\d{4}$/', $telephone)) {
+                $erreurs['telephone'] = "Le numéro de téléphone est invalide.";
+            }
         }
 
         if (!empty($erreurs)) {
@@ -194,6 +196,24 @@ class Employe
             'telephone' => $telephone,
             'idEmploye' => $idEmploye
         ]);
+    }
+
+    public function getID($idEmploye) {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("SELECT identifiant FROM utilisateur WHERE individu = ?");
+        $req->execute(array($idEmploye));
+
+        return $req->fetch();
+    }
+
+    public function modifierIdentifiant($idEmploye, $newid) {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("UPDATE utilisateur SET identifiant = ? WHERE individu = ?");
+        $req->execute(array($newid, $idEmploye));
+
+        return $req;
     }
 
     public function modifierMotDePasse($idEmploye, $pass) {

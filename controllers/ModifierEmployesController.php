@@ -38,6 +38,8 @@ class ModifierEmployesController extends FiltresController {
      */
     public function post($employeID = null, $action = null) {
 
+        $this->deconnexion();
+
         $this->get($employeID, $action);
     }
 
@@ -46,18 +48,31 @@ class ModifierEmployesController extends FiltresController {
      * @param int $employeId
      */
     public function modifierEmploye($employeId) {
+        $hasAccount = true;
         try {
             $employe = $this->employeModel->getEmploye($employeId);
+            if($employe['TELEPHONE_EMPLOYE'] == null) {
+                $employe['TELEPHONE_EMPLOYE'] = "";
+            }
+            $id = $this->employeModel->getID($employeId);
+            if(!$id) {
+                $hasAccount = false;
+            }
         } catch (\Exception $e) {
             header('HTTP/1.1 404 Not Found');
             require_once __DIR__ . "/../views/errors/404.php";
             return;
         }
 
-        if (isset($_POST['nom'], $_POST['prenom'], $_POST['telephone'])) {
+        if (isset($_POST['nom'], $_POST['prenom'], $_POST['telephone'], $_POST['identifiant'])) {
             $nom = htmlspecialchars($_POST['nom']);
             $prenom = htmlspecialchars($_POST['prenom']);
-            $telephone = htmlspecialchars($_POST['telephone']);
+            if($_POST['telephone'] !== null) {
+                $telephone = htmlspecialchars($_POST['telephone']);
+            } else {
+                $telephone = "";
+            }
+            $id = htmlspecialchars($_POST['identifiant']);
 
             if(isset($_POST['motdepasse'])) {
                 $motDePasseEmploye = password_hash($_POST["motdepasse"], PASSWORD_DEFAULT);
@@ -66,6 +81,7 @@ class ModifierEmployesController extends FiltresController {
 
             try {
                 $this->employeModel->modifierEmploye($employeId, $nom, $prenom, $telephone);
+                $this->employeModel->modifierIdentifiant($employeId ,$id);
                 $_SESSION['messageValidation'] = "Les informations de l'employé ont été mises à jour avec succès.";
                 header('Location: /employes');
                 exit;
@@ -84,6 +100,7 @@ class ModifierEmployesController extends FiltresController {
         }
 
         $erreurs = $this->erreurs;
+
         $success = $this->success;
 
         require __DIR__ . '/../views/modifierEmploye.php';
