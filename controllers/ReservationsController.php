@@ -78,7 +78,8 @@ class ReservationsController extends FiltresController
             //data-bs-toggle="modal" data-bs-target="#ajouterEmployee"
             if ($_SESSION['userIndividuId'] == $reservation['ID_EMPLOYE']) {
                 $actions[$reservation['IDENTIFIANT_RESERVATION']] += [
-                    'modifier' => ['attributs' => ['class' => 'btn', 'title' => 'Modifier'], 'icone' => 'fa-solid fa-pen'],
+                    'modifier' => ['attributs' => ['href' => '/reservations/'.$reservation["IDENTIFIANT_RESERVATION"].'/edit', 'class' => 'btn btn-nav', 'title' => 'Modifier'],
+                        'icone' => 'fa-solid fa-pen'],
                     'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerReservation', 'href' => '#'.$reservation['ID']], 'icone' => 'fa-solid fa-trash-can'],
                 ];
             }
@@ -244,5 +245,34 @@ class ReservationsController extends FiltresController
             }
 
         }
+    }
+
+    /**
+     * Fonction qui gère la modification d'une réservation
+     * @param $reservationId int Identifiant de la réservation
+     */
+    public function modificationReservation($reservationId)
+    {
+        $reservation = $this->reservationModel->getReservation($reservationId);
+        $activites= $this->activiteModel->getActivites();
+        $salles = $this->salleModel->getSalles();
+
+        $dateDebut = date("Y-m-d", strtotime($reservation["DATE_DEBUT"]));
+        $dateFin = date("Y-m-d", strtotime($reservation["DATE_FIN"]));
+        $heureDebut = date('H:i', strtotime($dateDebut));
+        $heureFin = date('H:i', strtotime($dateFin));
+
+        try {
+            if($reservation['IDENTIFIANT_ORGANISATION']!= NULL || !empty($reservation['IDENTIFIANT_ORGANISATION'])){
+                $organisation =$this->reservationModel->getOrganisation($reservation['IDENTIFIANT_ORGANISATION']);
+                $formateur = $this->employeModel->getindividu($organisation['idInterlocuteur']);
+            }else{
+                $formateur = $this->employeModel->getindividu($reservation['IDENTIFIANT_FORMATEUR']);
+            }
+        }catch (\Exception $e){
+            $formateur = null;
+        }
+
+        require __DIR__ . '/../views/modifierReservation.php';
     }
 }

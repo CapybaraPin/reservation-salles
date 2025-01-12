@@ -52,6 +52,8 @@ class Reservation
                     reservation.description AS 'DESCRIPTION',
                     reservation.idOrganisation AS 'IDENTIFIANT_ORGANISATION',
                     reservation.idFormateur AS 'IDENTIFIANT_FORMATEUR',
+                    reservation.idActivite AS 'IDENTIFIANT_ACTIVITE',
+                    reservation.idSalle AS 'IDENTIFIANT_SALLE',
                     salle.nom AS 'NOM_SALLE',
                     activite.type AS 'TYPE_ACTIVITE',
                     individu.prenom AS 'PRENOM_EMPLOYE',
