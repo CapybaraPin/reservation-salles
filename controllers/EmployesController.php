@@ -49,7 +49,6 @@ class EmployesController extends FiltresController
         $nbLignesPage = Config::get('NB_LIGNES');
         $employes = $this->employeModel->getEmployes(($page - 1) * $nbLignesPage, $filtresRequete);
 
-
         // ajout des employés ayant une réservation
         $reservations = [];
         foreach ($employes as $employe) {

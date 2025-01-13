@@ -69,7 +69,9 @@ class Individu
     {
         $pdo = Database::getPDO();
 
-        $sql = "SELECT COUNT(*) FROM individu";
+        $sql = "SELECT COUNT(*) FROM individu
+                JOIN utilisateur
+                ON individu.identifiant = utilisateur.individu";
         $sql .= SQLHelper::construireConditionsFiltres($filtre);
 
         $req = $pdo->prepare($sql);
@@ -89,14 +91,17 @@ class Individu
 
         try {
             $sql = "SELECT 
-                    identifiant AS 'IDENTIFIANT_EMPLOYE', 
+                    individu.identifiant AS 'IDENTIFIANT_EMPLOYE', 
                     nom AS 'NOM_EMPLOYE', 
                     prenom AS 'PRENOM_EMPLOYE', 
                     telephone AS 'TELEPHONE_EMPLOYE' 
-                FROM individu ";
+                FROM individu
+                JOIN utilisateur
+                ON individu.identifiant = utilisateur.individu";
+
 
             $sql .= SQLHelper::construireConditionsFiltres($filtre);
-            $sql .= " ORDER BY identifiant ASC LIMIT :limit OFFSET :offset";
+            $sql .= " ORDER BY individu.identifiant ASC LIMIT :limit OFFSET :offset";
 
             $req = $pdo->prepare($sql);
             $req->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -137,7 +142,11 @@ class Individu
     public function getEmploye($idEmploye)
     {
         $pdo = Database::getPDO();
-        $req = $pdo->prepare("SELECT identifiant AS 'ID_EMPLOYE', nom AS 'NOM_EMPLOYE', prenom AS 'PRENOM_EMPLOYE', telephone AS 'TELEPHONE_EMPLOYE' FROM individu WHERE identifiant = ?");
+        $req = $pdo->prepare("SELECT identifiant AS 'ID_EMPLOYE', nom AS 'NOM_EMPLOYE', prenom AS 'PRENOM_EMPLOYE', telephone AS 'TELEPHONE_EMPLOYE'
+            FROM individu 
+            JOIN utilisateur
+            ON individu.identifiant = utilisateur.individu
+            WHERE identifiant = ?");
         $req->execute([$idEmploye]);
 
         if($req->rowCount() < 1) {
