@@ -115,23 +115,33 @@
                                 <p class="mt-3">Vous ajoutez une réservation à votre nom, suivez le formulaire d’ajout de réservation.</p>
                             </div>
                             <div class="row">
-                                <!-- Champ Nom organisation -->
                                 <div class="form-group mb-1">
+                                    <label class="label-form" for="organisme">Organisme</label>
+                                    <select class="form-select" id="organisme" name="organisme">
+                                        <option value="0">Sélectionner un organisme</option>
+                                        <option value="-1">Créer un organisme</option>
+                                        <?php foreach ($organismes as $organisme) { ?>
+                                            <option value="<?= $organisme['IDENTIFIANT_ORGANISME'] ?>"><?= $organisme['NOM_ORGANISME'] . " - " . $organisme['NOM_INTERLOCUTEUR'] . " " . $organisme['PRENOM_INTERLOCUTEUR'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <!-- Champ Nom organisation -->
+                                <div class="form-group mb-1 mt-1 d-none" id="divNomOrganisme">
                                     <label class="label-form" for="nomOrganisation">Nom de l'organisation</label>
                                     <input class="form-control" id="nomOrganisation" name="nomOrganisation" type="text" placeholder="Entrez le nom de l'organisation">
                                 </div>
                                 <!-- Champ Nom intervenant -->
-                                <div class="form-group mb-1">
+                                <div class="form-group mb-1 mt-1 d-none" id="divNomIntervenant">
                                     <label class="label-form" for="nomIntervenant">Nom du intervenant</label>
                                     <input class="form-control" id="nomIntervenant" name="nomIntervenant" type="text" placeholder="Entrez le nom de intervenant">
                                 </div>
                                 <!-- Champ Prénom intervenant -->
-                                <div class="form-group mt-1 mb-1">
+                                <div class="form-group mt-1 mb-1 d-none" id="divPrenomIntervenant">
                                     <label class="label-form" for="prenomIntervenant">Prénom du intervenant</label>
                                     <input class="form-control" id="prenomIntervenant" name="prenomIntervenant" type="text" placeholder="Entrez le prénom de intervenant">
                                 </div>
                                 <!-- Champ téléphone intervenant -->
-                                <div class="form-group mt-1 mb-1">
+                                <div class="form-group mt-1 mb-1 d-none" id="divTelIntervenant">
                                     <label class="label-form" for="telIntervenant">Numéro de téléphone du intervenant</label>
                                     <input class="form-control" id="telIntervenant" name="telIntervenant" type="text" placeholder="Entrez le numéro de téléphone du intervenant">
                                 </div>

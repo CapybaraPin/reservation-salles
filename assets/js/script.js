@@ -144,6 +144,35 @@ if (choixFormateur) {
     });
 }
 
+function gestionAjoutOrganisme(choixOrganisme) {
+    const nomOrganisme = document.getElementById('divNomOrganisme');
+    const nomIntervenant = document.getElementById('divNomIntervenant');
+    const prenomIntervenant = document.getElementById('divPrenomIntervenant');
+    const telIntervenant = document.getElementById('divTelIntervenant');
+
+    const elements = [
+        nomOrganisme,
+        nomIntervenant,
+        prenomIntervenant,
+        telIntervenant,
+    ];
+
+    const actionClass = choixOrganisme == -1 ? 'd-block' : 'd-none';
+    elements.forEach(element => {
+        // Supprime les classes conflictuelles
+        element.classList.remove('d-none', 'd-block');
+        // Ajoute la classe appropriée
+        element.classList.add(actionClass);
+    });
+}
+
+const choixOrganisme = document.getElementById('organisme');
+if (choixOrganisme) {
+    choixOrganisme.addEventListener('change', (event) => {
+        const organisme = event.target.value;
+        gestionAjoutOrganisme(organisme);
+    });
+}
 
 
 

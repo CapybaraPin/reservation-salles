@@ -247,16 +247,18 @@ class Reservation
      * @param $dateFin date date de fin de réservation
      * @param $salle int identifiant de la salle concernée par la réservation
      * @param $activite int identifiant de l'activité de la réservation
+     * @param $idIntervenant int identifiant du formateur s'il y en a un
      * @param $nomIntervenant string nom du formateur s'il y en a un
      * @param $prenomIntervenant string prenom du formateur s'il y en a un
      * @param $telIntervenant int telephone du formateur s'il y en a un
      * @param $employe int identifiant de l'employé qui a effectué cette réservation
      * @param $nomOrganisation string nom de l'organisation s'il y en a un
      * @param $description string description de l'activité effectuée lors de la réservation
+     *
      * @throws FieldValidationException si une erreur survient lors de la validation des champs
      * @throws Exception
      */
-    public function ajouterReservation($dateDebut, $dateFin, $salle, $activite, $idIntervenant, $nomIntervenant, $prenomIntervenant, $telIntervenant, $employe, $nomOrganisation, $description)
+    public function ajouterReservation($dateDebut, $dateFin, $salle, $activite, $idIntervenant, $nomIntervenant, $prenomIntervenant, $telIntervenant, $employe, $idOrganisation, $nomOrganisation, $description)
     {
         $pdo = Database::getPDO();
         $erreurs = [];
@@ -284,7 +286,33 @@ class Reservation
 
         // Vérification de l'existence d'une réservation pour cette salle à ces dates
         if ($this->reservationExiste($salle, $dateDebut, $dateFin)) {
-            $erreurs["reservation"] = "Une réservation existe déjà pour cette salle à ces dates.";
+            $erreurs["Reservation"] = "Une réservation existe déjà pour cette salle à ces dates.";
+        }
+
+
+        $organismeModel = new Organisme();
+        $employeModel = new Individu();
+        if ($activite == 2 && !$employeModel->individuExiste($idIntervenant)) {
+            if(empty($idIntervenant) && empty($nomIntervenant) && empty($prenomIntervenant) && empty($telIntervenant)) {
+                $erreurs["Formateur"] = "Veuillez renseigner tous les champs du formateur.";
+            }
+            if($telIntervenant != null) {
+                if (!preg_match('/^\d{4}$/', $telIntervenant)) {
+                    $erreurs['telephone'] = "Le numéro de téléphone est invalide.";
+                }
+            }
+        } else if (($activite == 4 or $activite == 5) && !$organismeModel->organismeExiste($idOrganisation)) {
+            if(empty($idIntervenant) && empty($nomIntervenant) && empty($prenomIntervenant) && empty($telIntervenant)) {
+                $erreurs["Organisme"] = "Veuillez renseigner tous les champs de l'intervenant.";
+            }
+            if(empty($idOrganisation) && empty($nomOrganisation)) {
+                $erreurs["Organisme"] = "Veuillez renseigner tous les champs de l'organisation.";
+            }
+            if($telIntervenant != null) {
+                if (!preg_match('/^\d{4}$/', $telIntervenant)) {
+                    $erreurs['telephone'] = "Le numéro de téléphone est invalide.";
+                }
+            }
         }
 
         if (!empty($erreurs)) {
@@ -299,25 +327,25 @@ class Reservation
         $nomIntervenant = trim($nomIntervenant);
         $prenomIntervenant = trim($prenomIntervenant);
         $telIntervenant = trim($telIntervenant);
-        $employeModel = new Individu();
 
         // si ajout d'une organisation sinon ajout d'un formateur
         try {
             $pdo->beginTransaction();
-            if (!empty($nomOrganisation)) {
-                $organisme = new Organisme();
-                $organisationID = $organisme->getIdOrganisme($nomOrganisation);
+            if ($organismeModel->organismeExiste($idOrganisation)) {
+                $organisationId = $idOrganisation;
+            } else if (!empty($nomOrganisation)) {
+                $organisationID = $organismeModel->getIdOrganisme($nomOrganisation);
                 if (!$organisationID) {
                     // Gestion de l'interlocuteur (individu) pour l'organisation
                     $interlocuteurId = null;
                     if (!empty($nomIntervenant) && !empty($prenomIntervenant) && !empty($telIntervenant)) {
-                        $interlocuteurId = $organisme->getIdInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
+                        $interlocuteurId = $organismeModel->getIdInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
                         if (!$interlocuteurId) {
-                            $interlocuteurId = $organisme->ajouterInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
+                            $interlocuteurId = $organismeModel->ajouterInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
                         }
                     }
 
-                    $organisationId = $organisme->ajouterOrganisme($nomOrganisation, $interlocuteurId);
+                    $organisationId = $organismeModel->ajouterOrganisme($nomOrganisation, $interlocuteurId);
                 }
             } elseif($employeModel->individuExiste($idIntervenant)) {
                 if ($idIntervenant != $employe) {

@@ -89,6 +89,7 @@ class ReservationsController extends FiltresController
         $activites= $this->activiteModel->getActivites();
         $salles = $this->salleModel->getSalles();
         $formateurs = $this->employeModel->getIndividus();
+        $organismes = $this->organismeModel->getOrganismes();
 
         if(isset($_SESSION['messageValidation'])) {
             $this->success = $_SESSION['messageValidation'];
@@ -193,6 +194,7 @@ class ReservationsController extends FiltresController
             $salle = htmlspecialchars($_POST['salle']);
             $activite = htmlspecialchars($_POST['typeReservation']);
             $idIntervenant = htmlspecialchars($_POST['formateur']);
+            $idOrganisation = htmlspecialchars($_POST['organisme']);
 
             if (!empty($_POST['nomIntervenant']) || !empty($_POST['prenomIntervenant']) || !empty($_POST['telIntervenant'])) {
                 $nomIntervenant = htmlspecialchars($_POST['nomIntervenant'], ENT_NOQUOTES);
@@ -222,6 +224,7 @@ class ReservationsController extends FiltresController
                 $prenomIntervenant,
                 $telIntervenant,
                 $employe,
+                $idOrganisation,
                 $nomOrganisation,
                 $description
             );
