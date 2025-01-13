@@ -89,6 +89,11 @@ class ReservationsController extends FiltresController
         $activites= $this->activiteModel->getActivites();
         $salles = $this->salleModel->getSalles();
 
+        if(isset($_SESSION['messageValidation'])) {
+            $this->success = $_SESSION['messageValidation'];
+            unset($_SESSION['messageValidation']);
+        }
+
         $erreurs = $this->erreurs;
         $erreur = $this->erreur;
         $success = $this->success;
@@ -139,6 +144,17 @@ class ReservationsController extends FiltresController
      */
     public function consultationReservation($reservationId)
     {
+        if (isset($_POST['supprimerReservation'])) {
+            try {
+                $result = $this->reservationModel->supprimerReservation($reservationId);
+                $_SESSION['messageValidation'] = "La réservation a été supprimer avec succès";
+                header("Location: /reservations");
+                exit;
+            } catch (Exception $e) {
+                $this->erreur = "Erreur lors de la suppression de la reservation : " . $e->getMessage();
+            }
+        }
+
         $reservation = $this->reservationModel->getReservation($reservationId);
         $dateDebut = date_create($reservation["DATE_DEBUT"]);
         $dateFin = date_create($reservation["DATE_FIN"]);

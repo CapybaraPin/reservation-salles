@@ -144,6 +144,11 @@ $router->get('/reservations/{reservationId}/view', function($reservationId) {
     $reservationsController->consultationReservation($reservationId);
 });
 
+$router->post('/reservations/{reservationId}/view', function($reservationId) {
+    $reservationsController = new ReservationsController();
+    $reservationsController->consultationReservation($reservationId);
+});
+
 // Modification d'une réservation
 $router->get('/reservations/{reservationId}/edit', function($reservationId) {
     $reservationsController = new ReservationsController();
