@@ -192,8 +192,8 @@ class ReservationsController extends FiltresController
             $employe = $_SESSION['userIndividuId'];
 
             $nomOrganisation = htmlspecialchars($_POST['nomOrganisation']);
-            $description = !empty($_POST['sujetLocation']) ? htmlspecialchars($_POST['sujetLocation']) :
-                           (!empty($_POST['sujetFormation']) ? htmlspecialchars($_POST['sujetFormation']) : htmlspecialchars($_POST['description']));
+            $description = !empty($_POST['sujetLocation']) ? htmlspecialchars($_POST['sujetLocation'], ENT_NOQUOTES) : htmlspecialchars
+                           (!empty($_POST['sujetFormation']) ? ($_POST['sujetFormation']) : ($_POST['description']), ENT_NOQUOTES);
 
             // Ajout de la réservation
             $this->reservationModel->ajouterReservation(
