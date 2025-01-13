@@ -179,19 +179,19 @@ class ReservationsController extends FiltresController
 
             // Déterminer les champs du formateur
             if (!empty($_POST['nomIntervenant']) || !empty($_POST['prenomIntervenant']) || !empty($_POST['telIntervenant'])) {
-                $nomIntervenant = htmlspecialchars($_POST['nomIntervenant']);
-                $prenomIntervenant = htmlspecialchars($_POST['prenomIntervenant']);
+                $nomIntervenant = htmlspecialchars($_POST['nomIntervenant'], ENT_NOQUOTES);
+                $prenomIntervenant = htmlspecialchars($_POST['prenomIntervenant'], ENT_NOQUOTES);
                 $telIntervenant = htmlspecialchars($_POST['telIntervenant']);
             } else {
-                $nomIntervenant = htmlspecialchars($_POST['nomIndividu']);
-                $prenomIntervenant = htmlspecialchars($_POST['prenomIndividu']);
+                $nomIntervenant = htmlspecialchars($_POST['nomIndividu'], ENT_NOQUOTES);
+                $prenomIntervenant = htmlspecialchars($_POST['prenomIndividu'], ENT_NOQUOTES);
                 $telIntervenant = htmlspecialchars($_POST['telIndividu']);
             }
 
             // Autres variables
             $employe = $_SESSION['userIndividuId'];
 
-            $nomOrganisation = htmlspecialchars($_POST['nomOrganisation']);
+            $nomOrganisation = htmlspecialchars($_POST['nomOrganisation'], ENT_NOQUOTES);
             $description = !empty($_POST['sujetLocation']) ? htmlspecialchars($_POST['sujetLocation'], ENT_NOQUOTES) : htmlspecialchars
                            (!empty($_POST['sujetFormation']) ? ($_POST['sujetFormation']) : ($_POST['description']), ENT_NOQUOTES);
 

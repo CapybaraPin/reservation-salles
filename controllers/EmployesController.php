@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use Exception;
 use PDO;
 use services\Auth;
 use services\Config;
@@ -108,7 +109,7 @@ class EmployesController extends FiltresController
         }
         try {
             $this->success = $this->ajouterEmploye();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->erreur = "Erreur lors de l'ajout de l'employé : " . $e->getMessage();
         }
 
@@ -116,7 +117,7 @@ class EmployesController extends FiltresController
         if (isset($_POST['supprimerEmploye']) && isset($_POST['employeId'])) {
             try {
                 $this->success = $this->supprimerEmploye();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->erreur = "Erreur lors de la suppression de l'employé : " . $e->getMessage();
             }
         }
@@ -138,24 +139,24 @@ class EmployesController extends FiltresController
             && isset($_POST["identifiant"])
             && isset($_POST["motdepasse"])) {
 
-            $nomEmploye = htmlspecialchars($_POST["nom"]);
-            $prenomEmploye = htmlspecialchars($_POST["prenom"]);
+            $nomEmploye = htmlspecialchars($_POST["nom"], ENT_NOQUOTES);
+            $prenomEmploye = htmlspecialchars($_POST["prenom"], ENT_NOQUOTES);
             $telephoneEmploye = htmlspecialchars($_POST["telephone"]);
-            $identifiantEmploye = htmlspecialchars($_POST["identifiant"]);
+            $identifiantEmploye = htmlspecialchars($_POST["identifiant"], ENT_NOQUOTES);
 
             // Chiffrement du mot de passe
-            $motDePasseEmploye = password_hash($_POST["motdepasse"], PASSWORD_DEFAULT); // TODO : Comment afficher le mot de passe à l'administrateur ?
+            $motDePasseEmploye = password_hash($_POST["motdepasse"], PASSWORD_DEFAULT);
 
             // Vérification du format du numéro de téléphone
             if (!preg_match('/^(?:\+33|0)[1-9](?:[\d]{2}){4}$/', $telephoneEmploye)) {
-                throw new \Exception("Le numéro de téléphone n'est pas valide. Veuillez entrer un numéro de téléphone correct.");
+                throw new Exception("Le numéro de téléphone n'est pas valide. Veuillez entrer un numéro de téléphone correct.");
             }
 
             // Vérification que les champs ne soient pas vides
             if (!empty($nomEmploye) && !empty($prenomEmploye) && !empty($telephoneEmploye) && !empty($identifiantEmploye) && !empty($motDePasseEmploye)) {
                 $this->employeModel->ajouterEmploye($nomEmploye, $prenomEmploye, $telephoneEmploye, $identifiantEmploye, $motDePasseEmploye);
             } else {
-                throw new \Exception("Veuillez remplir tous les champs");
+                throw new Exception("Veuillez remplir tous les champs");
             }
 
             return "Vous avez bien ajouté un employé! (" . $nomEmploye . " " . $prenomEmploye . ")";
@@ -165,7 +166,7 @@ class EmployesController extends FiltresController
     /**
      * Suppresion d'un employé lors du click sur le bouton de suppresion situé sur la page des employés
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function supprimerEmploye()
     {
@@ -179,14 +180,14 @@ class EmployesController extends FiltresController
                 if ($result) {
                     return "L'employé avec l'ID $idEmploye a été supprimé avec succès.";
                 } else {
-                    throw new \Exception("La suppression de l'employé a échoué. Veuillez réessayer.");
+                    throw new Exception("La suppression de l'employé a échoué. Veuillez réessayer.");
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // En cas d'exception, enregistrer l'erreur et retourner un message
-                throw new \Exception("Une erreur s'est produite lors de la suppression de l'employé.");
+                throw new Exception("Une erreur s'est produite lors de la suppression de l'employé.");
             }
         } else {
-            throw new \Exception("Données invalides. Veuillez vérifier les informations soumises.");
+            throw new Exception("Données invalides. Veuillez vérifier les informations soumises.");
         }
     }
 }

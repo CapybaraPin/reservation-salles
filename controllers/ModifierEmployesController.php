@@ -65,11 +65,11 @@ class ModifierEmployesController extends FiltresController {
         }
 
         if (isset($_POST['nom'], $_POST['prenom'], $_POST['telephone'], $_POST['identifiant'])) {
-            $nom = htmlspecialchars($_POST['nom']);
-            $prenom = htmlspecialchars($_POST['prenom']);
+            $nom = htmlspecialchars($_POST['nom'], ENT_NOQUOTES);
+            $prenom = htmlspecialchars($_POST['prenom'], ENT_NOQUOTES);
             $telephone = htmlspecialchars($_POST['telephone']);
 
-            $id = htmlspecialchars($_POST['identifiant']);
+            $id = htmlspecialchars($_POST['identifiant'], ENT_NOQUOTES);
 
             if(!empty($_POST['motdepasse'])) {
                 $motDePasseEmploye = password_hash($_POST["motdepasse"], PASSWORD_DEFAULT);

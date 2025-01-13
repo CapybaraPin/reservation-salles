@@ -146,7 +146,7 @@ class SallesController extends FiltresController
         // Récupération des données du formulaire
         if (isset($_POST['nom']) && isset($_POST['capacite']) && isset($_POST['typeOrdinateur'])) {
 
-            $nom = htmlspecialchars($_POST['nom']);
+            $nom = htmlspecialchars($_POST['nom'], ENT_NOQUOTES);
             $capacite = (int)htmlspecialchars($_POST['capacite']);
             $videoProjecteur = isset($_POST['videoProjecteur']) ? 1 : 0;
             $nbOrdinateurs = isset($_POST['nbOrdinateurs']) && is_numeric($_POST['nbOrdinateurs']) ? (int)$_POST['nbOrdinateurs'] : 0;
