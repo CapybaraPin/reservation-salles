@@ -29,7 +29,7 @@ require __DIR__ . '/services/Database.php';
 require __DIR__ . '/services/Config.php';
 require __DIR__ . '/services/Auth.php';
 require __DIR__ . '/services/Utilisateur.php';
-require __DIR__ . '/services/Employe.php';
+require __DIR__ . '/services/Individu.php';
 require __DIR__ . '/services/Reservation.php';
 require __DIR__ . '/services/Salle.php';
 require __DIR__ . '/services/Activite.php';
@@ -144,6 +144,11 @@ $router->get('/reservations/{reservationId}/view', function($reservationId) {
     $reservationsController->consultationReservation($reservationId);
 });
 
+$router->post('/reservations/{reservationId}/view', function($reservationId) {
+    $reservationsController = new ReservationsController();
+    $reservationsController->consultationReservation($reservationId);
+});
+
 // Modification d'une réservation
 $router->get('/reservations/{reservationId}/edit', function($reservationId) {
     $reservationsController = new ReservationsController();
@@ -173,6 +178,7 @@ $router->post('/activites', [new ActivitesController(), 'post']);
  * Définition des routes pour l'exportation des données
  */
 $router->get('/exportation', [new ExportController(), 'get']);
+$router->post('/exportation', [new ExportController(), 'post']);
 $router->get('/exportation/telecharger', [new ExportController(), 'exportation']);
 
 // Défintion de la routeur pour l'erreur 404

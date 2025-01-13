@@ -24,13 +24,13 @@
 
                             <!-- Boutons pour revenir ou soumettre -->
                             <div class="col-12 col-lg-4 text-lg-end">
-                                <a href="/salle/<?= $salle['ID_SALLE'] ?>/view" class="btn btn-secondary">
-                                    <i class="fa-solid fa-info-circle"></i> Informations
+                                <a href="/salle/<?= $salle['ID_SALLE'] ?>/view" class="btn btn-secondary btn-consultation">
+                                    <i class="fa-solid fa-info-circle"></i>&emsp; Informations
                                 </a>
 
-                                <button <?php if ($nbReservation > 0) { ?> type="button"<?php } else { ?> type="submit" <?php } ?> class="btn btn-primary" name="modifierSalleOrdinateurs"
+                                <button <?php if ($nbReservation > 0) { ?> type="button"<?php } else { ?> type="submit" <?php } ?> class="btn btn-primary btn-consultation" name="modifierSalleOrdinateurs"
                                                  <?php if ($nbReservation > 0) { ?>data-bs-toggle="modal" data-bs-target="#modal_modifier_salle"<?php } ?>>
-                                    <i class="fa-solid fa-save"></i> Sauvegarder
+                                    <i class="fa-solid fa-save"></i>&emsp; Sauvegarder
                                 </button>
                             </div>
                         </div>
@@ -172,7 +172,7 @@
                                                 <div class="col-2 text">
                                                     <!-- Ajouter un logiciel -->
                                                     <div class="">
-                                                        <button type="button" class="btn btn-sm btn-success w-100" data-bs-toggle="modal" data-bs-target="#ajouterLogiciel">
+                                                        <button type="button" class="btn btn-sm btn-success w-100 btn-small" data-bs-toggle="modal" data-bs-target="#ajouterLogiciel">
                                                             <i class="fa-solid fa-plus"></i> Ajouter un logiciel
                                                         </button>
                                                     </div>

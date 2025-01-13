@@ -34,7 +34,7 @@ require_once 'utils/tableau.php';
                         <?php if ($_SESSION['userRole'] == '1') { ?>
                         <div class="col-12 col-lg-2 text-lg-end">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajouterEmployee">
-                                <i class="fa-solid fa-plus"></i> Ajouter un employé
+                                <i class="fa-solid fa-plus"></i>&emsp; Ajouter un employé
                             </button>
                         </div>
                         <?php } ?>

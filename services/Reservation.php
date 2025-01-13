@@ -2,7 +2,9 @@
 
 namespace services;
 
+use Exception;
 use PDO;
+use PDOException;
 use services\exceptions\FieldValidationException;
 use services\SQLHelper;
 
@@ -211,6 +213,35 @@ class Reservation
     }
 
     /**
+     * Permet de savoir si une réservation existe déjà pour une salle à ces dates
+     *
+     * @param $idSalle int, L'identifiant de la salle
+     * @param $dateDebut date, La date de début de la réservation
+     * @param $dateFin date, La date de fin de la réservation
+     * @return bool, Retourne true si une réservation existe déjà, sinon false
+     */
+    public function reservationExiste($idSalle, $dateDebut, $dateFin)
+    {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare(
+            "SELECT COUNT(*) 
+                    FROM reservation 
+                    WHERE idSalle = :idSalle 
+                    AND dateDebut = :dateDebut 
+                    AND dateFin = :dateFin"
+        );
+
+        $req->execute([
+            'idSalle' => $idSalle,
+            'dateDebut' => $dateDebut,
+            'dateFin' => $dateFin
+        ]);
+
+        return $req->fetchColumn() > 0;
+    }
+
+    /**
      * Permet d'ajouter une réservation dans la base de données
      * @param $dateDebut date date de début de la réservation
      * @param $dateFin date date de fin de réservation
@@ -222,11 +253,12 @@ class Reservation
      * @param $employe int identifiant de l'employé qui a effectué cette réservation
      * @param $nomOrganisation string nom de l'organisation s'il y en a un
      * @param $description string description de l'activité effectuée lors de la réservation
+     * @throws FieldValidationException si une erreur survient lors de la validation des champs
+     * @throws Exception
      */
     public function ajouterReservation($dateDebut, $dateFin, $salle, $activite, $nomIntervenant, $prenomIntervenant, $telIntervenant, $employe, $nomOrganisation, $description)
     {
         $pdo = Database::getPDO();
-
         $erreurs = [];
 
         // Validation des dates
@@ -234,7 +266,7 @@ class Reservation
         $timestampDateFin = strtotime($dateFin);
         $datesValides = $this->validerDates($timestampDateDebut, $timestampDateFin);
         if (!$datesValides) {
-            array_merge($erreurs, $datesValides);
+            $erreurs = array_merge($erreurs, $datesValides);
         }
 
         // Validation des autres champs obligatoires
@@ -247,70 +279,11 @@ class Reservation
         }
 
         if (empty($employe) || !is_numeric($employe)) {
-            $erreurs["Employe"] = "Un identifiant d'employé valide est requis.";
+            $erreurs["Individu"] = "Un identifiant d'employé valide est requis.";
         }
 
-        // Gestion de l'organisation ou du formateur
-        $organisationId = null;
-        $formateur = null;
-
-        $organisme = new Organisme();
-        // si ajout d'une organisation sinon ajout d'un formateur
-        if (!empty(trim($nomOrganisation))) {
-            $organisationID = $organisme->getIdOrganisation($nomOrganisation);
-            if (!$organisationID) {
-                // Gestion de l'interlocuteur (individu) pour l'organisation
-                $interlocuteur = null;
-                if (!empty(trim($nomIntervenant)) && !empty(trim($prenomIntervenant)) && !empty(trim($telIntervenant))) {
-                    $interlocuteurId = $organisme->getIdInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
-                    if (!$interlocuteurId) {
-                        $interlocuteurId = $organisme->ajouterInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
-                    }
-                }
-
-                $organisationId = $organisme->ajouterOrganisation($nomOrganisation, $interlocuteurId);
-            }
-        } elseif (!empty(trim($nomIntervenant)) && !empty(trim($prenomIntervenant)) && !empty(trim($telIntervenant))) {
-            // Gestion du formateur
-            $reqVerifIndividu = $pdo->prepare(
-                "SELECT identifiant FROM individu WHERE nom = :nom AND prenom = :prenom AND telephone = :telephone"
-            );
-            $reqVerifIndividu->execute([
-                'nom' => trim($nomIntervenant),
-                'prenom' => trim($prenomIntervenant),
-                'telephone' => trim($telIntervenant)
-            ]);
-            $formateurExiste = $reqVerifIndividu->fetchColumn();
-
-            if (!$formateurExiste) {
-                // Insérer un nouvel individu
-                $reqInsertIndividu = $pdo->prepare(
-                    "INSERT INTO individu (nom, prenom, telephone) VALUES (:nom, :prenom, :telephone)"
-                );
-                $reqInsertIndividu->execute([
-                    'nom' => trim($nomIntervenant),
-                    'prenom' => trim($prenomIntervenant),
-                    'telephone' => trim($telIntervenant)
-                ]);
-                $formateur = $pdo->lastInsertId();
-            } else {
-                $formateur = $formateurExiste;
-            }
-        }
-
-        // Vérification de l'existence d'une réservation
-        $reqVerifReservation = $pdo->prepare(
-            "SELECT identifiant FROM reservation WHERE idSalle = :salle AND 
-         (:dateDebut BETWEEN dateDebut AND dateFin OR :dateFin BETWEEN dateDebut AND dateFin)"
-        );
-        $reqVerifReservation->execute([
-            'salle' => $salle,
-            'dateDebut' => $dateDebut,
-            'dateFin' => $dateFin
-        ]);
-        $reservationExiste = $reqVerifReservation->fetchColumn();
-
-        if ($reservationExiste) {
+        // Vérification de l'existence d'une réservation pour cette salle à ces dates
+        if ($this->reservationExiste($salle, $dateDebut, $dateFin)) {
             $erreurs["reservation"] = "Une réservation existe déjà pour cette salle à ces dates.";
         }
 
@@ -318,20 +291,63 @@ class Reservation
             throw new FieldValidationException($erreurs);
         }
 
-        // Insertion de la réservation
-        $req = $pdo->prepare(
-            "INSERT INTO reservation (dateDebut, dateFin, idSalle, idActivite, idFormateur, idEmploye, idOrganisation, description) 
-     VALUES (:dateDebut, :dateFin, :salle, :activite, :formateur, :employe, :organisation, :description)"
-        );
-        $req->bindValue(':dateDebut', $dateDebut);
-        $req->bindValue(':dateFin', $dateFin);
-        $req->bindValue(':salle', $salle, PDO::PARAM_INT);
-        $req->bindValue(':activite', $activite, PDO::PARAM_INT);
-        $req->bindValue(':formateur', $formateur, $formateur === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
-        $req->bindValue(':employe', $employe, PDO::PARAM_INT);
-        $req->bindValue(':organisation', $organisationId, $organisationId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
-        $req->bindValue(':description', $description);
-        $req->execute();
+        // Gestion de l'organisation ou du formateur
+        $organisationId = null;
+        $formateurId = null;
+
+        $nomOrganisation = trim($nomOrganisation);
+        $nomIntervenant = trim($nomIntervenant);
+        $prenomIntervenant = trim($prenomIntervenant);
+        $telIntervenant = trim($telIntervenant);
+        // si ajout d'une organisation sinon ajout d'un formateur
+        try {
+            $pdo->beginTransaction();
+            if (!empty($nomOrganisation)) {
+                $organisme = new Organisme();
+                $organisationID = $organisme->getIdOrganisme($nomOrganisation);
+                if (!$organisationID) {
+                    // Gestion de l'interlocuteur (individu) pour l'organisation
+                    $interlocuteurId = null;
+                    if (!empty($nomIntervenant) && !empty($prenomIntervenant) && !empty($telIntervenant)) {
+                        $interlocuteurId = $organisme->getIdInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
+                        if (!$interlocuteurId) {
+                            $interlocuteurId = $organisme->ajouterInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
+                        }
+                    }
+
+                    $organisationId = $organisme->ajouterOrganisme($nomOrganisation, $interlocuteurId);
+                }
+            } elseif (!empty($nomIntervenant) && !empty($prenomIntervenant) && !empty($telIntervenant)) {
+                // Gestion du formateur
+                $Employe = new Individu();
+                $formateurId = $Employe->getIdIndividu($nomIntervenant, $prenomIntervenant, $telIntervenant);
+                if (!$formateurId) {
+                    // Insérer un nouvel individu
+                    $formateurId = $Employe->ajouterIndividu($nomIntervenant, $prenomIntervenant, $telIntervenant);
+                }
+            }
+
+            // Insertion de la réservation
+            $req = $pdo->prepare(
+                "INSERT INTO reservation (dateDebut, dateFin, idSalle, idActivite, idFormateur, idEmploye, idOrganisation, description) 
+         VALUES (:dateDebut, :dateFin, :salle, :activite, :formateur, :employe, :organisation, :description)"
+            );
+            $req->bindValue(':dateDebut', $dateDebut);
+            $req->bindValue(':dateFin', $dateFin);
+            $req->bindValue(':salle', $salle, PDO::PARAM_INT);
+            $req->bindValue(':activite', $activite, PDO::PARAM_INT);
+            $req->bindValue(':formateur', $formateurId, $formateurId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+            $req->bindValue(':employe', $employe, PDO::PARAM_INT);
+            $req->bindValue(':organisation', $organisationId, $organisationId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+            $req->bindValue(':description', $description);
+            $req->execute();
+
+            $pdo->commit();
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            throw new Exception($e->getMessage());
+        }
+
     }
 
     /**

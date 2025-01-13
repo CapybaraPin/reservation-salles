@@ -14,22 +14,24 @@
             <div class="col-12">
                 <div class="container">
                     <!-- Section de bienvenue et actions -->
-                    <div class="row mt-5 mb-4">
-                        <div class="col-12 col-lg-8">
-                            <h2 class="">Consultation de la réservation</h2>
-                            <p class="">Visualisez les informations de la réservation du <b><?= $formatDate ?></b> de <b><?= $heureDebut ?></b> à <b><?= $heureFin ?></b>.</p>
-                        </div>
+                    <form method="POST" action="">
+                        <div class="row mt-5 mb-4">
+                            <div class="col-12 col-lg-8">
+                                <h2 class="">Consultation de la réservation</h2>
+                                <p class="">Visualisez les informations de la réservation du <b><?= $formatDate ?></b> de <b><?= $heureDebut ?></b> à <b><?= $heureFin ?></b>.</p>
+                            </div>
 
-                        <!-- Boutons pour supprimer et modifier -->
-                        <div class="col-12 col-lg-4 text-lg-end">
-                            <a href="" class="btn btn-primary" >
-                                <i class="fa-solid fa-pencil"></i> Modifier
-                            </a>
-                            <button class="btn btn-danger" <?php if ($_SESSION['userPrenom'] != $reservation["PRENOM_EMPLOYE"]){ echo 'disabled' ; } ?> data-bs-toggle="modal" data-bs-target="#supprimerSalle">
-                                <i class="fa-solid fa-trash"></i> Supprimer
-                            </button>
+                            <!-- Boutons pour supprimer et modifier -->
+                            <div class="col-12 col-lg-4 text-lg-end">
+                                <a href="" class="btn btn-primary btn-consultation" >
+                                    <i class="fa-solid fa-pencil"></i>&emsp; Modifier
+                                </a>
+                                <button type="submit" name="supprimerReservation" class="btn btn-danger btn-consultation" <?php if ($_SESSION['userPrenom'] != $reservation["PRENOM_EMPLOYE"]){ echo 'disabled' ; } ?> data-bs-toggle="modal" data-bs-target="#supprimerSalle">
+                                    <i class="fa-solid fa-trash"></i>&emsp; Supprimer
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
 
                     <!-- Informations sur la réservation -->
                     <div class="row">

@@ -2,6 +2,8 @@
 
 namespace controllers;
 
+use services\exceptions\FieldValidationException;
+
 /**
  * Contrôleur pour la page des information et modification d'une salle
  */
@@ -51,13 +53,11 @@ class ModifierEmployesController extends FiltresController {
         $hasAccount = true;
         try {
             $employe = $this->employeModel->getEmploye($employeId);
-            if($employe['TELEPHONE_EMPLOYE'] == null) {
-                $employe['TELEPHONE_EMPLOYE'] = "";
-            }
-            $id = $this->employeModel->getID($employeId);
-            if(!$id) {
-                $hasAccount = false;
-            }
+            $nom = $employe["NOM_EMPLOYE"];
+            $prenom = $employe["PRENOM_EMPLOYE"];
+            $telephone = $employe["TELEPHONE_EMPLOYE"];
+            $id = $this->employeModel->getID($employeId)["identifiant"];
+
         } catch (\Exception $e) {
             header('HTTP/1.1 404 Not Found');
             require_once __DIR__ . "/../views/errors/404.php";
@@ -65,16 +65,13 @@ class ModifierEmployesController extends FiltresController {
         }
 
         if (isset($_POST['nom'], $_POST['prenom'], $_POST['telephone'], $_POST['identifiant'])) {
-            $nom = htmlspecialchars($_POST['nom']);
-            $prenom = htmlspecialchars($_POST['prenom']);
-            if($_POST['telephone'] !== null) {
-                $telephone = htmlspecialchars($_POST['telephone']);
-            } else {
-                $telephone = "";
-            }
-            $id = htmlspecialchars($_POST['identifiant']);
+            $nom = htmlspecialchars($_POST['nom'], ENT_NOQUOTES);
+            $prenom = htmlspecialchars($_POST['prenom'], ENT_NOQUOTES);
+            $telephone = htmlspecialchars($_POST['telephone']);
 
-            if(isset($_POST['motdepasse'])) {
+            $id = htmlspecialchars($_POST['identifiant'], ENT_NOQUOTES);
+
+            if(!empty($_POST['motdepasse'])) {
                 $motDePasseEmploye = password_hash($_POST["motdepasse"], PASSWORD_DEFAULT);
                 $this->employeModel->modifierMotDePasse($employeId, $motDePasseEmploye);
             }
@@ -85,8 +82,8 @@ class ModifierEmployesController extends FiltresController {
                 $_SESSION['messageValidation'] = "Les informations de l'employé ont été mises à jour avec succès.";
                 header('Location: /employes');
                 exit;
-            } catch (\Exception $e) {
-                $this->erreurs = $e->getMessage();
+            } catch (FieldValidationException $e) {
+                $this->erreurs = $e->getErreurs();
             }
         }
 

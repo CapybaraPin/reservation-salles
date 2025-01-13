@@ -17,6 +17,8 @@ class ExportController extends Controller
         $nbEmployes = $this->employeModel->getNbEmployes();
         $nbActivites = $this->activiteModel->getNbActivites();
 
+        $this->deconnexion();
+
         require __DIR__ . '/../views/exportation.php';
     }
 
@@ -25,7 +27,6 @@ class ExportController extends Controller
      */
     public function post()
     {
-        $this->deconnexion();
         $this->get();
     }
 

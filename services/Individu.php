@@ -5,7 +5,7 @@ namespace services;
 use PDO;
 use services\exceptions\FieldValidationException;
 
-class Employe
+class Individu
 {
     /**
      * Permet d'ajouter un employé dans la base de données
@@ -23,11 +23,7 @@ class Employe
 
         try {
             // Insérer dans la table individu
-            $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
-            $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
-
-            // Récupérer l'identifiant de l'individu récemment inséré
-            $idIndividu = $pdo->lastInsertId();
+            $idIndividu = $this->ajouterIndividu($nomEmploye, $prenomEmploye, $telephoneEmploye);
 
             // Insérer dans la table utilisateur
             $reqUtilisateur = $pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
@@ -73,7 +69,9 @@ class Employe
     {
         $pdo = Database::getPDO();
 
-        $sql = "SELECT COUNT(*) FROM individu";
+        $sql = "SELECT COUNT(*) FROM individu
+                JOIN utilisateur
+                ON individu.identifiant = utilisateur.individu";
         $sql .= SQLHelper::construireConditionsFiltres($filtre);
 
         $req = $pdo->prepare($sql);
@@ -93,14 +91,17 @@ class Employe
 
         try {
             $sql = "SELECT 
-                    identifiant AS 'IDENTIFIANT_EMPLOYE', 
+                    individu.identifiant AS 'IDENTIFIANT_EMPLOYE', 
                     nom AS 'NOM_EMPLOYE', 
                     prenom AS 'PRENOM_EMPLOYE', 
                     telephone AS 'TELEPHONE_EMPLOYE' 
-                FROM individu ";
+                FROM individu
+                JOIN utilisateur
+                ON individu.identifiant = utilisateur.individu";
+
 
             $sql .= SQLHelper::construireConditionsFiltres($filtre);
-            $sql .= " ORDER BY identifiant ASC LIMIT :limit OFFSET :offset";
+            $sql .= " ORDER BY individu.identifiant ASC LIMIT :limit OFFSET :offset";
 
             $req = $pdo->prepare($sql);
             $req->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -141,7 +142,11 @@ class Employe
     public function getEmploye($idEmploye)
     {
         $pdo = Database::getPDO();
-        $req = $pdo->prepare("SELECT identifiant AS 'ID_EMPLOYE', nom AS 'NOM_EMPLOYE', prenom AS 'PRENOM_EMPLOYE', telephone AS 'TELEPHONE_EMPLOYE' FROM individu WHERE identifiant = ?");
+        $req = $pdo->prepare("SELECT individu.identifiant AS 'ID_EMPLOYE', nom AS 'NOM_EMPLOYE', prenom AS 'PRENOM_EMPLOYE', telephone AS 'TELEPHONE_EMPLOYE'
+            FROM individu 
+            JOIN utilisateur
+            ON individu.identifiant = utilisateur.individu
+            WHERE individu.identifiant = ?");
         $req->execute([$idEmploye]);
 
         if($req->rowCount() < 1) {
@@ -234,6 +239,37 @@ class Employe
         $req = $pdo->prepare("SELECT nom, prenom, telephone FROM individu WHERE identifiant = :id ");
         $req->execute(['id' => $idIndividu]);
         return $req->fetch();
+    }
+
+    /**
+     * Permet de récuperer l'identifiant d'un individu
+     * en fonction de son nom, prenom et telephone
+     */
+    public function getIdIndividu($nom, $prenom, $telephone)
+    {
+        $pdo = Database::getPDO();
+        $req = $pdo->prepare("SELECT identifiant FROM individu WHERE nom = :nom AND prenom = :prenom AND telephone = :telephone");
+        $req->execute(['nom' => $nom, 'prenom' => $prenom, 'telephone' => $telephone]);
+        return $req->fetch();
+    }
+
+    /**
+     *
+     * @param string $nomEmploye
+     * @param string $prenomEmploye
+     * @param string $telephoneEmploye
+     * @return false|string
+     */
+    public function ajouterIndividu($nomEmploye, $prenomEmploye, $telephoneEmploye)
+    {
+        $pdo = Database::getPDO();
+
+        $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
+        $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
+
+        // Récupérer l'identifiant de l'individu récemment inséré
+        $idIndividu = $pdo->lastInsertId();
+        return $idIndividu;
     }
 
 }

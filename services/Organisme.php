@@ -62,7 +62,7 @@ class Organisme
      * @param String $nomOrganisation Nom de l'organisation
      * @return int Identifiant de l'organisation
      */
-    public function getIdOrganisation($nomOrganisation)
+    public function getIdOrganisme($nomOrganisation)
     {
         $pdo = Database::getPDO();
 
@@ -90,12 +90,12 @@ class Organisme
     }
 
     /**
-     * Insère une organisation
-     * @param String $nomOrganisation Nom de l'organisation
+     * Insère un organisme
+     * @param String $nomOrganisation Nom de l'organisme
      * @param int $idInterlocuteur Identifiant de l'interlocuteur
-     * @return int Identifiant de l'organisation
+     * @return int Identifiant de l'organisme
      */
-    public function ajouterOrganisation($nomOrganisation, $idInterlocuteur)
+    public function ajouterOrganisme($nomOrganisation, $idInterlocuteur)
     {
         $pdo = Database::getPDO();
 

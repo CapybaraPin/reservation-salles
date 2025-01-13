@@ -5,7 +5,7 @@ namespace controllers;
 use services\Activite;
 use services\Auth;
 use services\Config;
-use services\Employe;
+use services\Individu;
 use services\Exportation;
 use services\Ordinateur;
 use services\Organisme;
@@ -22,7 +22,7 @@ class Controller
     protected Auth $authModel;
     protected Config $configModel;
 
-    protected Employe $employeModel;
+    protected Individu $employeModel;
     protected Ordinateur $ordinateurModel;
     protected Salle $salleModel;
     protected Activite $activiteModel;
@@ -41,7 +41,7 @@ class Controller
 
         $this->authModel = new Auth();
         $this->configModel = new Config();
-        $this->employeModel = new Employe();
+        $this->employeModel = new Individu();
         $this->ordinateurModel = new Ordinateur();
         $this->salleModel = new Salle();
         $this->activiteModel = new Activite();
