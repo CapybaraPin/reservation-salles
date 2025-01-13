@@ -37,10 +37,15 @@
                     foreach ($_SESSION["erreurs"] as $erreur) {
                         echo '<div class="alert alert-danger" role="alert">' . $erreur . '</div>';
                     }
+
+                    unset($_SESSION["erreurs"]);
                 }
 
                 if (isset($_SESSION["success"])){
                     echo '<div class="alert alert-success" role="alert">' . $_SESSION["success"] . '</div>';
+
+                    unset($_SESSION["success"]);
+
                 }
 
                 ?>

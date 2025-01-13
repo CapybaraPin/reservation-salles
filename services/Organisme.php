@@ -4,6 +4,9 @@ namespace services;
 
 use services\exceptions\FieldValidationException;
 
+/**
+ * Classe pour les organismes
+ */
 class Organisme
 {
     public function getOrganismes()

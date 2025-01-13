@@ -5,6 +5,9 @@ namespace services;
 use PDO;
 use services\exceptions\FieldValidationException;
 
+/**
+ * Classe pour les individus
+ */
 class Individu
 {
     /**

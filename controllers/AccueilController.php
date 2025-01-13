@@ -57,8 +57,10 @@ class AccueilController extends ReservationsController
 
         }
 
-        $activites= $this->activiteModel->getActivites();
+        $activites = $this->activiteModel->getActivites();
         $salles = $this->salleModel->getSalles();
+        $formateurs = $this->employeModel->getIndividus();
+        $organismes = $this->organismeModel->getOrganismes();
 
         $erreur = $this->erreur;
         $success = $this->success;

@@ -356,9 +356,9 @@ class ReservationsController extends FiltresController
 
                 $this->reservationModel->associerOrganisationReservation($reservationId, $idOrganisation);
 
-                $_SESSION["success"] = "L'organisme a été ajouté avec succès.";
+                $_SESSION["messageValidation"] = "L'organisme a été ajouté avec succès.";
             } catch (FieldValidationException $e) {
-                $_SESSION["erreurs"] = $e->getErreurs();
+                $this->erreur = $e->getErreurs();
             }
 
             header("Location: " . Config::get("APP_URL") . "/reservations/". $reservationId . "/edit");

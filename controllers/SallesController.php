@@ -184,8 +184,6 @@ class SallesController extends FiltresController
         }
     }
 
-
-
     /**
      * Fonction qui gère la suppression d'une salle
      * @param $salleId int Identifiant de la salle

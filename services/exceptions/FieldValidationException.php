@@ -2,6 +2,11 @@
 
 namespace services\exceptions;
 
+/**
+ * Exception pour les erreurs de validation des champs
+ *
+ * @package services\exceptions
+ */
 class FieldValidationException extends \Exception
 {
     /**
@@ -33,19 +38,5 @@ class FieldValidationException extends \Exception
     public function getErreurs(): array
     {
         return $this->erreurs;
-    }
-
-    /**
-     * Retourne un message formaté avec toutes les erreurs
-     *
-     * @return string
-     */
-    public function getErreursFormatees(): string
-    {
-        $formatees = "";
-        foreach ($this->erreurs as $champ => $erreur) {
-            $formatees .= "Champ '$champ' : $erreur\n";
-        }
-        return trim($formatees);
     }
 }

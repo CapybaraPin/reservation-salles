@@ -8,6 +8,9 @@ use PDOException;
 use services\exceptions\FieldValidationException;
 use services\SQLHelper;
 
+/**
+ * Classe pour les réservations
+ */
 class Reservation
 {
     /**
@@ -440,7 +443,12 @@ class Reservation
         }
 
         $req = $pdo->prepare("UPDATE reservation 
-                SET dateDebut = :dateDebut, dateFin = :dateFin, idActivite = :idActivite, idSalle = :idSalle, idEmploye = :idEmploye, description = :description 
+                SET dateDebut = :dateDebut, 
+                    dateFin = :dateFin, 
+                    idActivite = :idActivite, 
+                    idSalle = :idSalle, 
+                    idEmploye = :idEmploye, 
+                    description = :description 
                 WHERE identifiant = :id");
         $req->execute(array(
             'dateDebut' => date('Y-m-d H:i:s', $dateHeureDebut),

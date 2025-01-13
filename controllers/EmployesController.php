@@ -29,6 +29,10 @@ class EmployesController extends FiltresController
         "TELEPHONE_EMPLOYE" => 'Téléphone',
     ];
 
+    /**
+     * Fonction qui permet de gérer les requêtes GET
+     * @return void
+     */
     public function get()
     {
         $filtresDisponibles = self::FILTRES_DISPONIBLES;
@@ -97,6 +101,10 @@ class EmployesController extends FiltresController
         require __DIR__ . '/../views/employes.php';
     }
 
+    /**
+     * Fonction pour gérer les requêtes POST
+     * @return void
+     */
     public function post()
     {
         $this->setFiltres($_POST['filtres'] ?? []);
@@ -165,8 +173,8 @@ class EmployesController extends FiltresController
 
     /**
      * Suppresion d'un employé lors du click sur le bouton de suppresion situé sur la page des employés
-     * @return string
-     * @throws Exception
+     * @return string Message de succès ou d'erreur
+     * @throws Exception En cas d'erreur lors de la suppression
      */
     public function supprimerEmploye()
     {

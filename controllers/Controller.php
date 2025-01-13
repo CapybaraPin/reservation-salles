@@ -21,15 +21,12 @@ class Controller
 
     protected Auth $authModel;
     protected Config $configModel;
-
     protected Individu $employeModel;
     protected Ordinateur $ordinateurModel;
     protected Salle $salleModel;
     protected Activite $activiteModel;
     protected Reservation $reservationModel;
-
     protected Organisme $organismeModel;
-
     protected Exportation $exportationModel;
 
     /**

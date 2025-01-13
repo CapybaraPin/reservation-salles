@@ -6,6 +6,9 @@ use MongoDB\Driver\Exception\ExecutionTimeoutException;
 use PDO;
 use services\exceptions\FieldValidationException;
 
+/**
+ * Classe pour les salles
+ */
 class Salle
 {
     /**

@@ -4,6 +4,9 @@ namespace services;
 
 use PDOStatement;
 
+/**
+ * Classe SQLHelper qui permet de construire des requêtes SQL avec des filtres
+ */
 class SQLHelper
 {
 
