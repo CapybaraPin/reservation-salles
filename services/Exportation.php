@@ -146,7 +146,7 @@ class Exportation
      */
     public function getEmployes()
     {
-        $employe = new Employe();
+        $employe = new Individu();
         $employes = $employe->getEmployes(0, [], $employe->getNbEmployes());
 
         $employesExport[] = self::ENTETE_EMPLOYE;

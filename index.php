@@ -29,7 +29,7 @@ require __DIR__ . '/services/Database.php';
 require __DIR__ . '/services/Config.php';
 require __DIR__ . '/services/Auth.php';
 require __DIR__ . '/services/Utilisateur.php';
-require __DIR__ . '/services/Employe.php';
+require __DIR__ . '/services/Individu.php';
 require __DIR__ . '/services/Reservation.php';
 require __DIR__ . '/services/Salle.php';
 require __DIR__ . '/services/Activite.php';

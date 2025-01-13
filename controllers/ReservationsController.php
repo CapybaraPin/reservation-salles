@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use Exception;
 use PDO;
 use services\Auth;
 use services\Config;
@@ -114,7 +115,7 @@ class ReservationsController extends FiltresController
         if (isset($_POST['supprimerReservation']) && isset($_POST['idReservation'])) {
             try {
                 $this->supprimerReservation();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->erreur = "Erreur lors de la suppression de la reservation : " . $e->getMessage();
             }
         }
@@ -156,7 +157,7 @@ class ReservationsController extends FiltresController
             }else{
                 $formateur = $this->employeModel->getindividu($reservation['IDENTIFIANT_FORMATEUR']);
             }
-        }catch (\Exception $e){
+        }catch (Exception $e){
             $formateur = null;
         }
         require __DIR__ . '/../views/consultationReservation.php';
@@ -212,7 +213,7 @@ class ReservationsController extends FiltresController
             $this->success = 'La réservation a été ajoutée avec succès.';
         } catch (FieldValidationException $e) {
             $this->erreurs = $e->getErreurs();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->erreur = 'Une erreur est survenue, veuillez réessayer plus tard.';
         }
     }
@@ -220,6 +221,9 @@ class ReservationsController extends FiltresController
 
     /**
      * Fonction qui gère la suppression d'une réservation.
+     * @throws Exception Si les données soumises sont invalides.
+     * @throws Exception Si une erreur survient lors de la suppression.
+     * @throws Exception Si la réservation n'existe pas.
      */
     protected function supprimerReservation()
     {
@@ -229,19 +233,19 @@ class ReservationsController extends FiltresController
 
             $res = $this->reservationModel->getReservation($id);
             if (!$res || $res['ID_EMPLOYE'] != $_SESSION['userIndividuId']) {
-                throw new \Exception("Données invalides. Veuillez vérifier les informations soumises.");
+                throw new Exception("Données invalides. Veuillez vérifier les informations soumises.");
             }
 
             try {
                 $result = $this->reservationModel->supprimerReservation($id);
 
                 if (!$result) {
-                    throw new \Exception("La suppression de la réservation a échoué. Veuillez réessayer.");
+                    throw new Exception("La suppression de la réservation a échoué. Veuillez réessayer.");
                 }
 
                 $this->success = "La réservation n°" . $id . " a bien été supprimée.";
-            } catch (\Exception $e) {
-                throw new \Exception("Une erreur s'est produite lors de la suppression de la réservation.");
+            } catch (Exception $e) {
+                throw new Exception("Une erreur s'est produite lors de la suppression de la réservation.");
             }
 
         }
@@ -269,7 +273,7 @@ class ReservationsController extends FiltresController
             }else{
                 $formateur = $this->employeModel->getindividu($reservation['IDENTIFIANT_FORMATEUR']);
             }
-        }catch (\Exception $e){
+        }catch (Exception $e){
             $formateur = null;
         }
 

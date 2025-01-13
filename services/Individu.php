@@ -5,7 +5,7 @@ namespace services;
 use PDO;
 use services\exceptions\FieldValidationException;
 
-class Employe
+class Individu
 {
     /**
      * Permet d'ajouter un employé dans la base de données
@@ -23,11 +23,7 @@ class Employe
 
         try {
             // Insérer dans la table individu
-            $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
-            $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
-
-            // Récupérer l'identifiant de l'individu récemment inséré
-            $idIndividu = $pdo->lastInsertId();
+            $idIndividu = $this->ajouterIndividu($nomEmploye, $prenomEmploye, $telephoneEmploye);
 
             // Insérer dans la table utilisateur
             $reqUtilisateur = $pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
@@ -234,6 +230,37 @@ class Employe
         $req = $pdo->prepare("SELECT nom, prenom, telephone FROM individu WHERE identifiant = :id ");
         $req->execute(['id' => $idIndividu]);
         return $req->fetch();
+    }
+
+    /**
+     * Permet de récuperer l'identifiant d'un individu
+     * en fonction de son nom, prenom et telephone
+     */
+    public function getIdIndividu($nom, $prenom, $telephone)
+    {
+        $pdo = Database::getPDO();
+        $req = $pdo->prepare("SELECT identifiant FROM individu WHERE nom = :nom AND prenom = :prenom AND telephone = :telephone");
+        $req->execute(['nom' => $nom, 'prenom' => $prenom, 'telephone' => $telephone]);
+        return $req->fetch();
+    }
+
+    /**
+     *
+     * @param string $nomEmploye
+     * @param string $prenomEmploye
+     * @param string $telephoneEmploye
+     * @return false|string
+     */
+    public function ajouterIndividu($nomEmploye, $prenomEmploye, $telephoneEmploye)
+    {
+        $pdo = Database::getPDO();
+
+        $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
+        $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
+
+        // Récupérer l'identifiant de l'individu récemment inséré
+        $idIndividu = $pdo->lastInsertId();
+        return $idIndividu;
     }
 
 }
