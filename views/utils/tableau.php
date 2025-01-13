@@ -90,7 +90,7 @@ function genererLigne($ligne, $colonnes, $actions)
 {
     $html = '<tr>';
     foreach ($colonnes as $key => $colonne) {
-        $html .= '<td class="centrer">' . htmlspecialchars($ligne[$key] ?? '') . '</td>';
+        $html .= '<td class="centrer">' . ($ligne[$key] ?? '') . '</td>';
     }
 
     if (!empty($actions)) {
