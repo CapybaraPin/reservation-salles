@@ -148,7 +148,7 @@ class EmployesController extends FiltresController
             $motDePasseEmploye = password_hash($_POST["motdepasse"], PASSWORD_DEFAULT);
 
             // Vérification du format du numéro de téléphone
-            if (!preg_match('/^(?:\+33|0)[1-9](?:[\d]{2}){4}$/', $telephoneEmploye)) {
+            if (!preg_match('/^\d{4}$/', $telephoneEmploye)) {
                 throw new Exception("Le numéro de téléphone n'est pas valide. Veuillez entrer un numéro de téléphone correct.");
             }
 
