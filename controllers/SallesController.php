@@ -61,6 +61,7 @@ class SallesController extends FiltresController
         $actions = [];
         foreach ($salles as &$salle) {
             $salle['ID'] = $salle['ID_SALLE'];
+            $nbReservations = $this->reservationModel->getNbReservationsSalle($salle['ID']);
 
             $salle['VIDEO_PROJECTEUR'] = $salle['VIDEO_PROJECTEUR'] == "1" ? 'Oui' : 'Non';
             $salle['ECRAN_XXL'] = $salle['ECRAN_XXL'] == "1" ? 'Oui' : 'Non';
@@ -81,11 +82,17 @@ class SallesController extends FiltresController
                 'attributs' => ['href' => '/salle/'.$salle["ID"].'/edit', 'class' => 'btn', 'title' => 'Modifier'],
                 'icone' => 'fa-solid fa-pen'
             ];
-
-            $actions[$salle['ID_SALLE']]['supprimer'] = [
-                'attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerSalle', 'href' => '#'.$salle['ID']],
-                'icone' => 'fa-solid fa-trash-can'
-            ];
+            if($nbReservations == 0) {
+                $actions[$salle['ID_SALLE']]['supprimer'] = [
+                    'attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerSalle', 'href' => '#'.$salle['ID']],
+                    'icone' => 'fa-solid fa-trash-can'
+                ];
+            } else {
+                $actions[$salle['ID_SALLE']]['supprimer'] = [
+                    'attributs' => ['class' => 'btn btn-nav disabled', 'disabled' => 'disabled', 'title' => 'SupprimerSalle', 'href' => '#'.$salle['ID']],
+                    'icone' => 'fa-solid fa-trash-can'
+                ];
+            }
 
         }
 
