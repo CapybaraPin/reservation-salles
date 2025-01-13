@@ -114,7 +114,35 @@ if (btnNext && btnReserver && btnBack) {
     updateButtons();
 }
 
+// fonction pour masquer les champs si ajout de formateur est décidé
+function GestionAjoutFormateur(choixFormateur) {
+    const nomFormateur = document.getElementById('divNomFormateur');
+    const prenomFormateur = document.getElementById('divPrenomFormateur');
+    const telFormateur = document.getElementById('divTelFormateur');
 
+    const elements = [
+        nomFormateur,
+        prenomFormateur,
+        telFormateur,
+    ];
+
+    const actionClass = choixFormateur == -1 ? 'd-block' : 'd-none';
+    elements.forEach(element => {
+        // Supprime les classes conflictuelles
+        element.classList.remove('d-none', 'd-block');
+        // Ajoute la classe appropriée
+        element.classList.add(actionClass);
+    });
+}
+// si le type de réservation est formation, on affiche les champs pour formateur
+
+const choixFormateur = document.getElementById('formateur');
+if (choixFormateur) {
+    choixFormateur.addEventListener('change', (event) => {
+            const formateur = event.target.value;
+        GestionAjoutFormateur(formateur);
+    });
+}
 
 
 

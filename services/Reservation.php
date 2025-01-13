@@ -256,7 +256,7 @@ class Reservation
      * @throws FieldValidationException si une erreur survient lors de la validation des champs
      * @throws Exception
      */
-    public function ajouterReservation($dateDebut, $dateFin, $salle, $activite, $nomIntervenant, $prenomIntervenant, $telIntervenant, $employe, $nomOrganisation, $description)
+    public function ajouterReservation($dateDebut, $dateFin, $salle, $activite, $idIntervenant, $nomIntervenant, $prenomIntervenant, $telIntervenant, $employe, $nomOrganisation, $description)
     {
         $pdo = Database::getPDO();
         $erreurs = [];
@@ -299,6 +299,8 @@ class Reservation
         $nomIntervenant = trim($nomIntervenant);
         $prenomIntervenant = trim($prenomIntervenant);
         $telIntervenant = trim($telIntervenant);
+        $employeModel = new Individu();
+
         // si ajout d'une organisation sinon ajout d'un formateur
         try {
             $pdo->beginTransaction();
@@ -317,21 +319,18 @@ class Reservation
 
                     $organisationId = $organisme->ajouterOrganisme($nomOrganisation, $interlocuteurId);
                 }
+            } elseif($employeModel->individuExiste($idIntervenant)) {
+                $formateurId = $idIntervenant;
             } elseif (!empty($nomIntervenant) && !empty($prenomIntervenant) && !empty($telIntervenant)) {
-                // Gestion du formateur
-                $Employe = new Individu();
-                $formateurId = $Employe->getIdIndividu($nomIntervenant, $prenomIntervenant, $telIntervenant);
-                if (!$formateurId) {
-                    // Insérer un nouvel individu
-                    $formateurId = $Employe->ajouterIndividu($nomIntervenant, $prenomIntervenant, $telIntervenant);
-                }
+                $formateurId = $employeModel->ajouterIndividu($nomIntervenant, $prenomIntervenant, $telIntervenant);
             }
 
             // Insertion de la réservation
             $req = $pdo->prepare(
                 "INSERT INTO reservation (dateDebut, dateFin, idSalle, idActivite, idFormateur, idEmploye, idOrganisation, description) 
-         VALUES (:dateDebut, :dateFin, :salle, :activite, :formateur, :employe, :organisation, :description)"
+                         VALUES (:dateDebut, :dateFin, :salle, :activite, :formateur, :employe, :organisation, :description)"
             );
+
             $req->bindValue(':dateDebut', $dateDebut);
             $req->bindValue(':dateFin', $dateFin);
             $req->bindValue(':salle', $salle, PDO::PARAM_INT);

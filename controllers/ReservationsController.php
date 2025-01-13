@@ -88,6 +88,7 @@ class ReservationsController extends FiltresController
 
         $activites= $this->activiteModel->getActivites();
         $salles = $this->salleModel->getSalles();
+        $formateurs = $this->employeModel->getIndividus();
 
         if(isset($_SESSION['messageValidation'])) {
             $this->success = $_SESSION['messageValidation'];
@@ -130,9 +131,6 @@ class ReservationsController extends FiltresController
         if(isset($_POST['ajouterReservation'])){
             $this->ajouterReservation();
         }
-
-        $erreurs = $this->erreurs;
-        $success = $this->success ;
 
         $this->get();
     }
@@ -192,8 +190,8 @@ class ReservationsController extends FiltresController
             $dateFinAvecHeure = date('Y-m-d H:i:s', strtotime($dateFin));
             $salle = htmlspecialchars($_POST['salle']);
             $activite = htmlspecialchars($_POST['typeReservation']);
+            $idIntervenant = htmlspecialchars($_POST['formateur']);
 
-            // Déterminer les champs du formateur
             if (!empty($_POST['nomIntervenant']) || !empty($_POST['prenomIntervenant']) || !empty($_POST['telIntervenant'])) {
                 $nomIntervenant = htmlspecialchars($_POST['nomIntervenant'], ENT_NOQUOTES);
                 $prenomIntervenant = htmlspecialchars($_POST['prenomIntervenant'], ENT_NOQUOTES);
@@ -217,6 +215,7 @@ class ReservationsController extends FiltresController
                 $dateFinAvecHeure,
                 $salle,
                 $activite,
+                $idIntervenant,
                 $nomIntervenant,
                 $prenomIntervenant,
                 $telIntervenant,
