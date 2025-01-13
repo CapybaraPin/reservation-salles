@@ -13,6 +13,7 @@
     --color-text-dark: #535862; /* Texte principal */
     --color-input-placeholder: #717680; /* Texte des placeholders */
     --color-label-text: #414651; /* Texte des labels */
+    --color-text-primary-button: #ffffff; /* Couleur des texte de bouton primaire */
     --color-heading: #181D27; /* Couleur pour les titres */
     --color-border-light: #E9EAEB; /* Couleur pour les bordures légères */
 }
@@ -90,8 +91,30 @@ h2 {
     color: var(--color-label-text) !important;
 }
 
-.btn:hover{
-    background-color: #EEEEEE    !important;
+.btn-primary, .btn-danger, .btn-secondary, .btn-success {
+    font-weight: 300 !important;
+    font-size: 14px !important;
+    padding-top: 9px !important;
+    padding-bottom: 9px !important;
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+    color: var(--color-text-primary-button) !important;
+}
+
+.btn-consultation {
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+}
+
+.btn-sm {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    padding-right: 0.5rem !important;
+    padding-left: 0.5rem !important;
 }
 
 /* Boutons de navigation */

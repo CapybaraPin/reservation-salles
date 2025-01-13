@@ -26,8 +26,8 @@
 
                             <!-- Boutons pour revenir ou soumettre -->
                             <div class="col-12 col-lg-4 text-lg-end">
-                                <button type="submit" class="btn btn-primary" name="modifierSalleOrdinateurs">
-                                    <i class="fa-solid fa-save"></i> Sauvegarder
+                                <button type="submit" class="btn btn-primary btn-consultation" name="modifierSalleOrdinateurs">
+                                    <i class="fa-solid fa-save"></i>&emsp; Sauvegarder
                                 </button>
                             </div>
                         </div>

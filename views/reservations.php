@@ -31,7 +31,7 @@ require_once 'utils/tableau.php';
                         <!-- Bouton pour ajouter une réservation -->
                         <div class="col-12 col-lg-4 text-lg-end">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajouterReservation">
-                                <i class="fa-solid fa-plus"></i> Ajouter une réservation
+                                <i class="fa-solid fa-plus"></i>&emsp; Ajouter une réservation
                             </button>
                         </div>
                     </div>

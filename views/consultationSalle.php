@@ -23,11 +23,11 @@
 
                         <!-- Boutons pour supprimer et modifier -->
                         <div class="col-12 col-lg-4 text-lg-end">
-                            <a href="/salle/<?= $salle["ID_SALLE"] ?>/edit" class="btn btn-primary">
-                                <i class="fa-solid fa-pencil"></i> Modifier
+                            <a href="/salle/<?= $salle["ID_SALLE"] ?>/edit" class="btn btn-primary btn-consultation">
+                                <i class="fa-solid fa-pencil"></i>&emsp; Modifier
                             </a>
-                            <button class="btn btn-danger" <?php if ($nbReservations > 0){ echo 'disabled' ; } ?> data-bs-toggle="modal" data-bs-target="#modal_supprimer_salle">
-                                <i class="fa-solid fa-trash"></i> Supprimer
+                            <button class="btn btn-danger btn-consultation" <?php if ($nbReservations > 0){ echo 'disabled' ; } ?> data-bs-toggle="modal" data-bs-target="#modal_supprimer_salle">
+                                <i class="fa-solid fa-trash"></i>&emsp; Supprimer
                             </button>
                         </div>
                     </div>

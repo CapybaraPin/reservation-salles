@@ -178,6 +178,7 @@ $router->post('/activites', [new ActivitesController(), 'post']);
  * Définition des routes pour l'exportation des données
  */
 $router->get('/exportation', [new ExportController(), 'get']);
+$router->post('/exportation', [new ExportController(), 'post']);
 $router->get('/exportation/telecharger', [new ExportController(), 'exportation']);
 
 // Défintion de la routeur pour l'erreur 404

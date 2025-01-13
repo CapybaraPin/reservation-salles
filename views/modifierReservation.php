@@ -20,12 +20,12 @@
 
                 <!-- Boutons pour revenir ou soumettre -->
                 <div class="col-12 col-lg-4 text-lg-end">
-                    <a href="/reservations/<?= $reservation['IDENTIFIANT_RESERVATION'] ?>/view" class="btn btn-secondary">
-                        <i class="fa-solid fa-info-circle"></i> Informations
+                    <a href="/reservations/<?= $reservation['IDENTIFIANT_RESERVATION'] ?>/view" class="btn btn-secondary btn-consultation">
+                        <i class="fa-solid fa-info-circle"></i>&emsp; Informations
                     </a>
 
-                    <button type="submit" class="btn btn-primary" name="modifierReservation">
-                        <i class="fa-solid fa-save"></i> Sauvegarder
+                    <button type="submit" class="btn btn-primary btn-consultation" name="modifierReservation">
+                        <i class="fa-solid fa-save"></i>&emsp; Sauvegarder
                     </button>
                 </div>
             </div>
