@@ -320,7 +320,9 @@ class Reservation
                     $organisationId = $organisme->ajouterOrganisme($nomOrganisation, $interlocuteurId);
                 }
             } elseif($employeModel->individuExiste($idIntervenant)) {
-                $formateurId = $idIntervenant;
+                if ($idIntervenant != $employe) {
+                    $formateurId = $idIntervenant;
+                }
             } elseif (!empty($nomIntervenant) && !empty($prenomIntervenant) && !empty($telIntervenant)) {
                 $formateurId = $employeModel->ajouterIndividu($nomIntervenant, $prenomIntervenant, $telIntervenant);
             }

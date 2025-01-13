@@ -170,6 +170,8 @@ class ReservationsController extends FiltresController
                 $formateur = $this->employeModel->getindividu($organisation['idInterlocuteur']);
             }else{
                 $formateur = $this->employeModel->getindividu($reservation['IDENTIFIANT_FORMATEUR']);
+                $idFormateur = is_null($reservation['IDENTIFIANT_FORMATEUR']) ? $reservation['ID_EMPLOYE'] : $reservation['IDENTIFIANT_FORMATEUR'];
+                $formateur = $this->employeModel->getindividu($idFormateur);
             }
         }catch (Exception $e){
             $formateur = null;
@@ -282,8 +284,10 @@ class ReservationsController extends FiltresController
             if($reservation['IDENTIFIANT_ORGANISATION']!= NULL || !empty($reservation['IDENTIFIANT_ORGANISATION'])){
                 $organisation =$this->reservationModel->getOrganisation($reservation['IDENTIFIANT_ORGANISATION']);
                 $formateur = $this->employeModel->getindividu($organisation['idInterlocuteur']);
-            }else{
+            } else {
                 $formateur = $this->employeModel->getindividu($reservation['IDENTIFIANT_FORMATEUR']);
+                $idFormateur = $reservation['IDENTIFIANT_FORMATEUR'] != null ? $reservation['IDENTIFIANT_FORMATEUR'] : $reservation['ID_EMPLOYE'];
+                $formateur = $this->employeModel->getindividu($idFormateur);
             }
         }catch (Exception $e){
             $formateur = null;

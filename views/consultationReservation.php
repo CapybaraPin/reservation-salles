@@ -110,7 +110,7 @@
                                         <tbody>
                                         <tr>
                                             <th scope="row" width="300px">Identifiant</th>
-                                            <td><?= $reservation["IDENTIFIANT_FORMATEUR"] ?></td>
+                                            <td><?= $idFormateur ?></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Nom</th>
