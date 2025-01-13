@@ -2,6 +2,8 @@
 
 namespace services;
 
+use services\exceptions\FieldValidationException;
+
 class Organisme
 {
     public function getOrganismes()
@@ -82,6 +84,22 @@ class Organisme
     public function ajouterInterlocuteur($nomInterlocuteur, $prenomInterlocuteur, $telInterlocuteur)
     {
         $pdo = Database::getPDO();
+
+        if (empty($nomInterlocuteur)) {
+            $erreurs["Nom"] = "Merci d'indiquer un nom valide.";
+        }
+
+        if (empty($prenomInterlocuteur)) {
+            $erreurs["Prenom"] = "Merci d'indiquer un prénom valide.";
+        }
+
+        if (empty($telInterlocuteur) || !is_numeric($telInterlocuteur)) {
+            $erreurs["Telephone"] = "Merci d'indiquer un numéro de téléphone valide.";
+        }
+
+        if (!empty($erreurs)) {
+            throw new FieldValidationException($erreurs);
+        }
 
         $req = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
         $req->execute([$nomInterlocuteur, $prenomInterlocuteur, $telInterlocuteur]);

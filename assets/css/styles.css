@@ -306,7 +306,3 @@ thead{
     color: var(--color-primary);
     margin-top: 0.5rem;
 }
-
-#typeDescription, #typeFormation, #typeLocation {
-    display: none;
-}

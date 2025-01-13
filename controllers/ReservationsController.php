@@ -276,7 +276,7 @@ class ReservationsController extends FiltresController
         // Récupération des informations de la réservation
         $reservation = $this->reservationModel->getReservation($reservationId);
         $activites= $this->activiteModel->getActivites();
-        $salles = $this->salleModel->getSalles();
+        $salles = $this->salleModel->getSalles(0, [], $this->salleModel->getNbSalles());
         $organismes = $this->organismeModel->getOrganismes();
 
         try {
@@ -307,7 +307,55 @@ class ReservationsController extends FiltresController
             } elseif ($idTypeActivite == 2) {
                 $description = htmlspecialchars($_POST['sujetLocation']);
             }
+
+            try {
+                $this->reservationModel->modifierReservation($reservationId,
+                                                             $dateDebut,
+                                                             $dateFin,
+                                                             $heureDebut,
+                                                             $heureFin,
+                                                             $idTypeActivite,
+                                                             $salleId,
+                                                             $reservation["IDENTIFIANT_EMPLOYE"],
+                                                             $description);
+
+                $_SESSION["success"] = "Vous avez bien modifié cette réservation.";
+
+                header("Location: " . Config::get("APP_URL") . "/reservations/". $reservationId . "/edit");
+
+            } catch (FieldValidationException $e){
+                $this->erreurs = $e->getErreurs();
+            }
+
         }
         require __DIR__ . '/../views/modifierReservation.php';
+    }
+
+    /**
+     * Permet d'ajouter un organisme à la réservation et de le lier à celle-ci.
+     * @param $reservationId
+     * @return void
+     */
+    public function ajouterOrganisme($reservationId)
+    {
+        if (isset($_POST['ajouterOrganisme'])) {
+            $nomOrganisation = htmlspecialchars($_POST['nomOrganisation']);
+            $nomIntervenant = htmlspecialchars($_POST['nomIntervenant']);
+            $prenomIntervenant = htmlspecialchars($_POST['prenomIntervenant']);
+            $telIntervenant = htmlspecialchars($_POST['telIntervenant']);
+
+            try {
+                $idInterlocuteur = $this->organismeModel->ajouterInterlocuteur($nomIntervenant, $prenomIntervenant, $telIntervenant);
+                $idOrganisation = $this->organismeModel->ajouterOrganisme($nomOrganisation, $idInterlocuteur);
+
+                $this->reservationModel->associerOrganisationReservation($reservationId, $idOrganisation);
+
+                $_SESSION["success"] = "L'organisme a été ajouté avec succès.";
+            } catch (FieldValidationException $e) {
+                $_SESSION["erreurs"] = $e->getErreurs();
+            }
+
+            header("Location: " . Config::get("APP_URL") . "/reservations/". $reservationId . "/edit");
+        }
     }
 }

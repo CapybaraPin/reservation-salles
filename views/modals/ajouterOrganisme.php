@@ -41,8 +41,7 @@
                         </button>
                     </div>
                     <div class="col-6">
-                        <button type="button" id="btn-next" class="btn btn-primary w-100">Suivant</button>
-                        <button type="submit" id="btn-reserver" class="btn btn-primary w-100" name="ajouterReservation" style="display: none;">Réserver</button>
+                        <button type="submit" class="btn btn-primary w-100" name="ajouterOrganisme" >Ajouter</button>
                     </div>
                 </div>
             </div>

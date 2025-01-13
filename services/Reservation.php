@@ -56,6 +56,7 @@ class Reservation
                     reservation.idFormateur AS 'IDENTIFIANT_FORMATEUR',
                     reservation.idActivite AS 'IDENTIFIANT_ACTIVITE',
                     reservation.idSalle AS 'IDENTIFIANT_SALLE',
+                    reservation.idEmploye AS 'IDENTIFIANT_EMPLOYE',
                     salle.nom AS 'NOM_SALLE',
                     activite.type AS 'TYPE_ACTIVITE',
                     individu.prenom AS 'PRENOM_EMPLOYE',
@@ -379,5 +380,55 @@ class Reservation
         }
 
         return $erreur ? true : $erreur;
+    }
+
+    public function modifierReservation($idReservation, $dateDebut, $dateFin, $heureDebut, $heureFin, $idTypeActivite, $salleId, $idEmploye, $description)
+    {
+        $pdo = Database::getPDO();
+        $erreurs = [];
+
+        $dateHeureDebut = strtotime($dateDebut . ' ' . $heureDebut);
+        $dateHeureFin = strtotime($dateFin . ' ' . $heureFin);
+
+        if (empty($idTypeActivite) || !is_numeric($idTypeActivite) || $idTypeActivite == 0) {
+            $erreurs['activite'] = "Vous n'avez pas précisé l'activité associé à la réservation.";
+        }
+
+        if (empty($salleId) || !is_numeric($idTypeActivite) || $salleId == 0) {
+            $erreurs['salle'] = "Vous n'avez pas précisé la salle associée à la réservation.";
+        }
+
+        if (empty($idEmploye) || !is_numeric($idEmploye)) {
+            $erreurs['employe'] = "Vous n'avez pas précisé l'employé associé à la réservation.";
+        }
+
+        if (empty($description)) {
+            $erreurs['description'] = 'La description est obligatoire.';
+        }
+
+        if (!empty($erreurs)) {
+            throw new FieldValidationException($erreurs);
+        }
+
+        $req = $pdo->prepare("UPDATE reservation 
+                SET dateDebut = :dateDebut, dateFin = :dateFin, idActivite = :idActivite, idSalle = :idSalle, idEmploye = :idEmploye, description = :description 
+                WHERE identifiant = :id");
+        $req->execute(array(
+            'dateDebut' => date('Y-m-d H:i:s', $dateHeureDebut),
+            'dateFin' => date('Y-m-d H:i:s', $dateHeureFin),
+            'idActivite' => $idTypeActivite,
+            'idSalle' => $salleId,
+            'idEmploye' => $idEmploye,
+            'description' => $description,
+            'id' => $idReservation
+        ));
+    }
+
+    public function associerOrganisationReservation($idReservation, $idOrganisme)
+    {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("UPDATE reservation SET idOrganisation = :idOrganisation WHERE identifiant = :identifiant");
+        $req->execute(array('idOrganisation' => $idOrganisme, 'identifiant' => $idReservation));
     }
 }

@@ -1,3 +1,11 @@
+document.addEventListener('DOMContentLoaded', function () {
+    const typeActivite = document.getElementById('typeActivite');
+    typeActivite.addEventListener('change', (event) => {
+        const typeActivite = event.target.value;
+        changeReservationActivite(typeActivite);
+    });
+});
+
 // Méthode qui cache tous les éléments qui ne doivent pas être visibles
 function annuleAffichageActivite(){
     typeDescription.style.display = 'none';
