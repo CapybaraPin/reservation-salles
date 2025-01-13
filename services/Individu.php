@@ -142,11 +142,11 @@ class Individu
     public function getEmploye($idEmploye)
     {
         $pdo = Database::getPDO();
-        $req = $pdo->prepare("SELECT identifiant AS 'ID_EMPLOYE', nom AS 'NOM_EMPLOYE', prenom AS 'PRENOM_EMPLOYE', telephone AS 'TELEPHONE_EMPLOYE'
+        $req = $pdo->prepare("SELECT individu.identifiant AS 'ID_EMPLOYE', nom AS 'NOM_EMPLOYE', prenom AS 'PRENOM_EMPLOYE', telephone AS 'TELEPHONE_EMPLOYE'
             FROM individu 
             JOIN utilisateur
             ON individu.identifiant = utilisateur.individu
-            WHERE identifiant = ?");
+            WHERE individu.identifiant = ?");
         $req->execute([$idEmploye]);
 
         if($req->rowCount() < 1) {
