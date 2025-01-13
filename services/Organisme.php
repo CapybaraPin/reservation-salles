@@ -11,10 +11,14 @@ class Organisme
         $pdo = Database::getPDO();
 
         $req = $pdo->prepare("SELECT 
-            identifiant AS 'IDENTIFIANT_ORGANISME',
+            organisme.identifiant AS 'IDENTIFIANT_ORGANISME',
             nomOrganisme AS 'NOM_ORGANISME',
-            idInterlocuteur AS 'ID_INTERLOCUTEUR'
-            FROM organisme");
+            idInterlocuteur AS 'ID_INTERLOCUTEUR',
+            individu.nom AS 'NOM_INTERLOCUTEUR',
+            individu.prenom AS 'PRENOM_INTERLOCUTEUR'
+            FROM organisme
+            JOIN individu
+            ON organisme.idInterlocuteur = individu.identifiant");
         $req->execute();
 
         return $req->fetchAll();
@@ -121,6 +125,21 @@ class Organisme
         $req->execute([$nomOrganisation, $idInterlocuteur]);
 
         return $pdo->lastInsertId();
+    }
+
+    /**
+     * Retourne un boolean pour savoir si un organisme existe via son identifiant
+     * @param int $idOrganisme Identifiant de l'organisme
+     * @return bool true si l'organisme existe, false sinon
+     */
+    public function organismeExiste($idOrganisme)
+    {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("SELECT COUNT(*) FROM organisme WHERE identifiant = ?");
+        $req->execute([$idOrganisme]);
+
+        return $req->fetchColumn() > 0;
     }
 
 }

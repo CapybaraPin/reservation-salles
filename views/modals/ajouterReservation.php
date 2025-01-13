@@ -71,25 +71,35 @@
                                 <p class="mt-3">Vous ajoutez une réservation à votre nom, suivez le formulaire d’ajout de réservation.</p>
                             </div>
                             <div class="row">
-                                <!-- Champ Nom formateur -->
                                 <div class="form-group mb-1">
-                                    <label class="label-form" for="nomIndividu">Nom du formateur</label>
+                                    <label class="label-form" for="formateur">Formateur</label>
+                                    <select class="form-select" id="formateur" name="formateur">
+                                        <option value="0">Sélectionner un formateur</option>
+                                        <option value="-1">Créer un formateur</option>
+                                        <?php foreach ($formateurs as $formateur) { ?>
+                                            <option value="<?= $formateur['ID_INDIVIDU'] ?>"><?= $formateur['NOM_INDIVIDU'] . ' ' . $formateur['PRENOM_INDIVIDU'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <!-- Champ Nom formateur -->
+                                <div class="form-group mb-1 mt-1 d-none" id="divNomFormateur">
+                                    <label class="label-form" for="nomIndividu" id="labelNomIndividu">Nom du formateur</label>
                                     <input class="form-control" id="nomIndividu" name="nomIndividu" type="text" placeholder="Entrez le nom du formateur">
                                 </div>
                                 <!-- Champ Prénom formateur -->
-                                <div class="form-group mt-1 mb-1">
-                                    <label class="label-form" for="prenomIndividu">Prénom du formateur</label>
+                                <div class="form-group mt-1 mb-1 d-none" id="divPrenomFormateur">
+                                    <label class="label-form" for="prenomIndividu" id="labelPrenomIndividu">Prénom du formateur</label>
                                     <input class="form-control" id="prenomIndividu" name="prenomIndividu" type="text" placeholder="Entrez le prénom">
                                 </div>
                                 <!-- Champ Prénom formateur -->
-                                <div class="form-group mt-1 mb-1">
-                                    <label class="label-form" for="telIndividu">Numéro de téléphone du formateur</label>
+                                <div class="form-group mt-1 mb-1 d-none" id="divTelFormateur">
+                                    <label class="label-form" for="telIndividu" id="labelTelIndividu">Numéro de téléphone du formateur</label>
                                     <input class="form-control" id="telIndividu" name="telIndividu" type="text" placeholder="Entrez le numéro de téléphone du formateur">
                                 </div>
                                 <!-- Champ Sujet formation -->
-                                <div class="form-group mt-1 mb-1">
-                                    <label class="label-form" for="description">Sujet de la formation</label>
-                                    <input class="form-control" id="description" name="sujetFormation" type="text" placeholder="Sujet de la formation">
+                                <div class="form-group mt-1 mb-1" id="divSujetFormateur">
+                                    <label class="label-form" for="sujetFormation" id="labelSujetFormation">Sujet de la formation</label>
+                                    <input class="form-control" id="sujetFormation" name="sujetFormation" type="text" placeholder="Sujet de la formation">
                                 </div>
                             </div>
                         </div>
@@ -105,30 +115,40 @@
                                 <p class="mt-3">Vous ajoutez une réservation à votre nom, suivez le formulaire d’ajout de réservation.</p>
                             </div>
                             <div class="row">
-                                <!-- Champ Nom organisation -->
                                 <div class="form-group mb-1">
+                                    <label class="label-form" for="organisme">Organisme</label>
+                                    <select class="form-select" id="organisme" name="organisme">
+                                        <option value="0">Sélectionner un organisme</option>
+                                        <option value="-1">Créer un organisme</option>
+                                        <?php foreach ($organismes as $organisme) { ?>
+                                            <option value="<?= $organisme['IDENTIFIANT_ORGANISME'] ?>"><?= $organisme['NOM_ORGANISME'] . " - " . $organisme['NOM_INTERLOCUTEUR'] . " " . $organisme['PRENOM_INTERLOCUTEUR'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <!-- Champ Nom organisation -->
+                                <div class="form-group mb-1 mt-1 d-none" id="divNomOrganisme">
                                     <label class="label-form" for="nomOrganisation">Nom de l'organisation</label>
                                     <input class="form-control" id="nomOrganisation" name="nomOrganisation" type="text" placeholder="Entrez le nom de l'organisation">
                                 </div>
                                 <!-- Champ Nom intervenant -->
-                                <div class="form-group mb-1">
+                                <div class="form-group mb-1 mt-1 d-none" id="divNomIntervenant">
                                     <label class="label-form" for="nomIntervenant">Nom du intervenant</label>
                                     <input class="form-control" id="nomIntervenant" name="nomIntervenant" type="text" placeholder="Entrez le nom de intervenant">
                                 </div>
                                 <!-- Champ Prénom intervenant -->
-                                <div class="form-group mt-1 mb-1">
+                                <div class="form-group mt-1 mb-1 d-none" id="divPrenomIntervenant">
                                     <label class="label-form" for="prenomIntervenant">Prénom du intervenant</label>
                                     <input class="form-control" id="prenomIntervenant" name="prenomIntervenant" type="text" placeholder="Entrez le prénom de intervenant">
                                 </div>
                                 <!-- Champ téléphone intervenant -->
-                                <div class="form-group mt-1 mb-1">
+                                <div class="form-group mt-1 mb-1 d-none" id="divTelIntervenant">
                                     <label class="label-form" for="telIntervenant">Numéro de téléphone du intervenant</label>
                                     <input class="form-control" id="telIntervenant" name="telIntervenant" type="text" placeholder="Entrez le numéro de téléphone du intervenant">
                                 </div>
                                 <!-- Champ Sujet du prêt ou location -->
                                 <div class="form-group mt-1 mb-1">
-                                    <label class="label-form" for="description">Sujet de la Location</label>
-                                    <input class="form-control" id="description" name="sujetLocation" type="text" placeholder="Sujet de la location">
+                                    <label class="label-form" for="sujetLocation">Sujet de la Location</label>
+                                    <input class="form-control" id="sujetLocation" name="sujetLocation" type="text" placeholder="Sujet de la location">
                                 </div>
                             </div>
                         </div>

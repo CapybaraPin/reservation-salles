@@ -272,4 +272,31 @@ class Individu
         return $idIndividu;
     }
 
+    /**
+     * Récupère les individus
+     */
+    public function getIndividus()
+    {
+        $pdo = Database::getPDO();
+        $req = $pdo->prepare("SELECT 
+        identifiant AS ID_INDIVIDU,
+        nom AS NOM_INDIVIDU,
+        prenom AS PRENOM_INDIVIDU
+        FROM individu");
+        $req->execute();
+        return $req->fetchAll();
+    }
+
+    /**
+     * Permet de savoir si un individu existe via son identifiant
+     */
+    public function individuExiste($idIndividu)
+    {
+        $pdo = Database::getPDO();
+        $req = $pdo->prepare("SELECT identifiant FROM individu WHERE identifiant = ?");
+        $req->execute([$idIndividu]);
+        return $req->rowCount() > 0;
+    }
+
+
 }

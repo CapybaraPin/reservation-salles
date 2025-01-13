@@ -88,6 +88,8 @@ class ReservationsController extends FiltresController
 
         $activites= $this->activiteModel->getActivites();
         $salles = $this->salleModel->getSalles();
+        $formateurs = $this->employeModel->getIndividus();
+        $organismes = $this->organismeModel->getOrganismes();
 
         if(isset($_SESSION['messageValidation'])) {
             $this->success = $_SESSION['messageValidation'];
@@ -131,9 +133,6 @@ class ReservationsController extends FiltresController
             $this->ajouterReservation();
         }
 
-        $erreurs = $this->erreurs;
-        $success = $this->success ;
-
         $this->get();
     }
 
@@ -172,6 +171,8 @@ class ReservationsController extends FiltresController
                 $formateur = $this->employeModel->getindividu($organisation['idInterlocuteur']);
             }else{
                 $formateur = $this->employeModel->getindividu($reservation['IDENTIFIANT_FORMATEUR']);
+                $idFormateur = is_null($reservation['IDENTIFIANT_FORMATEUR']) ? $reservation['ID_EMPLOYE'] : $reservation['IDENTIFIANT_FORMATEUR'];
+                $formateur = $this->employeModel->getindividu($idFormateur);
             }
         }catch (Exception $e){
             $formateur = null;
@@ -192,8 +193,9 @@ class ReservationsController extends FiltresController
             $dateFinAvecHeure = date('Y-m-d H:i:s', strtotime($dateFin));
             $salle = htmlspecialchars($_POST['salle']);
             $activite = htmlspecialchars($_POST['typeReservation']);
+            $idIntervenant = htmlspecialchars($_POST['formateur']);
+            $idOrganisation = htmlspecialchars($_POST['organisme']);
 
-            // Déterminer les champs du formateur
             if (!empty($_POST['nomIntervenant']) || !empty($_POST['prenomIntervenant']) || !empty($_POST['telIntervenant'])) {
                 $nomIntervenant = htmlspecialchars($_POST['nomIntervenant'], ENT_NOQUOTES);
                 $prenomIntervenant = htmlspecialchars($_POST['prenomIntervenant'], ENT_NOQUOTES);
@@ -217,10 +219,12 @@ class ReservationsController extends FiltresController
                 $dateFinAvecHeure,
                 $salle,
                 $activite,
+                $idIntervenant,
                 $nomIntervenant,
                 $prenomIntervenant,
                 $telIntervenant,
                 $employe,
+                $idOrganisation,
                 $nomOrganisation,
                 $description
             );
@@ -283,8 +287,10 @@ class ReservationsController extends FiltresController
             if($reservation['IDENTIFIANT_ORGANISATION']!= NULL || !empty($reservation['IDENTIFIANT_ORGANISATION'])){
                 $organisation =$this->reservationModel->getOrganisation($reservation['IDENTIFIANT_ORGANISATION']);
                 $formateur = $this->employeModel->getindividu($organisation['idInterlocuteur']);
-            }else{
+            } else {
                 $formateur = $this->employeModel->getindividu($reservation['IDENTIFIANT_FORMATEUR']);
+                $idFormateur = $reservation['IDENTIFIANT_FORMATEUR'] != null ? $reservation['IDENTIFIANT_FORMATEUR'] : $reservation['ID_EMPLOYE'];
+                $formateur = $this->employeModel->getindividu($idFormateur);
             }
         }catch (Exception $e){
             $formateur = null;
