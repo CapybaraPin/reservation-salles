@@ -253,14 +253,11 @@ class ReservationsController extends FiltresController
      */
     public function modificationReservation($reservationId)
     {
+        // Récupération des informations de la réservation
         $reservation = $this->reservationModel->getReservation($reservationId);
         $activites= $this->activiteModel->getActivites();
         $salles = $this->salleModel->getSalles();
-
-        $dateDebut = date("Y-m-d", strtotime($reservation["DATE_DEBUT"]));
-        $dateFin = date("Y-m-d", strtotime($reservation["DATE_FIN"]));
-        $heureDebut = date('H:i', strtotime($dateDebut));
-        $heureFin = date('H:i', strtotime($dateFin));
+        $organismes = $this->organismeModel->getOrganismes();
 
         try {
             if($reservation['IDENTIFIANT_ORGANISATION']!= NULL || !empty($reservation['IDENTIFIANT_ORGANISATION'])){
@@ -273,6 +270,24 @@ class ReservationsController extends FiltresController
             $formateur = null;
         }
 
+        if (isset($_POST['modifierReservation'])) {
+            // Récupération des informations du formulaire
+            $dateDebut = htmlspecialchars($_POST['dateDebut']);
+            $dateFin = htmlspecialchars($_POST['dateFin']);
+            $heureDebut = htmlspecialchars($_POST['heureDebut']);
+            $heureFin = htmlspecialchars($_POST['heureFin']);
+
+            $idTypeActivite = htmlspecialchars($_POST['typeActivite']);
+            $salleId = htmlspecialchars($_POST['salle']);
+
+            if ($idTypeActivite == 1 || $idTypeActivite == 3 || $idTypeActivite == 6) {
+                $description = htmlspecialchars($_POST['description']);
+            } elseif ($idTypeActivite == 4 || $idTypeActivite == 5) {
+                $description = htmlspecialchars($_POST['sujetFormation']);
+            } elseif ($idTypeActivite == 2) {
+                $description = htmlspecialchars($_POST['sujetLocation']);
+            }
+        }
         require __DIR__ . '/../views/modifierReservation.php';
     }
 }

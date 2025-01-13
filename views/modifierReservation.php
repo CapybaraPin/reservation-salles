@@ -108,7 +108,7 @@
                         </div>
                         <div class="card-body">
                             <!-- Si c'est une Réunion-->
-                            <div id="typeDescription">
+                            <div id="typeDescription" style="<?php if ($reservation["IDENTIFIANT_ACTIVITE"] != 1 OR $reservation["IDENTIFIANT_ACTIVITE"] != 3 OR $reservation["IDENTIFIANT_ACTIVITE"] != 6) { echo "display:none;"; } ?>">
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description de l'activité</label>
                                     <input type="text" id="description" name="description" class="form-control" placeholder="Description" value="<?= $reservation['DESCRIPTION'] ?? '' ?>">
@@ -116,14 +116,18 @@
                             </div>
 
                             <!-- Si c'est une Formation -->
-                            <div id="typeFormation">
+                            <div id="typeFormation" style="<?php if ($reservation["IDENTIFIANT_ACTIVITE"] != 2) { echo "display:none;"; } ?>">
                                 <div class="mb-3">
-                                    <label for="nomFormateur" class="form-label">Nom du formateur</label>
-                                    <input type="text" id="nomFormateur" name="nomFormateur" class="form-control" placeholder="Nom du formateur" value="<?= $reservation['NOM_FORMATEUR'] ?? '' ?>">
+                                    <label for="nomIntervenant" class="form-label">Nom du formateur</label>
+                                    <input type="text" id="nomIntervenant" name="nomIntervenant" class="form-control" placeholder="Nom du formateur" value="<?= $reservation['NOM_FORMATEUR'] ?? '' ?>">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="prenomFormateur" class="form-label">Prénom du formateur</label>
-                                    <input type="text" id="prenomFormateur" name="prenomFormateur" class="form-control" placeholder="Prénom du formateur" value="<?= $reservation['PRENOM_FORMATEUR'] ?? '' ?>">
+                                    <label for="prenomIntervenant" class="form-label">Prénom du formateur</label>
+                                    <input type="text" id="prenomIntervenant" name="prenomIntervenant" class="form-control" placeholder="Prénom du formateur" value="<?= $reservation['PRENOM_FORMATEUR'] ?? '' ?>">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="telephoneIntervenant" class="form-label">N° de téléphone du formateur</label>
+                                    <input type="tel" id="telephoneIntervenant" name="telephoneIntervenant" class="form-control" placeholder="N° de téléphone" value="<?= $reservation['PRENOM_FORMATEUR'] ?? '' ?>">
                                 </div>
                                 <div class="mb-3">
                                     <label for="sujetFormation" class="form-label">Sujet de la formation</label>
@@ -133,22 +137,22 @@
 
 
                             <!-- Si c'est une Location ou Prêt -->
-                            <div id="typeLocation">
+                            <div id="typeLocation" style="<?php if ($reservation["IDENTIFIANT_ACTIVITE"] != 4 OR $reservation["IDENTIFIANT_ACTIVITE"] != 5) { echo "display:none;"; } ?>">
                                 <div class="mb-3">
-                                    <label for="nomOrganisation" class="form-label">Nom de l'organisation</label>
-                                    <input type="text" id="nomOrganisation" name="nomOrganisation" class="form-control" placeholder="Nom de l'organisation" value="<?= $reservation['NOM_ORGANISATION'] ?? '' ?>">
+                                    <label for="nomOrganisme" class="form-label">Nom de l'organisme</label>
+                                    <select id="nomOrganisme" name="salle" class="form-select" required>
+                                        <option>Sélectionnez un organisme</option>
+                                        <?php foreach ($organismes as $organisme) { ?>
+                                            <option value="<?= $organisme['IDENTIFIANT_ORGANISME'] ?>">
+                                                <?= $organisme['NOM_ORGANISME'] ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                    <div class="form-text"><button type="button" data-bs-toggle="modal" data-bs-target="#ajouterOrganisme" class="btn-link">Vous ne trouvez pas votre organisme? Ajoutez le</button></div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="nomIntervenant" class="form-label">Nom de l'intervenant</label>
-                                    <input type="text" id="nomIntervenant" name="nomIntervenant" class="form-control" placeholder="Nom de l'intervenant" value="<?= $reservation['NOM_INTERVENANT'] ?? '' ?>">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="prenomIntervenant" class="form-label">Prénom de l'intervenant</label>
-                                    <input type="text" id="prenomIntervenant" name="prenomIntervenant" class="form-control" placeholder="Prénom de l'intervenant" value="<?= $reservation['PRENOM_INTERVENANT'] ?? '' ?>">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="sujetLocation" class="form-label">Sujet de la location/prêt</label>
-                                    <input type="text" id="sujetLocation" name="sujetLocation" class="form-control" placeholder="Sujet de la location" value="<?= $reservation['SUJET_LOCATION'] ?? '' ?>">
+                                    <label for="sujetIntervention" class="form-label">Sujet de la location/prêt</label>
+                                    <input type="text" id="sujetIntervention" name="sujetIntervention" class="form-control" placeholder="Sujet de la location/prêt" value="<?= $reservation['SUJET_FORMATION'] ?? '' ?>">
                                 </div>
                             </div>
                         </div>
@@ -158,6 +162,13 @@
         </div>
     </div>
 </div>
-<?php include 'elements/scripts.php'; ?>
+<?php include 'modals/ajouterOrganisme.php';
+      include 'elements/scripts.php'; ?>
+
+<script>
+    $( '#nomOrganisme' ).select2( {
+        theme: 'bootstrap-5'
+    } );
+</script>
 </body>
 </html>

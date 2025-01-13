@@ -4,6 +4,19 @@ namespace services;
 
 class Organisme
 {
+    public function getOrganismes()
+    {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("SELECT 
+            identifiant AS 'IDENTIFIANT_ORGANISME',
+            nomOrganisme AS 'NOM_ORGANISME',
+            idInterlocuteur AS 'ID_INTERLOCUTEUR'
+            FROM organisme");
+        $req->execute();
+
+        return $req->fetchAll();
+    }
     /**
      * Récupère les informations d'une organisation
      * @param int $idOrganisation Identifiant de l'organisation
