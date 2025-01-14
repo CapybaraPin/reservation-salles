@@ -3,8 +3,12 @@
 namespace services;
 
 use PDO;
+use services\exceptions\FieldValidationException;
 
-class Employe
+/**
+ * Classe pour les individus
+ */
+class Individu
 {
     /**
      * Permet d'ajouter un employé dans la base de données
@@ -22,11 +26,7 @@ class Employe
 
         try {
             // Insérer dans la table individu
-            $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
-            $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
-
-            // Récupérer l'identifiant de l'individu récemment inséré
-            $idIndividu = $pdo->lastInsertId();
+            $idIndividu = $this->ajouterIndividu($nomEmploye, $prenomEmploye, $telephoneEmploye);
 
             // Insérer dans la table utilisateur
             $reqUtilisateur = $pdo->prepare("INSERT INTO utilisateur (identifiant, motDePasse, role, individu) VALUES (?, ?, ?, ?)");
@@ -38,7 +38,6 @@ class Employe
             throw new \Exception($e->getMessage());
         }
     }
-
     /**
      * Permet de supprimer un employé de la base de données
      * @param $idEmploye int l'identifiant de l'employé
@@ -73,7 +72,9 @@ class Employe
     {
         $pdo = Database::getPDO();
 
-        $sql = "SELECT COUNT(*) FROM individu";
+        $sql = "SELECT COUNT(*) FROM individu
+                JOIN utilisateur
+                ON individu.identifiant = utilisateur.individu";
         $sql .= SQLHelper::construireConditionsFiltres($filtre);
 
         $req = $pdo->prepare($sql);
@@ -93,14 +94,17 @@ class Employe
 
         try {
             $sql = "SELECT 
-                    identifiant AS 'IDENTIFIANT_EMPLOYE', 
+                    individu.identifiant AS 'IDENTIFIANT_EMPLOYE', 
                     nom AS 'NOM_EMPLOYE', 
                     prenom AS 'PRENOM_EMPLOYE', 
                     telephone AS 'TELEPHONE_EMPLOYE' 
-                FROM individu ";
+                FROM individu
+                JOIN utilisateur
+                ON individu.identifiant = utilisateur.individu";
+
 
             $sql .= SQLHelper::construireConditionsFiltres($filtre);
-            $sql .= " ORDER BY identifiant ASC LIMIT :limit OFFSET :offset";
+            $sql .= " ORDER BY individu.identifiant ASC LIMIT :limit OFFSET :offset";
 
             $req = $pdo->prepare($sql);
             $req->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -141,7 +145,11 @@ class Employe
     public function getEmploye($idEmploye)
     {
         $pdo = Database::getPDO();
-        $req = $pdo->prepare("SELECT identifiant AS 'ID_EMPLOYE', nom AS 'NOM_EMPLOYE', prenom AS 'PRENOM_EMPLOYE', telephone AS 'TELEPHONE_EMPLOYE' FROM individu WHERE identifiant = ?");
+        $req = $pdo->prepare("SELECT individu.identifiant AS 'ID_EMPLOYE', nom AS 'NOM_EMPLOYE', prenom AS 'PRENOM_EMPLOYE', telephone AS 'TELEPHONE_EMPLOYE'
+            FROM individu 
+            JOIN utilisateur
+            ON individu.identifiant = utilisateur.individu
+            WHERE individu.identifiant = ?");
         $req->execute([$idEmploye]);
 
         if($req->rowCount() < 1) {
@@ -171,8 +179,10 @@ class Employe
         if (empty($prenom)) {
             $erreurs['prenom'] = "Le champ prénom est requis.";
         }
-        if (!preg_match('/^(?:\+33|0)[1-9](?:[\d]{2}){4}$/', $telephone)) {
-            $erreurs['telephone'] = "Le numéro de téléphone est invalide.";
+        if($telephone != null) {
+            if (!preg_match('/^\d{4}$/', $telephone)) {
+                $erreurs['telephone'] = "Le numéro de téléphone est invalide.";
+            }
         }
 
         if (!empty($erreurs)) {
@@ -195,6 +205,24 @@ class Employe
         ]);
     }
 
+    public function getID($idEmploye) {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("SELECT identifiant FROM utilisateur WHERE individu = ?");
+        $req->execute(array($idEmploye));
+
+        return $req->fetch();
+    }
+
+    public function modifierIdentifiant($idEmploye, $newid) {
+        $pdo = Database::getPDO();
+
+        $req = $pdo->prepare("UPDATE utilisateur SET identifiant = ? WHERE individu = ?");
+        $req->execute(array($newid, $idEmploye));
+
+        return $req;
+    }
+
     public function modifierMotDePasse($idEmploye, $pass) {
         $pdo = Database::getPDO();
 
@@ -205,9 +233,9 @@ class Employe
     }
   
     /**
-     *Permet de récupérer les information d'un individu
-     * @param $idIndividu int identifiant de l'individu rechercher
-     * @return mixed, Retourne l'individu obtenue
+     * Permet de récupérer les informations d'un individu
+     * @param $idIndividu int identifiant de l'individu recherché
+     * @return mixed, Retourne l'individu obtenu
      */
     public function getindividu($idIndividu){
         $pdo = Database::getPDO();
@@ -215,5 +243,63 @@ class Employe
         $req->execute(['id' => $idIndividu]);
         return $req->fetch();
     }
+
+    /**
+     * Permet de récuperer l'identifiant d'un individu
+     * en fonction de son nom, prenom et telephone
+     */
+    public function getIdIndividu($nom, $prenom, $telephone)
+    {
+        $pdo = Database::getPDO();
+        $req = $pdo->prepare("SELECT identifiant FROM individu WHERE nom = :nom AND prenom = :prenom AND telephone = :telephone");
+        $req->execute(['nom' => $nom, 'prenom' => $prenom, 'telephone' => $telephone]);
+        return $req->fetch();
+    }
+
+    /**
+     *
+     * @param string $nomEmploye
+     * @param string $prenomEmploye
+     * @param string $telephoneEmploye
+     * @return false|string
+     */
+    public function ajouterIndividu($nomEmploye, $prenomEmploye, $telephoneEmploye)
+    {
+        $pdo = Database::getPDO();
+
+        $reqIndividu = $pdo->prepare("INSERT INTO individu (nom, prenom, telephone) VALUES (?, ?, ?)");
+        $reqIndividu->execute([$nomEmploye, $prenomEmploye, $telephoneEmploye]);
+
+        // Récupérer l'identifiant de l'individu récemment inséré
+        $idIndividu = $pdo->lastInsertId();
+        return $idIndividu;
+    }
+
+    /**
+     * Récupère les individus
+     */
+    public function getIndividus()
+    {
+        $pdo = Database::getPDO();
+        $req = $pdo->prepare("SELECT 
+        identifiant AS ID_INDIVIDU,
+        nom AS NOM_INDIVIDU,
+        prenom AS PRENOM_INDIVIDU
+        FROM individu");
+        $req->execute();
+        return $req->fetchAll();
+    }
+
+    /**
+     * Permet de savoir si un individu existe via son identifiant
+     */
+    public function individuExiste($idIndividu)
+    {
+        $pdo = Database::getPDO();
+        $req = $pdo->prepare("SELECT identifiant FROM individu WHERE identifiant = ?");
+        $req->execute([$idIndividu]);
+        return $req->rowCount() > 0;
+    }
+
 
 }

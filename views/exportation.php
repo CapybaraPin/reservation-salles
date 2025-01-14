@@ -34,7 +34,7 @@ require_once 'utils/tableau.php';
                         <!-- Bouton pour exporter les données -->
                         <div class="col-12 col-lg-4 text-lg-end">
                             <a class="btn btn-primary" href="<?= Config::get("APP_URL") ?>/exportation/telecharger" target="_blank">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Exporter les données
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>&emsp; Exporter les données
                             </a>
                         </div>
 

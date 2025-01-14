@@ -146,7 +146,7 @@ class Exportation
      */
     public function getEmployes()
     {
-        $employe = new Employe();
+        $employe = new Individu();
         $employes = $employe->getEmployes(0, [], $employe->getNbEmployes());
 
         $employesExport[] = self::ENTETE_EMPLOYE;
@@ -245,6 +245,12 @@ class Exportation
         return str_pad($id, $taille, "0", STR_PAD_LEFT);
     }
 
+    /**
+     * Crée un fichier CSV à partir des données fournies
+     * @param $nomFichier string Nom du fichier à créer
+     * @param $donnees array Données à insérer dans le fichier
+     * @return string Chemin du fichier créé
+     */
     public function creationFichierCsv($nomFichier, $donnees)
     {
         $cheminFichier = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $nomFichier . '.csv';
@@ -262,6 +268,11 @@ class Exportation
         return $cheminFichier;
     }
 
+    /**
+     * Crée une archive ZIP à partir des fichiers CSV fournis
+     * @param $fichiersCsv array Chemins des fichiers CSV à ajouter à l'archive
+     * @return string Chemin de l'archive créée
+     */
     public function creationArchive($fichiersCsv)
     {
         $archiveZip = new ZipArchive();
@@ -281,6 +292,10 @@ class Exportation
         return $cheminArchiveZip;
     }
 
+    /**
+     * Envoie l'archive ZIP au navigateur pour le téléchargement
+     * @param $cheminArchive string Chemin de l'archive ZIP
+     */
     public function telechargementArchive($cheminArchive)
     {
         if (file_exists($cheminArchive)) {
@@ -295,6 +310,12 @@ class Exportation
         }
     }
 
+    /**
+     * Exporte les données de l'application
+     *
+     * Cette méthode récupère les données de la base de données,
+     * les formate et les exporte dans un fichier ZIP
+     */
     public function exportationDonnees()
     {
         $reservations = $this->getReservations();

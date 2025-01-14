@@ -89,11 +89,4 @@
             </div>
         </form>
     </div>
-    <!-- Champ de recherche -->
-    <div class="col-12 col-lg-3 mt-lg-0 mt-2">
-        <div class="input-group">
-            <i class="fa-solid input-group-text d-flex">&#xf002;</i>
-            <input class="form-control" type="text" name="recherche" placeholder="Recherche">
-        </div>
-    </div>
 </div>

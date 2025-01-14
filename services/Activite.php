@@ -2,6 +2,9 @@
 
 namespace services;
 
+/**
+ * Classe pour les activités
+ */
 class Activite
 {
     /**
@@ -15,7 +18,7 @@ class Activite
 
         $req = $pdo->prepare("SELECT 
                                             identifiant AS 'IDENTIFIANT_ACTIVITE',
-                                            type AS TYPE_ACTIVITE
+                                            type AS 'TYPE_ACTIVITE'
                                             FROM activite");
         $req->execute();
         return $req->fetchAll();

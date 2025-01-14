@@ -55,64 +55,124 @@ function updateButtons() {
 }
 
 // Fonction pour passer à l'étape suivante
-btnNext.addEventListener('click', () => {
-    const dateDebut = document.getElementById('dateDebut');
-    const dateFin = document.getElementById('dateFin');
-    const salle = document.getElementById('salle');
+if (btnNext && btnReserver && btnBack) {
+    btnNext.addEventListener('click', () => {
+        const dateDebut = document.getElementById('dateDebut');
+        const dateFin = document.getElementById('dateFin');
+        const salle = document.getElementById('salle');
 
-    if (!dateDebut.checkValidity()) {
-        dateDebut.reportValidity();
-        return;
-    }
-    if (!dateFin.checkValidity()) {
-        dateFin.reportValidity();
-        return;
-    }
-    if (!salle.checkValidity()) {
-        salle.reportValidity();
-        return;
-    }
-
-    if (currentStep === 1) {
-        step1.style.display = 'none';
-        step2.style.display = 'block';
-        currentStep++;
-    } else if (currentStep === 2) {
-        const typeReservation = document.getElementById('typeReservation');
-        if (typeReservation.value === "0") {
-            alert("Veuillez sélectionner un type de réservation.");
+        if (!dateDebut.checkValidity()) {
+            dateDebut.reportValidity();
+            return;
+        }
+        if (!dateFin.checkValidity()) {
+            dateFin.reportValidity();
+            return;
+        }
+        if (!salle.checkValidity()) {
+            salle.reportValidity();
             return;
         }
 
-        step2.style.display = 'none';
-        showStep3Section();
-        currentStep++;
-    }
+        if (currentStep === 1) {
+            step1.style.display = 'none';
+            step2.style.display = 'block';
+            currentStep++;
+        } else if (currentStep === 2) {
+            const typeReservation = document.getElementById('typeReservation');
+            if (typeReservation.value === "0") {
+                alert("Veuillez sélectionner un type de réservation.");
+                return;
+            }
+
+            step2.style.display = 'none';
+            showStep3Section();
+            currentStep++;
+        }
+
+        updateButtons();
+    });
+
+    // Fonction pour revenir à l'étape précédente ou fermer le modal
+    btnBack.addEventListener('click', () => {
+        if (currentStep === 3) {
+            hideAllStep3Sections();
+            step2.style.display = 'block';
+            currentStep--;
+        } else if (currentStep === 2) {
+            step2.style.display = 'none';
+            step1.style.display = 'block';
+            currentStep--;
+        } else if (currentStep === 1) {
+            const bootstrapModal = bootstrap.Modal.getInstance(modal);
+            bootstrapModal.hide();
+        }
+
+        updateButtons();
+    });
 
     updateButtons();
-});
+}
 
-// Fonction pour revenir à l'étape précédente ou fermer le modal
-btnBack.addEventListener('click', () => {
-    if (currentStep === 3) {
-        hideAllStep3Sections();
-        step2.style.display = 'block';
-        currentStep--;
-    } else if (currentStep === 2) {
-        step2.style.display = 'none';
-        step1.style.display = 'block';
-        currentStep--;
-    } else if (currentStep === 1) {
-        const bootstrapModal = bootstrap.Modal.getInstance(modal);
-        bootstrapModal.hide();
-    }
+// fonction pour masquer les champs si ajout de formateur est décidé
+function GestionAjoutFormateur(choixFormateur) {
+    const nomFormateur = document.getElementById('divNomFormateur');
+    const prenomFormateur = document.getElementById('divPrenomFormateur');
+    const telFormateur = document.getElementById('divTelFormateur');
 
-    updateButtons();
-});
+    const elements = [
+        nomFormateur,
+        prenomFormateur,
+        telFormateur,
+    ];
 
-updateButtons();
+    const actionClass = choixFormateur == -1 ? 'd-block' : 'd-none';
+    elements.forEach(element => {
+        // Supprime les classes conflictuelles
+        element.classList.remove('d-none', 'd-block');
+        // Ajoute la classe appropriée
+        element.classList.add(actionClass);
+    });
+}
+// si le type de réservation est formation, on affiche les champs pour formateur
 
+const choixFormateur = document.getElementById('formateur');
+if (choixFormateur) {
+    choixFormateur.addEventListener('change', (event) => {
+            const formateur = event.target.value;
+        GestionAjoutFormateur(formateur);
+    });
+}
 
+function gestionAjoutOrganisme(choixOrganisme) {
+    const nomOrganisme = document.getElementById('divNomOrganisme');
+    const nomIntervenant = document.getElementById('divNomIntervenant');
+    const prenomIntervenant = document.getElementById('divPrenomIntervenant');
+    const telIntervenant = document.getElementById('divTelIntervenant');
+
+    const elements = [
+        nomOrganisme,
+        nomIntervenant,
+        prenomIntervenant,
+        telIntervenant,
+    ];
+
+    const actionClass = choixOrganisme == -1 ? 'd-block' : 'd-none';
+    elements.forEach(element => {
+        // Supprime les classes conflictuelles
+        element.classList.remove('d-none', 'd-block');
+        // Ajoute la classe appropriée
+        element.classList.add(actionClass);
+    });
+}
+
+const choixOrganisme = document.getElementById('organisme');
+if (choixOrganisme) {
+    choixOrganisme.addEventListener('change', (event) => {
+        const organisme = event.target.value;
+        gestionAjoutOrganisme(organisme);
+    });
+}
 
 
 
@@ -294,35 +354,42 @@ const boutonFiltrer = document.getElementById('btn-filtrer');
 const menuDeroulant = document.getElementById('menu-deroulant');
 
 // Fonction pour ouvrir/fermer le menu
-boutonFiltrer.addEventListener('click', () => {
-    const rect = boutonFiltrer.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
+if (boutonFiltrer) {
+    boutonFiltrer.addEventListener('click', () => {
+        const rect = boutonFiltrer.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
 
-    // Calcul de la position (en dessous par défaut, au-dessus si pas assez de place)
-    menuDeroulant.style.top = rect.bottom + window.scrollY + 'px'; // Par défaut, sous le bouton
-    menuDeroulant.style.left = rect.left + window.scrollX + 'px';
-    menuDeroulant.style.display = 'block'; // Afficher le menu
+        // Calcul de la position (en dessous par défaut, au-dessus si pas assez de place)
+        menuDeroulant.style.top = rect.bottom + window.scrollY + 'px'; // Par défaut, sous le bouton
+        menuDeroulant.style.left = rect.left + window.scrollX + 'px';
+        menuDeroulant.style.display = 'block'; // Afficher le menu
 
-    const menuHeight = menuDeroulant.offsetHeight;
+        const menuHeight = menuDeroulant.offsetHeight;
 
-    // Vérifier si le menu dépasse la hauteur de la fenêtre
-    if (rect.bottom + menuHeight > windowHeight) {
-        menuDeroulant.style.top = rect.top + window.scrollY - menuHeight + 'px'; // Afficher au-dessus
-    }
-});
+        // Vérifier si le menu dépasse la hauteur de la fenêtre
+        if (rect.bottom + menuHeight > windowHeight) {
+            menuDeroulant.style.top = rect.top + window.scrollY - menuHeight + 'px'; // Afficher au-dessus
+        }
+    });
+}
 
 // Fermer le menu quand on clique ailleurs
-document.addEventListener('click', (e) => {
-    if (!menuDeroulant.contains(e.target) && e.target !== boutonFiltrer) {
-        menuDeroulant.style.display = 'none';
-    }
-});
+if (menuDeroulant) {
+    document.addEventListener('click', (e) => {
+        if (!menuDeroulant.contains(e.target) && e.target !== boutonFiltrer) {
+            menuDeroulant.style.display = 'none';
+        }
+    });
+}
 
 // Fermer le menu quand on clique sur le bouton "Annuler"
 const boutonAnnuler = document.getElementById('btn-annuler');
-boutonAnnuler.addEventListener('click', () => {
-    menuDeroulant.style.display = 'none';
-});
+if (boutonAnnuler) {
+    boutonAnnuler.addEventListener('click', () => {
+        menuDeroulant.style.display = 'none';
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const selectFiltre = document.querySelector('select[name="nouveau_filtre[champ]"]');
     const inputText = document.getElementById("inputText");
@@ -359,5 +426,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // # Fin Gestion des filtres
 
+//Confirmation modification d'une salle
+const btnConfirmerModificationSalle = document.getElementById('btnConfirmerModificationSalle');
+const formModificationSalle = document.getElementById('modifierSalleForm');
 
+
+if(btnConfirmerModificationSalle != null && formModificationSalle != null) {
+    btnConfirmerModificationSalle.addEventListener('click', function () {
+        formModificationSalle.submit();
+    });
+}
 

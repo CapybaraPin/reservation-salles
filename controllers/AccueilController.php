@@ -45,11 +45,22 @@ class AccueilController extends ReservationsController
             $reservation["DATE_FIN"] = date_format($dateFin, "d/m/Y H\hi");
             $reservation["DATE_DEBUT"] = date_format($dateDebut, "d/m/Y H\hi");
             $actions[$reservation['IDENTIFIANT_RESERVATION']] = [
-                'info' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'Plus d\'informations'], 'icone' => 'fa-solid fa-circle-info'],
+                'info' => ['attributs' => ['href' => '/reservations/'.$reservation["IDENTIFIANT_RESERVATION"].'/view',
+                                           'class' => 'btn btn-nav', 'title' => 'Plus d\'informations'],
+                                           'icone' => 'fa-solid fa-circle-info'],
                 'modifier' => ['attributs' => ['class' => 'btn', 'title' => 'Modifier'], 'icone' => 'fa-solid fa-pen'],
-                'supprimer' => ['attributs' => ['class' => 'btn btn-nav', 'title' => 'SupprimerReservation', 'href' => '#'.$reservation['ID']], 'icone' => 'fa-solid fa-trash-can'],
+                'supprimer' => ['attributs' => ['class' => 'btn btn-nav',
+                                                'title' => 'SupprimerReservation',
+                                                'href' => '#'.$reservation['ID']], 'icone' => 'fa-solid fa-trash-can'],
+
             ];
+
         }
+
+        $activites = $this->activiteModel->getActivites();
+        $salles = $this->salleModel->getSalles();
+        $formateurs = $this->employeModel->getIndividus();
+        $organismes = $this->organismeModel->getOrganismes();
 
         $erreur = $this->erreur;
         $success = $this->success;

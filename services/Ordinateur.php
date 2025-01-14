@@ -2,6 +2,9 @@
 
 namespace services;
 
+/**
+ * Classe pour les ordinateurs
+ */
 class Ordinateur
 {
     /**
