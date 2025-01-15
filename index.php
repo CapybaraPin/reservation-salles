@@ -14,7 +14,7 @@
  */
 
 // Vérification de la version de PHP
-if (version_compare(PHP_VERSION, '5.3', '<') OR version_compare(PHP_VERSION, '8.4', '>')) {
+if (version_compare(PHP_VERSION, '5.3', '<') OR version_compare(PHP_VERSION, '8.5', '>')) {
     die('Erreur : Ce script nécessite PHP 5.3 ou une version inférieur à 8.4. Votre version actuelle est : ' . PHP_VERSION);
 }
 

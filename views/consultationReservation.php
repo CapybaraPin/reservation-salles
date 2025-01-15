@@ -23,7 +23,7 @@
 
                             <!-- Boutons pour supprimer et modifier -->
                             <div class="col-12 col-lg-4 text-lg-end">
-                                <a href="" class="btn btn-primary btn-consultation" >
+                                <a href="/reservations/<?= $reservation["IDENTIFIANT_RESERVATION"] ?>/edit" class="btn btn-primary btn-consultation" >
                                     <i class="fa-solid fa-pencil"></i>&emsp; Modifier
                                 </a>
                                 <button type="submit" name="supprimerReservation" class="btn btn-danger btn-consultation" <?php if ($_SESSION['userPrenom'] != $reservation["PRENOM_EMPLOYE"]){ echo 'disabled' ; } ?> data-bs-toggle="modal" data-bs-target="#supprimerSalle">
