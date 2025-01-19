@@ -92,7 +92,7 @@ class Exportation
                     $ligne[7] = $reservation['DESCRIPTION'];
                     $ligne[8] = $reservation['NOM_FORMATEUR'];
                     $ligne[9] = $reservation['PRENOM_FORMATEUR'];
-                    $ligne[10] = str_pad($interlocuteur['TELEPHONE_FORMATEUR'], 10, "0", STR_PAD_LEFT);
+                    $ligne[10] = str_pad($reservation['TELEPHONE_FORMATEUR'], 10, "0", STR_PAD_LEFT);
                     break;
                 default:
                     $ligne[7] = $reservation['DESCRIPTION'];
@@ -160,9 +160,10 @@ class Exportation
 
             if ($telephone && substr($telephone, 0, 1) !== '0') {
                 $telephone = '0' . $telephone;
+                $ligne[3] = substr($telephone, -4);
             }
 
-            $ligne[3] = substr($telephone, -4);
+
 
             $employesExport[] = $ligne;
         }
